@@ -94,14 +94,14 @@ class StepProgressBar extends StatelessWidget {
             Text(
               'Step $currentStep of $totalSteps',
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: AppColors.midGrey,
+                    color: AppColors.lightAmber,
                     fontWeight: FontWeight.w600,
                   ),
             ),
             Text(
               '${((currentStep / totalSteps) * 100).round()}%',
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: AppColors.deepGreen,
+                    color: AppColors.lightAmber,
                     fontWeight: FontWeight.bold,
                   ),
             ),
@@ -114,7 +114,7 @@ class StepProgressBar extends StatelessWidget {
             value: currentStep / totalSteps,
             minHeight: 8,
             backgroundColor: AppColors.lightGreen,
-            valueColor: const AlwaysStoppedAnimation(AppColors.deepGreen),
+            valueColor: const AlwaysStoppedAnimation(AppColors.medGreen),
           ),
         ),
       ],

@@ -22,8 +22,8 @@ class AppConstants {
 
   // ── Backend ────────────────────────────────────────────────────────────────
   // Replace with your deployed backend URL.
-  static const backendBaseUrl = 'https://your-backend.example.com';
-  static const analyzeEndpoint = '$backendBaseUrl/analyze';
+  static const backendBaseUrl = 'http://192.168.0.173:8000';
+  static const analyzeEndpoint = '$backendBaseUrl/diagnose';
   static const connectTimeoutMs = 12000;
   static const receiveTimeoutMs = 20000;
 }

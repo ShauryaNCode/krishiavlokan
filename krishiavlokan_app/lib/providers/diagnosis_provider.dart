@@ -216,9 +216,7 @@ class DiagnosisProvider extends ChangeNotifier {
   // ══════════════════════════════════════════════════════════════════════════
   // VOICE ADDITIONS — added for voice interaction feature.
   // All existing logic above this line is untouched.
-  // ══════════════════════════════════════════════════════════════════════════
-
-  // ── New voice state ───────────────────────────────────────────────────────
+  // ══════════════════════════════════════════════════════════════════════════  // ── New voice state ───────────────────────────────────────────────────────
 
   /// True while TTS loop is running OR microphone is active.
   bool _isVoiceActive = false;
@@ -302,6 +300,19 @@ class DiagnosisProvider extends ChangeNotifier {
       await startQuestionLoop(question);
       onNoMatch();
     }
+  }
+
+  /// Applies a list of voice-detected symptom keys from SymptomVoiceProcessor.
+  /// Replaces current selection — voice detection is treated as a fresh pick.
+  /// Ignores any keys not in the valid set.
+  void applyVoiceSymptoms(List<String> detectedKeys) {
+    const validKeys = {
+      'drought', 'waterlogging', 'nutrient', 'pest', 'fungal', 'heat'
+    };
+    final valid = detectedKeys.where(validKeys.contains).toList();
+    if (valid.isEmpty) return;
+    _selectedSymptoms = List.of(valid);
+    notifyListeners();
   }
 
   /// Stops all voice activity (TTS + STT).
