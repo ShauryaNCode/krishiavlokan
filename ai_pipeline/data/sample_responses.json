@@ -1,0 +1,122 @@
+[
+  {
+    "causeKey": "drought",
+    "causeTitle": "Drought Stress",
+    "confidenceScore": 0.72,
+    "explanation": "Wardha me Wheat par drought stress ka signal strong hai. Paudhon ko pani kam mil raha hai, isliye light irrigation, mulching aur soil moisture check abhi priority hai.",
+    "weatherPhases": [
+      {
+        "phase": "Early",
+        "status": "low",
+        "idealStatus": "low",
+        "metric": "rainfall / soil moisture"
+      },
+      {
+        "phase": "Mid",
+        "status": "normal",
+        "idealStatus": "veryLow",
+        "metric": "rainfall / soil moisture"
+      },
+      {
+        "phase": "Late",
+        "status": "low",
+        "idealStatus": "low",
+        "metric": "rainfall / soil moisture"
+      }
+    ],
+    "recommendations": [
+      {
+        "title": "Start protective irrigation",
+        "detail": "Give light irrigation in the cooler part of the day and avoid flooding the root zone."
+      },
+      {
+        "title": "Reduce soil moisture loss",
+        "detail": "Use mulch or crop residue around plants to slow evaporation from the top soil."
+      },
+      {
+        "title": "Check field cracks",
+        "detail": "If cracks are widening, prioritize that plot for water or community irrigation support."
+      }
+    ]
+  },
+  {
+    "causeKey": "waterlogging",
+    "causeTitle": "Waterlogging Stress",
+    "confidenceScore": 0.75,
+    "explanation": "Purnia me Paddy ke roots zyada paani me suffocate ho sakte hain. Standing water aur yellowing milkar waterlogging stress dikhate hain, drainage jaldi improve karein.",
+    "weatherPhases": [
+      {
+        "phase": "Early",
+        "status": "veryHigh",
+        "idealStatus": "high",
+        "metric": "rainfall / soil moisture"
+      },
+      {
+        "phase": "Mid",
+        "status": "veryHigh",
+        "idealStatus": "veryHigh",
+        "metric": "rainfall / soil moisture"
+      },
+      {
+        "phase": "Late",
+        "status": "high",
+        "idealStatus": "high",
+        "metric": "rainfall / soil moisture"
+      }
+    ],
+    "recommendations": [
+      {
+        "title": "Open drainage channels",
+        "detail": "Create shallow side channels so extra water can leave the plot within 24 hours."
+      },
+      {
+        "title": "Avoid more irrigation",
+        "detail": "Pause irrigation until the top soil starts drying and roots get air again."
+      },
+      {
+        "title": "Watch root health",
+        "detail": "Uproot one weak plant and check for black, soft, or foul-smelling roots."
+      }
+    ]
+  },
+  {
+    "causeKey": "fungal",
+    "causeTitle": "Fungal Disease Risk",
+    "confidenceScore": 0.66,
+    "explanation": "Kolar me Tomato ke liye fungal disease risk ban raha hai. Humid weather aur spots/powder symptoms saath aaye hain, isliye canopy ko dry rakhna aur infected leaves hatana zaroori hai.",
+    "weatherPhases": [
+      {
+        "phase": "Early",
+        "status": "veryHigh",
+        "idealStatus": "high",
+        "metric": "humidity"
+      },
+      {
+        "phase": "Mid",
+        "status": "normal",
+        "idealStatus": "veryHigh",
+        "metric": "humidity"
+      },
+      {
+        "phase": "Late",
+        "status": "normal",
+        "idealStatus": "high",
+        "metric": "humidity"
+      }
+    ],
+    "recommendations": [
+      {
+        "title": "Improve air movement",
+        "detail": "Remove dense weeds and avoid unnecessary evening irrigation that keeps leaves wet overnight."
+      },
+      {
+        "title": "Remove infected leaves",
+        "detail": "Take out heavily infected leaves from the field edge first and keep them away from compost."
+      },
+      {
+        "title": "Confirm before spraying",
+        "detail": "Match the spot pattern with a local extension worker before choosing a fungicide."
+      }
+    ]
+  }
+]

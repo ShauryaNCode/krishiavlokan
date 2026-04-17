@@ -1,0 +1,8 @@
+{
+  "drought": "{district} me {crop} par drought stress ka signal strong hai. Paudhon ko pani kam mil raha hai, isliye light irrigation, mulching aur soil moisture check abhi priority hai.",
+  "waterlogging": "{district} me {crop} ke roots zyada paani me suffocate ho sakte hain. Standing water aur yellowing milkar waterlogging stress dikhate hain, drainage jaldi improve karein.",
+  "pest": "{district} me {crop} par pest pressure ka chance high lag raha hai. Leaf holes, insects ya sticky residue milne par pehle scouting karein, phir local advisory ke hisaab se action lein.",
+  "fungal": "{district} me {crop} ke liye fungal disease risk ban raha hai. Humid weather aur spots/powder symptoms saath aaye hain, isliye canopy ko dry rakhna aur infected leaves hatana zaroori hai.",
+  "heat": "{district} me {crop} heat stress se impact ho sakta hai. Scorching, flower drop ya tip burn high temperature ke saath match karte hain, toh morning irrigation aur temporary shade help karega.",
+  "nutrient": "{district} me {crop} me nutrient deficiency ka pattern dikh raha hai. Yellowing, pale growth ya poor flowering nutrients ki kami se aa sakte hain, soil moisture aur balanced fertilizer dono check karein."
+}

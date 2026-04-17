@@ -1,0 +1,68 @@
+[
+  {
+    "crop": "Wheat",
+    "state": "Maharashtra",
+    "district": "Wardha",
+    "sowingDate": "2026-03-01",
+    "symptoms": [
+      "Wilting leaves",
+      "Dry soil",
+      "Leaf curling"
+    ]
+  },
+  {
+    "crop": "Paddy",
+    "state": "Bihar",
+    "district": "Purnia",
+    "sowingDate": "2026-07-15",
+    "symptoms": [
+      "Standing water",
+      "Root rot",
+      "Yellowing leaves"
+    ]
+  },
+  {
+    "crop": "Cotton",
+    "state": "Telangana",
+    "district": "Warangal",
+    "sowingDate": "2026-08-01",
+    "symptoms": [
+      "Holes in leaves",
+      "Insects visible",
+      "Eggs under leaves"
+    ]
+  },
+  {
+    "crop": "Tomato",
+    "state": "Karnataka",
+    "district": "Kolar",
+    "sowingDate": "2026-07-20",
+    "symptoms": [
+      "Leaf spots",
+      "White powder",
+      "Humid canopy"
+    ]
+  },
+  {
+    "crop": "Maize",
+    "state": "Rajasthan",
+    "district": "Kota",
+    "sowingDate": "2026-04-10",
+    "symptoms": [
+      "Scorched leaves",
+      "Flower drop",
+      "Tip burn"
+    ]
+  },
+  {
+    "crop": "Mustard",
+    "state": "Uttar Pradesh",
+    "district": "Kanpur",
+    "sowingDate": "2026-01-10",
+    "symptoms": [
+      "Yellowing leaves",
+      "Pale leaves",
+      "Poor flowering"
+    ]
+  }
+]
