@@ -175,6 +175,25 @@ class _CauseCard extends StatelessWidget {
                       '${result.crop} · ${result.seasonYear}',
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
+                    const SizedBox(height: 4),
+                    // Confidence badge — new from real API
+                    if (result.confidenceScore > 0)
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: AppColors.deepGreen.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          'Confidence: ${(result.confidenceScore * 100).round()}%',
+                          style: const TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.deepGreen,
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               ),
@@ -269,7 +288,7 @@ class _WeatherPhaseBox extends StatelessWidget {
             phase.label,
             textAlign: TextAlign.center,
             style: const TextStyle(
-              fontSize: 10,
+              fontSize: 9,
               fontWeight: FontWeight.w600,
               color: AppColors.midGrey,
             ),
@@ -284,6 +303,20 @@ class _WeatherPhaseBox extends StatelessWidget {
               color: color,
             ),
           ),
+          // Rainfall deviation from real API
+          if (phase.rainfallDeviationPct != 0) ...[
+            const SizedBox(height: 2),
+            Text(
+              '${phase.rainfallDeviationPct > 0 ? '+' : ''}'
+              '${phase.rainfallDeviationPct.toStringAsFixed(0)}% rain',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 9,
+                color: color,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
         ],
       ),
     );

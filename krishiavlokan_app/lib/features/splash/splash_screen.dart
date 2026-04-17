@@ -58,28 +58,24 @@ class _SplashScreenState extends State<SplashScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // Logo container
-              Container(
-                width: 110,
-                height: 110,
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.15),
-                  borderRadius: BorderRadius.circular(28),
-                ),
-                child: const Center(
-                  child: Text('🌾', style: TextStyle(fontSize: 54)),
-                ),
+              Image.asset(
+                'assets/KrishiAvloakan_skel.png',
+                width: 350,
+                height: 350,
+                fit: BoxFit.contain,
               )
                   .animate()
                   .fadeIn(duration: 600.ms)
                   .scale(begin: const Offset(0.6, 0.6), duration: 600.ms),
 
-              const SizedBox(height: 24),
+              const SizedBox(height: 34),
 
               Text(
                 AppConstants.appName,
                 style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                      color: AppColors.amber,
-                      fontSize: 32,
+                      color: AppColors.cardWhite,
+                      fontSize: 38,
+                      fontWeight: FontWeight.w900,
                       letterSpacing: 1.2,
                     ),
               )
@@ -87,12 +83,13 @@ class _SplashScreenState extends State<SplashScreen> {
                   .fadeIn(duration: 500.ms)
                   .slideY(begin: 0.3, end: 0),
 
-              const SizedBox(height: 10),
+              const SizedBox(height: 8),
 
               Text(
                 AppConstants.taglineHi,
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                       color: Colors.white70,
+                      fontSize: 18,
                     ),
               )
                   .animate(delay: 500.ms)
@@ -107,16 +104,28 @@ class _SplashScreenState extends State<SplashScreen> {
                   .animate(delay: 600.ms)
                   .fadeIn(duration: 400.ms),
 
-              const SizedBox(height: 60),
+              const SizedBox(height: 70),
 
               const SizedBox(
                 width: 32,
                 height: 32,
                 child: CircularProgressIndicator(
-                  color: AppColors.amber,
+                  color: AppColors.cardWhite,
                   strokeWidth: 2.5,
                 ),
               ).animate(delay: 800.ms).fadeIn(duration: 400.ms),
+
+              const SizedBox(height: 20),
+
+              Text(
+                AppConstants.krishiini,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      color: Colors.white38,
+                      fontSize: 12,
+                    ),
+              )
+                  .animate(delay: 800.ms)
+                  .fadeIn(duration: 400.ms),
             ],
           ),
         ),
