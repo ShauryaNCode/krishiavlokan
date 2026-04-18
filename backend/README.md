@@ -122,7 +122,7 @@ backend/
 
 ```bash
 cd backend
-pip install fastapi uvicorn pydantic python-multipart requests pandas scikit-learn xgboost google-generativeai python-dotenv
+python -m pip install requests scikit-learn google-generativeai python-dotenv pandas xgboost fastapi uvicorn python-multipart
 ```
 
 ### Run server
