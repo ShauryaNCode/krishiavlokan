@@ -20,6 +20,8 @@ class DiagnosisRequest(BaseModel):
 class Recommendation(BaseModel):
     title: str
     detail: str
+    priority: str = Field(..., description="High, Medium, or Low")
+    effort_level: str = Field(..., description="Easy, Medium, or Hard")
 
     class Config:
         extra = "allow"

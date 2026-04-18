@@ -51,3 +51,11 @@ def diagnose(request: DiagnosisRequest) -> dict[str, Any]:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
     except Exception as exc:
         raise HTTPException(status_code=500, detail="Diagnosis engine failed") from exc
+
+
+@router.get("/history")
+def history() -> list[dict[str, Any]]:
+    """Return saved diagnosis events, newest first."""
+
+    saved_history = storage.get_history()
+    return saved_history[::-1]

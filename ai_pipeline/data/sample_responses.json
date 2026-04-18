@@ -3,7 +3,7 @@
     "causeKey": "drought",
     "causeTitle": "Drought Stress",
     "confidenceScore": 0.72,
-    "explanation": "Wardha me Wheat par drought stress ka signal strong hai. Paudhon ko pani kam mil raha hai, isliye light irrigation, mulching aur soil moisture check abhi priority hai.",
+    "explanation": "Wardha me Wheat par drought stress ka signal strong hai. Aaj ka Easy step: Check field cracks: If cracks are widening, prioritize that plot for water or community irrigation support.",
     "weatherPhases": [
       {
         "phase": "Early",
@@ -27,15 +27,21 @@
     "recommendations": [
       {
         "title": "Start protective irrigation",
-        "detail": "Give light irrigation in the cooler part of the day and avoid flooding the root zone."
+        "detail": "Give light irrigation in the cooler part of the day and avoid flooding the root zone.",
+        "priority": "High",
+        "effort_level": "Medium"
       },
       {
         "title": "Reduce soil moisture loss",
-        "detail": "Use mulch or crop residue around plants to slow evaporation from the top soil."
+        "detail": "Use mulch or crop residue around plants to slow evaporation from the top soil.",
+        "priority": "Medium",
+        "effort_level": "Medium"
       },
       {
         "title": "Check field cracks",
-        "detail": "If cracks are widening, prioritize that plot for water or community irrigation support."
+        "detail": "If cracks are widening, prioritize that plot for water or community irrigation support.",
+        "priority": "High",
+        "effort_level": "Easy"
       }
     ]
   },
@@ -43,7 +49,7 @@
     "causeKey": "waterlogging",
     "causeTitle": "Waterlogging Stress",
     "confidenceScore": 0.75,
-    "explanation": "Purnia me Paddy ke roots zyada paani me suffocate ho sakte hain. Standing water aur yellowing milkar waterlogging stress dikhate hain, drainage jaldi improve karein.",
+    "explanation": "Purnia me Paddy ke roots zyada paani me suffocate ho sakte hain. Aaj ka Easy step: Avoid more irrigation: Pause irrigation until the top soil starts drying and roots get air again.",
     "weatherPhases": [
       {
         "phase": "Early",
@@ -67,15 +73,21 @@
     "recommendations": [
       {
         "title": "Open drainage channels",
-        "detail": "Create shallow side channels so extra water can leave the plot within 24 hours."
+        "detail": "Create shallow side channels so extra water can leave the plot within 24 hours.",
+        "priority": "High",
+        "effort_level": "Medium"
       },
       {
         "title": "Avoid more irrigation",
-        "detail": "Pause irrigation until the top soil starts drying and roots get air again."
+        "detail": "Pause irrigation until the top soil starts drying and roots get air again.",
+        "priority": "High",
+        "effort_level": "Easy"
       },
       {
         "title": "Watch root health",
-        "detail": "Uproot one weak plant and check for black, soft, or foul-smelling roots."
+        "detail": "Uproot one weak plant and check for black, soft, or foul-smelling roots.",
+        "priority": "Medium",
+        "effort_level": "Easy"
       }
     ]
   },
@@ -83,7 +95,7 @@
     "causeKey": "fungal",
     "causeTitle": "Fungal Disease Risk",
     "confidenceScore": 0.66,
-    "explanation": "Kolar me Tomato ke liye fungal disease risk ban raha hai. Humid weather aur spots/powder symptoms saath aaye hain, isliye canopy ko dry rakhna aur infected leaves hatana zaroori hai.",
+    "explanation": "Kolar me Tomato ke liye fungal disease risk ban raha hai. Aaj ka Easy step: Remove infected leaves: Take out heavily infected leaves from the field edge first and keep them away from compost.",
     "weatherPhases": [
       {
         "phase": "Early",
@@ -107,15 +119,21 @@
     "recommendations": [
       {
         "title": "Improve air movement",
-        "detail": "Remove dense weeds and avoid unnecessary evening irrigation that keeps leaves wet overnight."
+        "detail": "Remove dense weeds and avoid unnecessary evening irrigation that keeps leaves wet overnight.",
+        "priority": "Medium",
+        "effort_level": "Medium"
       },
       {
         "title": "Remove infected leaves",
-        "detail": "Take out heavily infected leaves from the field edge first and keep them away from compost."
+        "detail": "Take out heavily infected leaves from the field edge first and keep them away from compost.",
+        "priority": "High",
+        "effort_level": "Easy"
       },
       {
         "title": "Confirm before spraying",
-        "detail": "Match the spot pattern with a local extension worker before choosing a fungicide."
+        "detail": "Match the spot pattern with a local extension worker before choosing a fungicide.",
+        "priority": "Medium",
+        "effort_level": "Easy"
       }
     ]
   }

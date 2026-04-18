@@ -151,13 +151,22 @@ NORMAL_CAUSE = {
         {
             "title": "Keep monitoring the crop",
             "detail": "No strong failure signal was detected, so continue weekly field checks.",
+            "priority": "Low",
+            "effort_level": "Easy",
         },
         {
             "title": "Verify with local advisory",
             "detail": "If symptoms spread, confirm with a local extension worker before treatment.",
+            "priority": "Medium",
+            "effort_level": "Easy",
         },
     ],
 }
+
+RECOMMENDATION_PRIORITIES = ("High", "Medium", "Low")
+RECOMMENDATION_EFFORT_LEVELS = ("Easy", "Medium", "Hard")
+DEFAULT_RECOMMENDATION_PRIORITIES = ("High", "Medium", "Low")
+DEFAULT_RECOMMENDATION_EFFORT_LEVELS = ("Easy", "Medium", "Hard")
 
 
 class WeatherFetchError(RuntimeError):
@@ -267,6 +276,7 @@ class DiagnosisEngine:
             crop=features["cropDisplay"],
             district=features["districtDisplay"],
             weather_phases=anomaly_result["weatherPhases"],
+            recommendations=cause_meta["recommendations"],
             model_label=prediction["rawLabel"],
         )
 
@@ -581,18 +591,28 @@ class DiagnosisEngine:
         crop: str,
         district: str,
         weather_phases: Sequence[Mapping[str, Any]],
+        recommendations: Sequence[Mapping[str, Any]],
         model_label: str,
     ) -> str:
+        easy_step = self._easy_recommendation_step(recommendations)
         gemini_text = self._generate_gemini_explanation(
             cause_title=cause_title,
             crop=crop,
             district=district,
             weather_phases=weather_phases,
+            easy_step=easy_step,
             model_label=model_label,
         )
         if gemini_text:
             return gemini_text
-        return self._fallback_explanation(cause_key, cause_title, crop, district, weather_phases)
+        return self._fallback_explanation(
+            cause_key,
+            cause_title,
+            crop,
+            district,
+            weather_phases,
+            easy_step,
+        )
 
     def _generate_gemini_explanation(
         self,
@@ -600,16 +620,20 @@ class DiagnosisEngine:
         crop: str,
         district: str,
         weather_phases: Sequence[Mapping[str, Any]],
+        easy_step: str | None,
         model_label: str,
     ) -> str | None:
         if not self.gemini_models:
             return None
 
         strongest = self._strongest_phase_summary(weather_phases)
+        easy_step_text = easy_step or "field me affected plants ko inspect karein"
         prompt = (
             f"{district} ke farmer ke liye 2 short Hinglish sentences likho. "
             f"Crop: {crop}. Problem: {cause_title}. Weather reason: {strongest}. "
-            "Ek practical next step batao. Markdown mat use karo."
+            "Second sentence exactly 'Aaj ka Easy step:' se start ho aur "
+            f"farmer ko aaj ye kaam bataye: {easy_step_text}. "
+            "Markdown mat use karo."
         )
 
         last_error: Exception | None = None
@@ -623,7 +647,7 @@ class DiagnosisEngine:
                 generated = self._two_sentence_text(text.strip())
                 if generated:
                     self.gemini_model_name = model_name
-                    return generated
+                    return self._explanation_with_easy_step(generated, easy_step)
             except Exception as exc:
                 last_error = exc
                 LOGGER.warning("Gemini model %s failed; trying fallback: %s", model_name, exc)
@@ -639,14 +663,17 @@ class DiagnosisEngine:
         crop: str,
         district: str,
         weather_phases: Sequence[Mapping[str, Any]],
+        easy_step: str | None = None,
     ) -> str:
         if cause_key in self.templates:
-            return self.templates[cause_key].format(crop=crop, district=district)
+            templated = self.templates[cause_key].format(crop=crop, district=district)
+            return self._explanation_with_easy_step(templated, easy_step)
         strongest = self._strongest_phase_summary(weather_phases)
-        return (
+        explanation = (
             f"{district} me {crop} ke liye {cause_title} ka signal mila hai. "
             f"{strongest}, isliye field ko closely monitor karein aur local advisory se confirm karein."
         )
+        return self._explanation_with_easy_step(explanation, easy_step)
 
     def _diagnose_with_rules(self, features: Mapping[str, Any], reason: str) -> Dict[str, Any]:
         weather_snapshot = self._generate_mock_weather_phases(
@@ -681,6 +708,7 @@ class DiagnosisEngine:
                 crop=features["cropDisplay"],
                 district=features["districtDisplay"],
                 weather_phases=[],
+                easy_step=self._easy_recommendation_step(cause_meta["recommendations"]),
             ),
             "weatherPhases": self._mock_weather_phase_response(top["causeKey"], cause_meta, weather_snapshot),
             "recommendations": cause_meta["recommendations"],
@@ -846,18 +874,103 @@ class DiagnosisEngine:
 
     def _cause_metadata(self, cause_key: str) -> Mapping[str, Any]:
         if cause_key in self.causes:
-            return self.causes[cause_key]
-        if cause_key == "normal":
-            return NORMAL_CAUSE
-        return {
-            "cause_title": cause_key.replace("_", " ").title(),
-            "recommendations": [
+            metadata = dict(self.causes[cause_key])
+        elif cause_key == "normal":
+            metadata = dict(NORMAL_CAUSE)
+        else:
+            metadata = {
+                "cause_title": cause_key.replace("_", " ").title(),
+                "recommendations": [
+                    {
+                        "title": "Confirm diagnosis locally",
+                        "detail": "The model returned an uncommon label, so verify before taking treatment action.",
+                        "priority": "High",
+                        "effort_level": "Easy",
+                    }
+                ],
+            }
+        metadata["recommendations"] = self._recommendation_plan(metadata.get("recommendations", []))
+        return metadata
+
+    def _recommendation_plan(self, recommendations: Any) -> List[Dict[str, str]]:
+        if isinstance(recommendations, str):
+            raw_recommendations = [recommendations]
+        elif isinstance(recommendations, Mapping):
+            raw_recommendations = [recommendations]
+        else:
+            raw_recommendations = list(recommendations or [])
+
+        plan: List[Dict[str, str]] = []
+        for index, recommendation in enumerate(raw_recommendations):
+            default_priority = DEFAULT_RECOMMENDATION_PRIORITIES[
+                min(index, len(DEFAULT_RECOMMENDATION_PRIORITIES) - 1)
+            ]
+            default_effort = DEFAULT_RECOMMENDATION_EFFORT_LEVELS[
+                min(index, len(DEFAULT_RECOMMENDATION_EFFORT_LEVELS) - 1)
+            ]
+
+            if isinstance(recommendation, Mapping):
+                title = str(recommendation.get("title") or f"Step {index + 1}").strip()
+                detail = str(
+                    recommendation.get("detail")
+                    or recommendation.get("description")
+                    or recommendation.get("action")
+                    or title
+                ).strip()
+                priority = self._recommendation_choice(
+                    recommendation.get("priority"),
+                    RECOMMENDATION_PRIORITIES,
+                    default_priority,
+                )
+                effort_level = self._recommendation_choice(
+                    recommendation.get("effort_level") or recommendation.get("effortLevel"),
+                    RECOMMENDATION_EFFORT_LEVELS,
+                    default_effort,
+                )
+            else:
+                title = f"Step {index + 1}"
+                detail = str(recommendation).strip()
+                priority = default_priority
+                effort_level = default_effort
+
+            if not detail:
+                continue
+            plan.append(
                 {
-                    "title": "Confirm diagnosis locally",
-                    "detail": "The model returned an uncommon label, so verify before taking treatment action.",
+                    "title": title or f"Step {index + 1}",
+                    "detail": detail,
+                    "priority": priority,
+                    "effort_level": effort_level,
                 }
-            ],
-        }
+            )
+
+        if plan:
+            return plan
+        return [
+            {
+                "title": "Confirm diagnosis locally",
+                "detail": "Verify the crop symptoms with a local extension worker before treatment.",
+                "priority": "High",
+                "effort_level": "Easy",
+            }
+        ]
+
+    def _recommendation_choice(self, value: Any, allowed_values: Sequence[str], default: str) -> str:
+        candidate = str(value or "").replace("_", " ").strip()
+        for allowed in allowed_values:
+            if candidate.lower() == allowed.lower():
+                return allowed
+        return default
+
+    def _easy_recommendation_step(self, recommendations: Sequence[Mapping[str, Any]]) -> str | None:
+        for recommendation in recommendations:
+            if str(recommendation.get("effort_level", "")).lower() == "easy":
+                title = str(recommendation.get("title", "")).strip()
+                detail = str(recommendation.get("detail", "")).strip()
+                if title and detail and title != detail:
+                    return f"{title}: {detail}"
+                return title or detail
+        return None
 
     def _model_feature_names(self) -> List[str]:
         names = getattr(self.xgb_model, "feature_names_in_", None)
@@ -1027,6 +1140,19 @@ class DiagnosisEngine:
         sentences = re.split(r"(?<=[.!?])\s+", cleaned)
         selected = " ".join(sentence for sentence in sentences[:2] if sentence)
         return selected or cleaned
+
+    def _explanation_with_easy_step(self, text: str, easy_step: str | None) -> str:
+        cleaned = self._two_sentence_text(text) or ""
+        if not easy_step:
+            return cleaned
+
+        sentences = re.split(r"(?<=[.!?])\s+", cleaned)
+        context = next((sentence.strip() for sentence in sentences if sentence.strip()), cleaned).strip()
+        if context and context[-1] not in ".!?":
+            context += "."
+
+        step = easy_step.strip().rstrip(".!?")
+        return f"{context} Aaj ka Easy step: {step}."
 
 
 if __name__ == "__main__":
