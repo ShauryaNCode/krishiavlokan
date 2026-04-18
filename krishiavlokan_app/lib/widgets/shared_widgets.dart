@@ -5,6 +5,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../core/theme/app_colors.dart';
+import 'package:go_router/go_router.dart';
+import '../../../providers/diagnosis_provider.dart';
+import 'package:provider/provider.dart';
+
 
 // ─────────────────────────────────────────────────────────────────────────────
 // KA App Card — base card with optional left accent border
@@ -90,14 +94,14 @@ class StepProgressBar extends StatelessWidget {
             Text(
               'Step $currentStep of $totalSteps',
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: AppColors.midGrey,
+                    color: AppColors.lightAmber,
                     fontWeight: FontWeight.w600,
                   ),
             ),
             Text(
               '${((currentStep / totalSteps) * 100).round()}%',
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: AppColors.deepGreen,
+                    color: AppColors.lightAmber,
                     fontWeight: FontWeight.bold,
                   ),
             ),
@@ -110,7 +114,7 @@ class StepProgressBar extends StatelessWidget {
             value: currentStep / totalSteps,
             minHeight: 8,
             backgroundColor: AppColors.lightGreen,
-            valueColor: const AlwaysStoppedAnimation(AppColors.deepGreen),
+            valueColor: const AlwaysStoppedAnimation(AppColors.medGreen),
           ),
         ),
       ],
@@ -265,7 +269,19 @@ class DiagnosisStepScaffold extends StatelessWidget {
       backgroundColor: AppColors.offWhite,
       appBar: AppBar(
         title: Text(title),
-        leading: const BackButton(),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back), 
+          onPressed: () {
+            context.read<DiagnosisProvider>().stopVoiceCompletely();
+            switch (step) {
+              case 2: context.go("/diagnosis/crop"); break;
+              case 3: context.go("/diagnosis/location"); break;
+              case 4: context.go("/diagnosis/sowing"); break;
+              default: context.go("/home"); break;
+              // ... rest of your steps
+            }
+          },
+        ),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(36),
           child: Padding(
@@ -292,29 +308,46 @@ class DiagnosisStepScaffold extends StatelessWidget {
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Cause Emoji helper
+// Handles both mock keys and live API causeKey values.
 // ─────────────────────────────────────────────────────────────────────────────
-String causeEmoji(String key) => switch (key) {
-      'drought'      => '🏜️',
-      'waterlogging' => '💧',
-      'pest'         => '🐛',
-      'fungal'       => '🍂',
-      'heat'         => '🌡️',
-      _              => '🟡',
-    };
+String causeEmoji(String key) {
+  final k = key.toLowerCase();
+  if (k.contains('waterlog') || k.contains('flood')) return '💧';
+  if (k.contains('drought') || k.contains('dry'))    return '🏜️';
+  if (k.contains('pest')    || k.contains('insect')) return '🐛';
+  if (k.contains('fungal')  || k.contains('blight')) return '🍂';
+  if (k.contains('heat')    || k.contains('temp'))   return '🌡️';
+  if (k.contains('nutrient')|| k.contains('defic'))  return '🟡';
+  return '🌿';
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Weather phase color helper
+// Weather phase helpers
+// Accept both internal keys (veryLow / normal / veryHigh …)
+// AND raw API status strings ("Severe Anomaly", "Moderate Anomaly", "Normal").
 // ─────────────────────────────────────────────────────────────────────────────
-Color weatherStatusColor(String status) => switch (status) {
-      'veryLow'  || 'veryHigh' => AppColors.dangerRed,
-      'low'      || 'high'     => AppColors.amber,
-      _                        => AppColors.successGreen,
-    };
+Color weatherStatusColor(String status) {
+  final s = status.toLowerCase();
+  // Internal keys
+  if (s == 'verylow' || s == 'veryhigh') return AppColors.dangerRed;
+  if (s == 'low'     || s == 'high')     return AppColors.amber;
+  // API strings
+  if (s.contains('severe'))   return AppColors.dangerRed;
+  if (s.contains('moderate')) return AppColors.amber;
+  if (s.contains('mild'))     return AppColors.amber;
+  return AppColors.successGreen; // "Normal" or unknown
+}
 
-String weatherStatusLabel(String status) => switch (status) {
-      'veryLow'  => 'Bahut Kam',
-      'low'      => 'Kam',
-      'high'     => 'Zyada',
-      'veryHigh' => 'Bahut Zyada',
-      _          => 'Theek',
-    };
+String weatherStatusLabel(String status) {
+  final s = status.toLowerCase();
+  // Internal keys
+  if (s == 'verylow')  return 'Very Low';
+  if (s == 'low')      return 'Low';
+  if (s == 'high')     return 'High';
+  if (s == 'veryhigh') return 'Very High';
+  // API strings — surface them directly but title-cased
+  if (s.contains('severe'))   return 'Severe';
+  if (s.contains('moderate')) return 'Moderate';
+  if (s.contains('mild'))     return 'Mild';
+  return 'Normal';
+}

@@ -56,8 +56,6 @@ class _Step3SowingScreenState extends State<Step3SowingScreen> {
             'When did you sow the seeds?',
             style: Theme.of(context).textTheme.bodyMedium,
           ),
-          const SizedBox(height: 16),
-          VoiceButton(),
           const SizedBox(height: 24),
 
           // Month selector

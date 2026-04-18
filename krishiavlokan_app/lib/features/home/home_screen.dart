@@ -9,6 +9,7 @@ import '../../providers/diagnosis_provider.dart';
 import '../../routes/app_router.dart';
 import '../../widgets/shared_widgets.dart';
 import '../../models/analysis_model.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -54,10 +55,10 @@ class _HomeHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      color: AppColors.deepGreen,
+      color: AppColors.offWhite,
       padding: EdgeInsets.only(
         top: MediaQuery.of(context).padding.top + 12,
-        left: 16,
+        left: 20,
         right: 16,
         bottom: 14,
       ),
@@ -70,14 +71,14 @@ class _HomeHeader extends StatelessWidget {
                 Text(
                   'Jai Kisan 🌾',
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                        color: AppColors.amber,
+                        color: AppColors.deepGreen,
                       ),
                 ),
                 if (provider.farmerName.isNotEmpty)
                   Text(
                     provider.farmerName,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Colors.white70,
+                          color: AppColors.darkBg,
                         ),
                   ),
               ],
@@ -85,8 +86,7 @@ class _HomeHeader extends StatelessWidget {
           ),
           // Connectivity indicator
           Container(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             decoration: BoxDecoration(
               color: provider.offlineMode
                   ? AppColors.amber.withOpacity(0.2)
@@ -105,7 +105,7 @@ class _HomeHeader extends StatelessWidget {
                   provider.offlineMode
                       ? Icons.cloud_off_rounded
                       : Icons.wifi_rounded,
-                  size: 14,
+                  size: 18,
                   color: provider.offlineMode
                       ? AppColors.amber
                       : AppColors.successGreen,
@@ -114,7 +114,7 @@ class _HomeHeader extends StatelessWidget {
                 Text(
                   provider.offlineMode ? 'Offline' : 'Online',
                   style: TextStyle(
-                    fontSize: 11,
+                    fontSize: 16,
                     fontWeight: FontWeight.bold,
                     color: provider.offlineMode
                         ? AppColors.amber
@@ -137,6 +137,15 @@ class _PrimaryActionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const String svgRawString = '''
+    <svg width="298" height="84" viewBox="0 0 298 84" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="84" height="84" rx="16" fill="#FDAA35" fill-opacity="0.2"/>
+      
+      <g transform="translate(15, 15) scale(1.85) translate(-18, -17)">
+        <path d="M29.7412 36.5H32.7412L32.9662 34.625C33.1662 34.55 33.3474 34.4625 33.5099 34.3625C33.6724 34.2625 33.8162 34.15 33.9412 34.025L35.6662 34.775L37.1662 32.225L35.6662 31.1C35.7162 30.9 35.7412 30.7 35.7412 30.5C35.7412 30.3 35.7162 30.1 35.6662 29.9L37.1662 28.775L35.6662 26.225L33.9412 26.975C33.8162 26.85 33.6724 26.7375 33.5099 26.6375C33.3474 26.5375 33.1662 26.45 32.9662 26.375L32.7412 24.5H29.7412L29.5162 26.375C29.3162 26.45 29.1349 26.5375 28.9724 26.6375C28.8099 26.7375 28.6662 26.85 28.5412 26.975L26.8162 26.225L25.3162 28.775L26.8162 29.9C26.7662 30.1 26.7412 30.3 26.7412 30.5C26.7412 30.7 26.7662 30.9 26.8162 31.1L25.3162 32.225L26.8162 34.775L28.5412 34.025C28.6662 34.15 28.8099 34.2625 28.9724 34.3625C29.1349 34.4625 29.3162 34.55 29.5162 34.625L29.7412 36.5V36.5M31.2412 32.75C30.6162 32.75 30.0849 32.5312 29.6474 32.0938C29.2099 31.6562 28.9912 31.125 28.9912 30.5C28.9912 29.875 29.2099 29.3438 29.6474 28.9062C30.0849 28.4688 30.6162 28.25 31.2412 28.25C31.8662 28.25 32.3974 28.4688 32.8349 28.9062C33.2724 29.3438 33.4912 29.875 33.4912 30.5C33.4912 31.125 33.2724 31.6562 32.8349 32.0938C32.3974 32.5312 31.8662 32.75 31.2412 32.75V32.75M22.2412 47V40.55C20.8162 39.25 19.7099 37.7312 18.9224 35.9937C18.1349 34.2562 17.7412 32.425 17.7412 30.5C17.7412 26.75 19.0537 23.5625 21.6787 20.9375C24.3037 18.3125 27.4912 17 31.2412 17C34.3662 17 37.1349 17.9187 39.5474 19.7562C41.9599 21.5937 43.5287 23.9875 44.2537 26.9375L46.2037 34.625C46.3287 35.1 46.2412 35.5313 45.9412 35.9188C45.6412 36.3063 45.2412 36.5 44.7412 36.5H41.7412V41C41.7412 41.825 41.4474 42.5312 40.8599 43.1187C40.2724 43.7062 39.5662 44 38.7412 44H35.7412V47H22.2412V47" fill="#FDAA35"/>
+      </g>
+    </svg>
+    ''';
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(24),
@@ -157,32 +166,60 @@ class _PrimaryActionCard extends StatelessWidget {
       ),
       child: Column(
         children: [
-          const Text('🌿', style: TextStyle(fontSize: 48)),
           const SizedBox(height: 12),
+          Positioned.fill(
+            child: SvgPicture.string(
+              svgRawString,
+              fit: BoxFit.fitWidth, // Ensures it covers the entire area
+            ),
+          ),
+          const SizedBox(height: 16),
           Text(
             'Meri Fasal Kyun Kharab Hui?',
-            textAlign: TextAlign.center,
+            textAlign: TextAlign.left,
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   color: Colors.white,
-                  fontSize: 20,
+                  fontSize: 30,
+                  fontWeight: FontWeight.w900,
                 ),
           ),
           const SizedBox(height: 6),
           Text(
             'Apni baat batao, hum samjhayenge',
-            textAlign: TextAlign.center,
+            textAlign: TextAlign.left,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Colors.white70,
+                  fontSize: 23,
                 ),
           ),
           const SizedBox(height: 20),
-          Row(
+          Column(
             children: [
-              Expanded(
-                child: VoiceButton(label: 'Bolkar Batao'),
+              // 1. First Button
+              SizedBox(
+                width: double.infinity, // Ensures the button takes full width
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    provider.resetDiagnosis();
+                    context.go(AppRoutes.step1);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.amber,
+                    foregroundColor: Colors.white,
+                    minimumSize: const Size(
+                        0, 54), // Increased height for better vertical look
+                    shape: const StadiumBorder(),
+                  ),
+                  icon: const Icon(Icons.mic_none_outlined, size: 20),
+                  label: const Text('Bolkar Batao'),
+                ),
               ),
-              const SizedBox(width: 12),
-              Expanded(
+
+              const SizedBox(height: 12), // Vertical spacing
+
+              // 2. Second Button
+              SizedBox(
+                width: double.infinity,
                 child: ElevatedButton.icon(
                   onPressed: () {
                     provider.resetDiagnosis();
@@ -191,14 +228,15 @@ class _PrimaryActionCard extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
                     foregroundColor: AppColors.deepGreen,
-                    minimumSize: const Size(0, 48),
+                    minimumSize: const Size(0, 54),
+                    shape: const StadiumBorder(),
                   ),
-                  icon: const Icon(Icons.touch_app_rounded, size: 18),
-                  label: const Text('Tap Karo'),
+                  icon: const Icon(Icons.touch_app_rounded, size: 20),
+                  label: const Text('Tap / Type Karo'),
                 ),
               ),
             ],
-          ),
+          )
         ],
       ),
     )
@@ -244,8 +282,8 @@ class _LastAnalysisCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 10, vertical: 3),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
                   decoration: BoxDecoration(
                     color: AppColors.lightAmber,
                     borderRadius: BorderRadius.circular(20),
@@ -262,8 +300,7 @@ class _LastAnalysisCard extends StatelessWidget {
               ],
             ),
           ),
-          const Icon(Icons.chevron_right_rounded,
-              color: AppColors.lightGrey),
+          const Icon(Icons.chevron_right_rounded, color: AppColors.lightGrey),
         ],
       ),
     ).animate(delay: 200.ms).fadeIn(duration: 400.ms);
