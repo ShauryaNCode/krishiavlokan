@@ -1553,16 +1553,14 @@
   },
   {
     "id": 14,
-    "createdAt": "2026-04-18T07:45:42.484874+00:00",
+    "createdAt": "2026-04-17T16:26:22.791078+00:00",
     "request": {
-      "crop": "Cotton",
+      "crop": "Wheat",
       "state": "Maharashtra",
       "district": "Pune",
-      "sowingDate": "2025-07-15",
+      "sowingDate": "2025-11-01",
       "symptoms": [
-        "wilting",
-        "drysoil",
-        "leafcurling"
+        "drysoil"
       ],
       "lat": 18.5204,
       "lon": 73.8567
@@ -1570,389 +1568,841 @@
     "response": {
       "causeKey": "drought",
       "causeTitle": "Drought Stress",
-      "confidenceScore": 1.0,
-      "explanation": "Pune me Cotton par drought stress ka signal strong hai. Aaj ka Easy step: Check field cracks: If cracks are widening, prioritize that plot for water or community irrigation support.",
+      "confidenceScore": 0.6,
+      "explanation": "Pune me Wheat par drought stress ka signal strong hai. Paudhon ko pani kam mil raha hai, isliye light irrigation, mulching aur soil moisture check abhi priority hai.",
       "weatherPhases": [
         {
           "phase": "Early",
-          "startDate": "2025-07-15",
-          "endDate": "2025-08-23",
-          "status": "Mild Anomaly",
-          "dataDays": 40,
-          "rainfallMm": 291.9,
-          "expectedRainfallMm": 236.27,
-          "rainAnomaly": 0.2355,
-          "rainfallDeviationPct": 23.5,
-          "avgTempC": 24.35,
-          "expectedTempC": 24.51,
-          "tempAnomaly": -0.0065,
-          "temperatureDeviationPct": -0.6,
-          "avgHumidityPct": 85.92,
-          "expectedHumidityPct": 81.52,
-          "humidityAnomaly": 0.0541,
-          "humidityDeviationPct": 5.4,
-          "isolationScore": 0.0735
+          "status": "normal",
+          "idealStatus": "low",
+          "metric": "rainfall / soil moisture",
+          "matchScore": 0.72,
+          "rainfallMm": 58,
+          "avgTempC": 29,
+          "avgHumidityPct": 74,
+          "source": "mock_fallback",
+          "summary": "Early fallback rainfall / soil moisture is normal; the Drought Stress rule expects low."
         },
         {
           "phase": "Mid",
-          "startDate": "2025-08-24",
-          "endDate": "2025-10-02",
-          "status": "Moderate Anomaly",
-          "dataDays": 40,
-          "rainfallMm": 323.4,
-          "expectedRainfallMm": 236.27,
-          "rainAnomaly": 0.3688,
-          "rainfallDeviationPct": 36.9,
-          "avgTempC": 24.12,
-          "expectedTempC": 24.51,
-          "tempAnomaly": -0.016,
-          "temperatureDeviationPct": -1.6,
-          "avgHumidityPct": 86.4,
-          "expectedHumidityPct": 81.52,
-          "humidityAnomaly": 0.0599,
-          "humidityDeviationPct": 6.0,
-          "isolationScore": 0.0686
+          "status": "veryLow",
+          "idealStatus": "veryLow",
+          "metric": "rainfall / soil moisture",
+          "matchScore": 1.0,
+          "rainfallMm": 8,
+          "avgTempC": 23,
+          "avgHumidityPct": 42,
+          "source": "mock_fallback",
+          "summary": "Mid fallback rainfall / soil moisture is veryLow; the Drought Stress rule expects veryLow."
         },
         {
           "phase": "Late",
-          "startDate": "2025-10-03",
-          "endDate": "2025-11-11",
-          "status": "Severe Anomaly",
-          "dataDays": 40,
-          "rainfallMm": 93.5,
-          "expectedRainfallMm": 236.27,
-          "rainAnomaly": -0.6043,
-          "rainfallDeviationPct": -60.4,
-          "avgTempC": 25.06,
-          "expectedTempC": 24.51,
-          "tempAnomaly": 0.0224,
-          "temperatureDeviationPct": 2.2,
-          "avgHumidityPct": 72.22,
-          "expectedHumidityPct": 81.52,
-          "humidityAnomaly": -0.114,
-          "humidityDeviationPct": -11.4,
-          "isolationScore": 0.0041
+          "status": "veryLow",
+          "idealStatus": "low",
+          "metric": "rainfall / soil moisture",
+          "matchScore": 0.72,
+          "rainfallMm": 8,
+          "avgTempC": 29,
+          "avgHumidityPct": 28,
+          "source": "mock_fallback",
+          "summary": "Late fallback rainfall / soil moisture is veryLow; the Drought Stress rule expects low."
         }
       ],
       "recommendations": [
         {
           "title": "Start protective irrigation",
-          "detail": "Give light irrigation in the cooler part of the day and avoid flooding the root zone.",
-          "priority": "High",
-          "effort_level": "Medium"
+          "detail": "Give light irrigation in the cooler part of the day and avoid flooding the root zone."
         },
         {
           "title": "Reduce soil moisture loss",
-          "detail": "Use mulch or crop residue around plants to slow evaporation from the top soil.",
-          "priority": "Medium",
-          "effort_level": "Medium"
+          "detail": "Use mulch or crop residue around plants to slow evaporation from the top soil."
         },
         {
           "title": "Check field cracks",
-          "detail": "If cracks are widening, prioritize that plot for water or community irrigation support.",
-          "priority": "High",
-          "effort_level": "Easy"
+          "detail": "If cracks are widening, prioritize that plot for water or community irrigation support."
         }
       ],
       "inputSummary": {
-        "crop": "Cotton",
+        "crop": "Wheat",
         "state": "Maharashtra",
         "district": "Pune",
-        "sowingDate": "2025-07-15",
-        "season": "kharif",
+        "sowingDate": "2025-11-01",
+        "season": "rabi",
         "normalizedSymptoms": [
-          "wilting",
-          "drysoil",
-          "leafcurling"
+          "drysoil"
         ],
-        "symptomScore": 0.6,
+        "symptomScore": 0.2,
         "latitude": 18.5204,
         "longitude": 73.8567
       },
       "modelDetails": {
-        "mode": "xgboost_live_weather",
-        "rawModelLabel": "drought",
-        "cropEncoderValue": 11,
-        "cropModelValue": "Cotton(lint)",
-        "featureVector": {
-          "crop_encoded": 11.0,
-          "rain_anomaly": -0.6043,
-          "temp_anomaly": 0.0224,
-          "humidity_anomaly": -0.114,
-          "symptom_score": 0.6
-        },
-        "weatherSource": "Open-Meteo Archive API",
-        "weatherMessage": "Fetched 120 daily records from 2025-07-15 to 2025-11-11"
+        "mode": "rule_fallback",
+        "reason": "requests library is unavailable",
+        "matchedSymptoms": [
+          "drysoil"
+        ]
       }
     }
   },
   {
     "id": 15,
-    "createdAt": "2026-04-18T07:47:09.745661+00:00",
+    "createdAt": "2026-04-17T16:48:18.740981+00:00",
     "request": {
-      "crop": "Cotton",
-      "state": "Maharashtra",
-      "district": "Pune",
-      "sowingDate": "2025-07-15",
+      "crop": "Makka",
+      "state": "Goa",
+      "district": "North Goa",
+      "sowingDate": "2026-04-01",
       "symptoms": [
-        "wilting",
-        "drysoil",
-        "leafcurling"
+        "nutrient",
+        "fungal"
       ],
-      "lat": 18.5204,
-      "lon": 73.8567
+      "lat": 15.4933955,
+      "lon": 73.8228889
     },
     "response": {
-      "causeKey": "drought",
-      "causeTitle": "Drought Stress",
-      "confidenceScore": 1.0,
-      "explanation": "Pune me Cotton par drought stress ka signal strong hai. Aaj ka Easy step: Check field cracks: If cracks are widening, prioritize that plot for water or community irrigation support.",
+      "causeKey": "nutrient",
+      "causeTitle": "Nutrient Deficiency",
+      "confidenceScore": 0.56,
+      "explanation": "North Goa me Makka me nutrient deficiency ka pattern dikh raha hai. Yellowing, pale growth ya poor flowering nutrients ki kami se aa sakte hain, soil moisture aur balanced fertilizer dono check karein.",
       "weatherPhases": [
         {
           "phase": "Early",
-          "startDate": "2025-07-15",
-          "endDate": "2025-08-23",
-          "status": "Mild Anomaly",
-          "dataDays": 40,
-          "rainfallMm": 291.9,
-          "expectedRainfallMm": 236.27,
-          "rainAnomaly": 0.2355,
-          "rainfallDeviationPct": 23.5,
-          "avgTempC": 24.35,
-          "expectedTempC": 24.51,
-          "tempAnomaly": -0.0065,
-          "temperatureDeviationPct": -0.6,
-          "avgHumidityPct": 85.92,
-          "expectedHumidityPct": 81.52,
-          "humidityAnomaly": 0.0541,
-          "humidityDeviationPct": 5.4,
-          "isolationScore": 0.0735
+          "status": "low",
+          "idealStatus": "normal",
+          "metric": "rainfall / soil moisture",
+          "matchScore": 0.72,
+          "rainfallMm": 24,
+          "avgTempC": 35,
+          "avgHumidityPct": 42,
+          "source": "mock_fallback",
+          "summary": "Early fallback rainfall / soil moisture is low; the Nutrient Deficiency rule expects normal."
         },
         {
           "phase": "Mid",
-          "startDate": "2025-08-24",
-          "endDate": "2025-10-02",
-          "status": "Moderate Anomaly",
-          "dataDays": 40,
-          "rainfallMm": 323.4,
-          "expectedRainfallMm": 236.27,
-          "rainAnomaly": 0.3688,
-          "rainfallDeviationPct": 36.9,
-          "avgTempC": 24.12,
-          "expectedTempC": 24.51,
-          "tempAnomaly": -0.016,
-          "temperatureDeviationPct": -1.6,
-          "avgHumidityPct": 86.4,
-          "expectedHumidityPct": 81.52,
-          "humidityAnomaly": 0.0599,
-          "humidityDeviationPct": 6.0,
-          "isolationScore": 0.0686
+          "status": "low",
+          "idealStatus": "low",
+          "metric": "rainfall / soil moisture",
+          "matchScore": 1.0,
+          "rainfallMm": 24,
+          "avgTempC": 41,
+          "avgHumidityPct": 42,
+          "source": "mock_fallback",
+          "summary": "Mid fallback rainfall / soil moisture is low; the Nutrient Deficiency rule expects low."
         },
         {
           "phase": "Late",
-          "startDate": "2025-10-03",
-          "endDate": "2025-11-11",
-          "status": "Severe Anomaly",
-          "dataDays": 40,
-          "rainfallMm": 93.5,
-          "expectedRainfallMm": 236.27,
-          "rainAnomaly": -0.6043,
-          "rainfallDeviationPct": -60.4,
-          "avgTempC": 25.06,
-          "expectedTempC": 24.51,
-          "tempAnomaly": 0.0224,
-          "temperatureDeviationPct": 2.2,
-          "avgHumidityPct": 72.22,
-          "expectedHumidityPct": 81.52,
-          "humidityAnomaly": -0.114,
-          "humidityDeviationPct": -11.4,
-          "isolationScore": 0.0041
+          "status": "high",
+          "idealStatus": "low",
+          "metric": "rainfall / soil moisture",
+          "matchScore": 0.38,
+          "rainfallMm": 96,
+          "avgTempC": 35,
+          "avgHumidityPct": 74,
+          "source": "mock_fallback",
+          "summary": "Late fallback rainfall / soil moisture is high; the Nutrient Deficiency rule expects low."
         }
       ],
       "recommendations": [
         {
-          "title": "Start protective irrigation",
-          "detail": "Give light irrigation in the cooler part of the day and avoid flooding the root zone.",
-          "priority": "High",
-          "effort_level": "Medium"
+          "title": "Check nutrient pattern",
+          "detail": "Older yellow leaves often indicate nitrogen stress, while purpling may point to phosphorus stress."
         },
         {
-          "title": "Reduce soil moisture loss",
-          "detail": "Use mulch or crop residue around plants to slow evaporation from the top soil.",
-          "priority": "Medium",
-          "effort_level": "Medium"
+          "title": "Apply balanced nutrition",
+          "detail": "Use soil-test guidance where available and avoid applying only one nutrient repeatedly."
         },
         {
-          "title": "Check field cracks",
-          "detail": "If cracks are widening, prioritize that plot for water or community irrigation support.",
-          "priority": "High",
-          "effort_level": "Easy"
+          "title": "Maintain root-zone moisture",
+          "detail": "Nutrients move poorly in very dry soil, so correct moisture before expecting fertilizer response."
         }
       ],
       "inputSummary": {
-        "crop": "Cotton",
-        "state": "Maharashtra",
-        "district": "Pune",
-        "sowingDate": "2025-07-15",
-        "season": "kharif",
+        "crop": "Makka",
+        "state": "Goa",
+        "district": "North Goa",
+        "sowingDate": "2026-04-01",
+        "season": "zaid",
         "normalizedSymptoms": [
-          "wilting",
-          "drysoil",
-          "leafcurling"
+          "nutrient",
+          "fungal"
         ],
-        "symptomScore": 0.6,
-        "latitude": 18.5204,
-        "longitude": 73.8567
+        "symptomScore": 0.4,
+        "latitude": 15.4933955,
+        "longitude": 73.8228889
       },
       "modelDetails": {
-        "mode": "xgboost_live_weather",
-        "rawModelLabel": "drought",
-        "cropEncoderValue": 11,
-        "cropModelValue": "Cotton(lint)",
-        "featureVector": {
-          "crop_encoded": 11.0,
-          "rain_anomaly": -0.6043,
-          "temp_anomaly": 0.0224,
-          "humidity_anomaly": -0.114,
-          "symptom_score": 0.6
-        },
-        "weatherSource": "Open-Meteo Archive API",
-        "weatherMessage": "Fetched 120 daily records from 2025-07-15 to 2025-11-11"
+        "mode": "rule_fallback",
+        "reason": "requests library is unavailable",
+        "matchedSymptoms": [
+          "nutrient"
+        ]
       }
     }
   },
   {
     "id": 16,
-    "createdAt": "2026-04-18T07:53:43.275169+00:00",
+    "createdAt": "2026-04-17T16:53:13.687976+00:00",
     "request": {
-      "crop": "Cotton",
-      "state": "Maharashtra",
-      "district": "Pune",
-      "sowingDate": "2025-07-15",
+      "crop": "Dhan",
+      "state": "Goa",
+      "district": "North Goa",
+      "sowingDate": "2025-03-01",
       "symptoms": [
-        "wilting",
-        "drysoil",
-        "leafcurling"
+        "pest",
+        "fungal"
       ],
-      "lat": 18.5204,
-      "lon": 73.8567
+      "lat": 15.4933043,
+      "lon": 73.8228415
+    },
+    "response": {
+      "causeKey": "pest",
+      "causeTitle": "Pest Pressure",
+      "confidenceScore": 0.47,
+      "explanation": "North Goa me Dhan par pest pressure ka chance high lag raha hai. Leaf holes, insects ya sticky residue milne par pehle scouting karein, phir local advisory ke hisaab se action lein.",
+      "weatherPhases": [
+        {
+          "phase": "Early",
+          "status": "low",
+          "idealStatus": "normal",
+          "metric": "humidity",
+          "matchScore": 0.72,
+          "rainfallMm": 24,
+          "avgTempC": 35,
+          "avgHumidityPct": 42,
+          "source": "mock_fallback",
+          "summary": "Early fallback humidity is low; the Pest Pressure rule expects normal."
+        },
+        {
+          "phase": "Mid",
+          "status": "low",
+          "idealStatus": "high",
+          "metric": "humidity",
+          "matchScore": 0.38,
+          "rainfallMm": 24,
+          "avgTempC": 35,
+          "avgHumidityPct": 42,
+          "source": "mock_fallback",
+          "summary": "Mid fallback humidity is low; the Pest Pressure rule expects high."
+        },
+        {
+          "phase": "Late",
+          "status": "low",
+          "idealStatus": "high",
+          "metric": "humidity",
+          "matchScore": 0.38,
+          "rainfallMm": 24,
+          "avgTempC": 41,
+          "avgHumidityPct": 42,
+          "source": "mock_fallback",
+          "summary": "Late fallback humidity is low; the Pest Pressure rule expects high."
+        }
+      ],
+      "recommendations": [
+        {
+          "title": "Scout the underside of leaves",
+          "detail": "Check 10 random plants for larvae, egg clusters, and fresh feeding marks."
+        },
+        {
+          "title": "Use traps or manual removal",
+          "detail": "Install pheromone or yellow sticky traps where suitable and remove visible egg masses."
+        },
+        {
+          "title": "Escalate only if threshold is crossed",
+          "detail": "Use pesticide only after local advisory confirms the pest level is above economic threshold."
+        }
+      ],
+      "inputSummary": {
+        "crop": "Dhan",
+        "state": "Goa",
+        "district": "North Goa",
+        "sowingDate": "2025-03-01",
+        "season": "rabi",
+        "normalizedSymptoms": [
+          "pest",
+          "fungal"
+        ],
+        "symptomScore": 0.4,
+        "latitude": 15.4933043,
+        "longitude": 73.8228415
+      },
+      "modelDetails": {
+        "mode": "rule_fallback",
+        "reason": "requests library is unavailable",
+        "matchedSymptoms": [
+          "pest"
+        ]
+      }
+    }
+  },
+  {
+    "id": 17,
+    "createdAt": "2026-04-17T17:21:36.429962+00:00",
+    "request": {
+      "crop": "Kapas",
+      "state": "Goa",
+      "district": "North Goa",
+      "sowingDate": "2024-01-01",
+      "symptoms": [
+        "nutrient",
+        "heat"
+      ],
+      "lat": 15.493319,
+      "lon": 73.8228609
+    },
+    "response": {
+      "causeKey": "nutrient",
+      "causeTitle": "Nutrient Deficiency",
+      "confidenceScore": 0.56,
+      "explanation": "North Goa me Kapas me nutrient deficiency ka pattern dikh raha hai. Yellowing, pale growth ya poor flowering nutrients ki kami se aa sakte hain, soil moisture aur balanced fertilizer dono check karein.",
+      "weatherPhases": [
+        {
+          "phase": "Early",
+          "status": "veryLow",
+          "idealStatus": "normal",
+          "metric": "rainfall / soil moisture",
+          "matchScore": 0.38,
+          "rainfallMm": 8,
+          "avgTempC": 23,
+          "avgHumidityPct": 42,
+          "source": "mock_fallback",
+          "summary": "Early fallback rainfall / soil moisture is veryLow; the Nutrient Deficiency rule expects normal."
+        },
+        {
+          "phase": "Mid",
+          "status": "veryLow",
+          "idealStatus": "low",
+          "metric": "rainfall / soil moisture",
+          "matchScore": 0.72,
+          "rainfallMm": 8,
+          "avgTempC": 23,
+          "avgHumidityPct": 42,
+          "source": "mock_fallback",
+          "summary": "Mid fallback rainfall / soil moisture is veryLow; the Nutrient Deficiency rule expects low."
+        },
+        {
+          "phase": "Late",
+          "status": "low",
+          "idealStatus": "low",
+          "metric": "rainfall / soil moisture",
+          "matchScore": 1.0,
+          "rainfallMm": 24,
+          "avgTempC": 41,
+          "avgHumidityPct": 42,
+          "source": "mock_fallback",
+          "summary": "Late fallback rainfall / soil moisture is low; the Nutrient Deficiency rule expects low."
+        }
+      ],
+      "recommendations": [
+        {
+          "title": "Check nutrient pattern",
+          "detail": "Older yellow leaves often indicate nitrogen stress, while purpling may point to phosphorus stress."
+        },
+        {
+          "title": "Apply balanced nutrition",
+          "detail": "Use soil-test guidance where available and avoid applying only one nutrient repeatedly."
+        },
+        {
+          "title": "Maintain root-zone moisture",
+          "detail": "Nutrients move poorly in very dry soil, so correct moisture before expecting fertilizer response."
+        }
+      ],
+      "inputSummary": {
+        "crop": "Kapas",
+        "state": "Goa",
+        "district": "North Goa",
+        "sowingDate": "2024-01-01",
+        "season": "rabi",
+        "normalizedSymptoms": [
+          "nutrient",
+          "heat"
+        ],
+        "symptomScore": 0.4,
+        "latitude": 15.493319,
+        "longitude": 73.8228609
+      },
+      "modelDetails": {
+        "mode": "rule_fallback",
+        "reason": "requests library is unavailable",
+        "matchedSymptoms": [
+          "nutrient"
+        ]
+      }
+    }
+  },
+  {
+    "id": 18,
+    "createdAt": "2026-04-17T18:23:59.651719+00:00",
+    "request": {
+      "crop": "Makka",
+      "state": "Goa",
+      "district": "North Goa",
+      "sowingDate": "2025-02-01",
+      "symptoms": [
+        "pest",
+        "waterlogging",
+        "fungal"
+      ],
+      "lat": 15.4935074,
+      "lon": 73.8228581
+    },
+    "response": {
+      "causeKey": "pest",
+      "causeTitle": "Pest Pressure",
+      "confidenceScore": 0.47,
+      "explanation": "North Goa me Makka par pest pressure ka chance high lag raha hai. Leaf holes, insects ya sticky residue milne par pehle scouting karein, phir local advisory ke hisaab se action lein.",
+      "weatherPhases": [
+        {
+          "phase": "Early",
+          "status": "low",
+          "idealStatus": "normal",
+          "metric": "humidity",
+          "matchScore": 0.72,
+          "rainfallMm": 8,
+          "avgTempC": 23,
+          "avgHumidityPct": 42,
+          "source": "mock_fallback",
+          "summary": "Early fallback humidity is low; the Pest Pressure rule expects normal."
+        },
+        {
+          "phase": "Mid",
+          "status": "low",
+          "idealStatus": "high",
+          "metric": "humidity",
+          "matchScore": 0.38,
+          "rainfallMm": 24,
+          "avgTempC": 35,
+          "avgHumidityPct": 42,
+          "source": "mock_fallback",
+          "summary": "Mid fallback humidity is low; the Pest Pressure rule expects high."
+        },
+        {
+          "phase": "Late",
+          "status": "low",
+          "idealStatus": "high",
+          "metric": "humidity",
+          "matchScore": 0.38,
+          "rainfallMm": 24,
+          "avgTempC": 41,
+          "avgHumidityPct": 42,
+          "source": "mock_fallback",
+          "summary": "Late fallback humidity is low; the Pest Pressure rule expects high."
+        }
+      ],
+      "recommendations": [
+        {
+          "title": "Scout the underside of leaves",
+          "detail": "Check 10 random plants for larvae, egg clusters, and fresh feeding marks."
+        },
+        {
+          "title": "Use traps or manual removal",
+          "detail": "Install pheromone or yellow sticky traps where suitable and remove visible egg masses."
+        },
+        {
+          "title": "Escalate only if threshold is crossed",
+          "detail": "Use pesticide only after local advisory confirms the pest level is above economic threshold."
+        }
+      ],
+      "inputSummary": {
+        "crop": "Makka",
+        "state": "Goa",
+        "district": "North Goa",
+        "sowingDate": "2025-02-01",
+        "season": "rabi",
+        "normalizedSymptoms": [
+          "pest",
+          "waterlogging",
+          "fungal"
+        ],
+        "symptomScore": 0.6,
+        "latitude": 15.4935074,
+        "longitude": 73.8228581
+      },
+      "modelDetails": {
+        "mode": "rule_fallback",
+        "reason": "requests library is unavailable",
+        "matchedSymptoms": [
+          "pest"
+        ]
+      }
+    }
+  },
+  {
+    "id": 19,
+    "createdAt": "2026-04-17T18:35:51.993020+00:00",
+    "request": {
+      "crop": "Gehu",
+      "state": "Gujarat",
+      "district": "Vadodara",
+      "sowingDate": "2025-07-01",
+      "symptoms": [
+        "waterlogging",
+        "fungal"
+      ],
+      "lat": 22.3072,
+      "lon": 73.1812
+    },
+    "response": {
+      "causeKey": "waterlogging",
+      "causeTitle": "Waterlogging Stress",
+      "confidenceScore": 0.63,
+      "explanation": "Vadodara me Gehu ke roots zyada paani me suffocate ho sakte hain. Standing water aur yellowing milkar waterlogging stress dikhate hain, drainage jaldi improve karein.",
+      "weatherPhases": [
+        {
+          "phase": "Early",
+          "status": "veryHigh",
+          "idealStatus": "high",
+          "metric": "rainfall / soil moisture",
+          "matchScore": 0.72,
+          "rainfallMm": 142,
+          "avgTempC": 29,
+          "avgHumidityPct": 88,
+          "source": "mock_fallback",
+          "summary": "Early fallback rainfall / soil moisture is veryHigh; the Waterlogging Stress rule expects high."
+        },
+        {
+          "phase": "Mid",
+          "status": "veryHigh",
+          "idealStatus": "veryHigh",
+          "metric": "rainfall / soil moisture",
+          "matchScore": 1.0,
+          "rainfallMm": 142,
+          "avgTempC": 23,
+          "avgHumidityPct": 88,
+          "source": "mock_fallback",
+          "summary": "Mid fallback rainfall / soil moisture is veryHigh; the Waterlogging Stress rule expects veryHigh."
+        },
+        {
+          "phase": "Late",
+          "status": "high",
+          "idealStatus": "high",
+          "metric": "rainfall / soil moisture",
+          "matchScore": 1.0,
+          "rainfallMm": 96,
+          "avgTempC": 35,
+          "avgHumidityPct": 74,
+          "source": "mock_fallback",
+          "summary": "Late fallback rainfall / soil moisture is high; the Waterlogging Stress rule expects high."
+        }
+      ],
+      "recommendations": [
+        {
+          "title": "Open drainage channels",
+          "detail": "Create shallow side channels so extra water can leave the plot within 24 hours."
+        },
+        {
+          "title": "Avoid more irrigation",
+          "detail": "Pause irrigation until the top soil starts drying and roots get air again."
+        },
+        {
+          "title": "Watch root health",
+          "detail": "Uproot one weak plant and check for black, soft, or foul-smelling roots."
+        }
+      ],
+      "inputSummary": {
+        "crop": "Gehu",
+        "state": "Gujarat",
+        "district": "Vadodara",
+        "sowingDate": "2025-07-01",
+        "season": "kharif",
+        "normalizedSymptoms": [
+          "waterlogging",
+          "fungal"
+        ],
+        "symptomScore": 0.4,
+        "latitude": 22.3072,
+        "longitude": 73.1812
+      },
+      "modelDetails": {
+        "mode": "rule_fallback",
+        "reason": "requests library is unavailable",
+        "matchedSymptoms": [
+          "waterlogging"
+        ]
+      }
+    }
+  },
+  {
+    "id": 20,
+    "createdAt": "2026-04-17T18:36:56.807956+00:00",
+    "request": {
+      "crop": "Soybean",
+      "state": "Goa",
+      "district": "North Goa",
+      "sowingDate": "2026-01-01",
+      "symptoms": [
+        "heat",
+        "drought"
+      ],
+      "lat": 15.4934311,
+      "lon": 73.8228971
     },
     "response": {
       "causeKey": "drought",
       "causeTitle": "Drought Stress",
-      "confidenceScore": 1.0,
-      "explanation": "Cotton ki fasal mein. Aaj ka Easy step: Check field cracks: If cracks are widening, prioritize that plot for water or community irrigation support.",
+      "confidenceScore": 0.63,
+      "explanation": "North Goa me Soybean par drought stress ka signal strong hai. Paudhon ko pani kam mil raha hai, isliye light irrigation, mulching aur soil moisture check abhi priority hai.",
       "weatherPhases": [
         {
           "phase": "Early",
-          "startDate": "2025-07-15",
-          "endDate": "2025-08-23",
-          "status": "Mild Anomaly",
-          "dataDays": 40,
-          "rainfallMm": 291.9,
-          "expectedRainfallMm": 236.27,
-          "rainAnomaly": 0.2355,
-          "rainfallDeviationPct": 23.5,
-          "avgTempC": 24.35,
-          "expectedTempC": 24.51,
-          "tempAnomaly": -0.0065,
-          "temperatureDeviationPct": -0.6,
-          "avgHumidityPct": 85.92,
-          "expectedHumidityPct": 81.52,
-          "humidityAnomaly": 0.0541,
-          "humidityDeviationPct": 5.4,
-          "isolationScore": 0.0735
+          "status": "veryLow",
+          "idealStatus": "low",
+          "metric": "rainfall / soil moisture",
+          "matchScore": 0.72,
+          "rainfallMm": 8,
+          "avgTempC": 23,
+          "avgHumidityPct": 42,
+          "source": "mock_fallback",
+          "summary": "Early fallback rainfall / soil moisture is veryLow; the Drought Stress rule expects low."
         },
         {
           "phase": "Mid",
-          "startDate": "2025-08-24",
-          "endDate": "2025-10-02",
-          "status": "Moderate Anomaly",
-          "dataDays": 40,
-          "rainfallMm": 323.4,
-          "expectedRainfallMm": 236.27,
-          "rainAnomaly": 0.3688,
-          "rainfallDeviationPct": 36.9,
-          "avgTempC": 24.12,
-          "expectedTempC": 24.51,
-          "tempAnomaly": -0.016,
-          "temperatureDeviationPct": -1.6,
-          "avgHumidityPct": 86.4,
-          "expectedHumidityPct": 81.52,
-          "humidityAnomaly": 0.0599,
-          "humidityDeviationPct": 6.0,
-          "isolationScore": 0.0686
+          "status": "veryLow",
+          "idealStatus": "veryLow",
+          "metric": "rainfall / soil moisture",
+          "matchScore": 1.0,
+          "rainfallMm": 8,
+          "avgTempC": 23,
+          "avgHumidityPct": 42,
+          "source": "mock_fallback",
+          "summary": "Mid fallback rainfall / soil moisture is veryLow; the Drought Stress rule expects veryLow."
         },
         {
           "phase": "Late",
-          "startDate": "2025-10-03",
-          "endDate": "2025-11-11",
-          "status": "Severe Anomaly",
-          "dataDays": 40,
-          "rainfallMm": 93.5,
-          "expectedRainfallMm": 236.27,
-          "rainAnomaly": -0.6043,
-          "rainfallDeviationPct": -60.4,
-          "avgTempC": 25.06,
-          "expectedTempC": 24.51,
-          "tempAnomaly": 0.0224,
-          "temperatureDeviationPct": 2.2,
-          "avgHumidityPct": 72.22,
-          "expectedHumidityPct": 81.52,
-          "humidityAnomaly": -0.114,
-          "humidityDeviationPct": -11.4,
-          "isolationScore": 0.0041
+          "status": "low",
+          "idealStatus": "low",
+          "metric": "rainfall / soil moisture",
+          "matchScore": 1.0,
+          "rainfallMm": 24,
+          "avgTempC": 41,
+          "avgHumidityPct": 42,
+          "source": "mock_fallback",
+          "summary": "Late fallback rainfall / soil moisture is low; the Drought Stress rule expects low."
         }
       ],
       "recommendations": [
         {
           "title": "Start protective irrigation",
-          "detail": "Give light irrigation in the cooler part of the day and avoid flooding the root zone.",
-          "priority": "High",
-          "effort_level": "Medium"
+          "detail": "Give light irrigation in the cooler part of the day and avoid flooding the root zone."
         },
         {
           "title": "Reduce soil moisture loss",
-          "detail": "Use mulch or crop residue around plants to slow evaporation from the top soil.",
-          "priority": "Medium",
-          "effort_level": "Medium"
+          "detail": "Use mulch or crop residue around plants to slow evaporation from the top soil."
         },
         {
           "title": "Check field cracks",
-          "detail": "If cracks are widening, prioritize that plot for water or community irrigation support.",
-          "priority": "High",
-          "effort_level": "Easy"
+          "detail": "If cracks are widening, prioritize that plot for water or community irrigation support."
         }
       ],
       "inputSummary": {
-        "crop": "Cotton",
-        "state": "Maharashtra",
-        "district": "Pune",
-        "sowingDate": "2025-07-15",
-        "season": "kharif",
+        "crop": "Soybean",
+        "state": "Goa",
+        "district": "North Goa",
+        "sowingDate": "2026-01-01",
+        "season": "rabi",
         "normalizedSymptoms": [
-          "wilting",
-          "drysoil",
-          "leafcurling"
+          "heat",
+          "drought"
         ],
-        "symptomScore": 0.6,
-        "latitude": 18.5204,
-        "longitude": 73.8567
+        "symptomScore": 0.4,
+        "latitude": 15.4934311,
+        "longitude": 73.8228971
       },
       "modelDetails": {
-        "mode": "xgboost_live_weather",
-        "rawModelLabel": "drought",
-        "cropEncoderValue": 11,
-        "cropModelValue": "Cotton(lint)",
-        "featureVector": {
-          "crop_encoded": 11.0,
-          "rain_anomaly": -0.6043,
-          "temp_anomaly": 0.0224,
-          "humidity_anomaly": -0.114,
-          "symptom_score": 0.6
+        "mode": "rule_fallback",
+        "reason": "requests library is unavailable",
+        "matchedSymptoms": [
+          "drought"
+        ]
+      }
+    }
+  },
+  {
+    "id": 21,
+    "createdAt": "2026-04-18T07:24:23.057778+00:00",
+    "request": {
+      "crop": "Soybean",
+      "state": "Goa",
+      "district": "North Goa",
+      "sowingDate": "2025-02-01",
+      "symptoms": [
+        "waterlogging",
+        "fungal"
+      ],
+      "lat": 15.4935077,
+      "lon": 73.8228466
+    },
+    "response": {
+      "causeKey": "fungal",
+      "causeTitle": "Fungal Disease Risk",
+      "confidenceScore": 0.42,
+      "explanation": "North Goa me Soybean ke liye fungal disease risk ban raha hai. Humid weather aur spots/powder symptoms saath aaye hain, isliye canopy ko dry rakhna aur infected leaves hatana zaroori hai.",
+      "weatherPhases": [
+        {
+          "phase": "Early",
+          "status": "low",
+          "idealStatus": "high",
+          "metric": "humidity",
+          "matchScore": 0.38,
+          "rainfallMm": 8,
+          "avgTempC": 23,
+          "avgHumidityPct": 42,
+          "source": "mock_fallback",
+          "summary": "Early fallback humidity is low; the Fungal Disease Risk rule expects high."
         },
-        "weatherSource": "Open-Meteo Archive API",
-        "weatherMessage": "Fetched 120 daily records from 2025-07-15 to 2025-11-11"
+        {
+          "phase": "Mid",
+          "status": "low",
+          "idealStatus": "veryHigh",
+          "metric": "humidity",
+          "matchScore": 0.12,
+          "rainfallMm": 24,
+          "avgTempC": 35,
+          "avgHumidityPct": 42,
+          "source": "mock_fallback",
+          "summary": "Mid fallback humidity is low; the Fungal Disease Risk rule expects veryHigh."
+        },
+        {
+          "phase": "Late",
+          "status": "low",
+          "idealStatus": "high",
+          "metric": "humidity",
+          "matchScore": 0.38,
+          "rainfallMm": 24,
+          "avgTempC": 41,
+          "avgHumidityPct": 42,
+          "source": "mock_fallback",
+          "summary": "Late fallback humidity is low; the Fungal Disease Risk rule expects high."
+        }
+      ],
+      "recommendations": [
+        {
+          "title": "Improve air movement",
+          "detail": "Remove dense weeds and avoid unnecessary evening irrigation that keeps leaves wet overnight."
+        },
+        {
+          "title": "Remove infected leaves",
+          "detail": "Take out heavily infected leaves from the field edge first and keep them away from compost."
+        },
+        {
+          "title": "Confirm before spraying",
+          "detail": "Match the spot pattern with a local extension worker before choosing a fungicide."
+        }
+      ],
+      "inputSummary": {
+        "crop": "Soybean",
+        "state": "Goa",
+        "district": "North Goa",
+        "sowingDate": "2025-02-01",
+        "season": "rabi",
+        "normalizedSymptoms": [
+          "waterlogging",
+          "fungal"
+        ],
+        "symptomScore": 0.4,
+        "latitude": 15.4935077,
+        "longitude": 73.8228466
+      },
+      "modelDetails": {
+        "mode": "rule_fallback",
+        "reason": "requests library is unavailable",
+        "matchedSymptoms": [
+          "fungal"
+        ]
+      }
+    }
+  },
+  {
+    "id": 22,
+    "createdAt": "2026-04-18T08:08:08.159875+00:00",
+    "request": {
+      "crop": "Makka",
+      "state": "Goa",
+      "district": "North Goa",
+      "sowingDate": "2026-02-01",
+      "symptoms": [
+        "nutrient",
+        "fungal"
+      ],
+      "lat": 15.4933888,
+      "lon": 73.8229011
+    },
+    "response": {
+      "causeKey": "nutrient",
+      "causeTitle": "Nutrient Deficiency",
+      "confidenceScore": 0.58,
+      "explanation": "North Goa me Makka me nutrient deficiency ka pattern dikh raha hai. Yellowing, pale growth ya poor flowering nutrients ki kami se aa sakte hain, soil moisture aur balanced fertilizer dono check karein.",
+      "weatherPhases": [
+        {
+          "phase": "Early",
+          "status": "veryLow",
+          "idealStatus": "normal",
+          "metric": "rainfall / soil moisture",
+          "matchScore": 0.38,
+          "rainfallMm": 8,
+          "avgTempC": 23,
+          "avgHumidityPct": 42,
+          "source": "mock_fallback",
+          "summary": "Early fallback rainfall / soil moisture is veryLow; the Nutrient Deficiency rule expects normal."
+        },
+        {
+          "phase": "Mid",
+          "status": "low",
+          "idealStatus": "low",
+          "metric": "rainfall / soil moisture",
+          "matchScore": 1.0,
+          "rainfallMm": 24,
+          "avgTempC": 35,
+          "avgHumidityPct": 42,
+          "source": "mock_fallback",
+          "summary": "Mid fallback rainfall / soil moisture is low; the Nutrient Deficiency rule expects low."
+        },
+        {
+          "phase": "Late",
+          "status": "low",
+          "idealStatus": "low",
+          "metric": "rainfall / soil moisture",
+          "matchScore": 1.0,
+          "rainfallMm": 24,
+          "avgTempC": 41,
+          "avgHumidityPct": 42,
+          "source": "mock_fallback",
+          "summary": "Late fallback rainfall / soil moisture is low; the Nutrient Deficiency rule expects low."
+        }
+      ],
+      "recommendations": [
+        {
+          "title": "Check nutrient pattern",
+          "detail": "Older yellow leaves often indicate nitrogen stress, while purpling may point to phosphorus stress."
+        },
+        {
+          "title": "Apply balanced nutrition",
+          "detail": "Use soil-test guidance where available and avoid applying only one nutrient repeatedly."
+        },
+        {
+          "title": "Maintain root-zone moisture",
+          "detail": "Nutrients move poorly in very dry soil, so correct moisture before expecting fertilizer response."
+        }
+      ],
+      "inputSummary": {
+        "crop": "Makka",
+        "state": "Goa",
+        "district": "North Goa",
+        "sowingDate": "2026-02-01",
+        "season": "rabi",
+        "normalizedSymptoms": [
+          "nutrient",
+          "fungal"
+        ],
+        "symptomScore": 0.4,
+        "latitude": 15.4933888,
+        "longitude": 73.8229011
+      },
+      "modelDetails": {
+        "mode": "rule_fallback",
+        "reason": "requests library is unavailable",
+        "matchedSymptoms": [
+          "nutrient"
+        ]
       }
     }
   }

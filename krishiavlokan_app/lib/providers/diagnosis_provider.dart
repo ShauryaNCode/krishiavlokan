@@ -3,11 +3,13 @@
 // Holds all state collected across the 4-step diagnosis flow.
 // Also manages app-wide settings (offline mode, voice, language).
 
+import 'dart:async';
 import 'package:flutter/material.dart';
 import '../models/analysis_model.dart';
 import '../services/diagnosis_service.dart';
 import '../services/storage_service.dart';
-import '../services/voice_service.dart'; // VOICE ADDITION
+import '../services/voice_service.dart';
+import '../services/symptom_voice_processor.dart';
 
 enum DiagnosisStatus { idle, loading, success, error }
 
@@ -205,6 +207,7 @@ class DiagnosisProvider extends ChangeNotifier {
     _selectedDistrict  = null;
     _sowingDate        = null;
     _selectedSymptoms  = [];
+    _voiceDetectedSymptoms.clear();
     _lat               = 0.0;
     _lon               = 0.0;
     _status            = DiagnosisStatus.idle;
@@ -213,50 +216,49 @@ class DiagnosisProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+
   // ══════════════════════════════════════════════════════════════════════════
-  // VOICE ADDITIONS — added for voice interaction feature.
+  // VOICE ADDITIONS
   // All existing logic above this line is untouched.
-  // ══════════════════════════════════════════════════════════════════════════  // ── New voice state ───────────────────────────────────────────────────────
+  // ══════════════════════════════════════════════════════════════════════════
 
-  /// True while TTS loop is running OR microphone is active.
-  bool _isVoiceActive = false;
+  // ── Step 1–3 voice state (single-shot) ────────────────────────────────────
 
-  /// True only during the STT + matching window.
-  /// UI should dim and block taps while this is true.
+  bool _isVoiceActive     = false;
   bool _isVoiceProcessing = false;
 
   bool get isVoiceActive      => _isVoiceActive;
   bool get isVoiceProcessing  => _isVoiceProcessing;
 
-  // ── New voice methods ─────────────────────────────────────────────────────
+  // ── Step 4 continuous voice state ─────────────────────────────────────────
 
-  /// Starts the TTS question loop for the current diagnosis step.
-  /// Does nothing if [voiceEnabled] is false.
-  /// Safe to call multiple times — cancels any running loop first.
+  /// True while continuous mic is open (Step 4 mode).
+  bool _isContinuousListening = false;
+  bool get isContinuousListening => _isContinuousListening;
+
+  /// All voice-detected keys accumulated across THIS session.
+  /// Set gives O(1) duplicate check.
+  final Set<String> _voiceDetectedSymptoms = {};
+  Set<String> get voiceDetectedSymptoms => Set.unmodifiable(_voiceDetectedSymptoms);
+
+  StreamSubscription<String>? _transcriptSub;
+  Timer?                       _silenceTimer;
+  static const _silenceTimeout = Duration(seconds: 5);
+
+  // ── Step 1–3: single-shot question loop & answer ───────────────────────────
+
   Future<void> startQuestionLoop(String question) async {
     if (!_voiceEnabled) return;
-
-    // Cancel any previously running loop before starting a new one
     await VoiceService.instance.cancelLoop();
-
-    _isVoiceActive     = false;
+    _isVoiceActive     = true;
     _isVoiceProcessing = false;
     notifyListeners();
-
     await VoiceService.instance.startLoop(
       question: question,
       enabled:  _voiceEnabled,
     );
   }
 
-  /// Stops TTS, starts STT, runs [matcher] on the result.
-  ///
-  /// [matcher] receives the raw lowercase recognised string and must return
-  /// the matched option key/name, or null if no match.
-  ///
-  /// [onMatch] is called with the matched value when a match is found.
-  /// [onNoMatch] is called when no match — the question loop is restarted.
-  /// [question] is the text re-spoken if no match is found.
   Future<void> listenForAnswer({
     required String question,
     required String? Function(String spoken) matcher,
@@ -264,21 +266,16 @@ class DiagnosisProvider extends ChangeNotifier {
     required VoidCallback onNoMatch,
   }) async {
     if (!_voiceEnabled) return;
-
-    // Stop TTS loop before we start listening
     await VoiceService.instance.cancelLoop();
-
     _isVoiceActive     = true;
     _isVoiceProcessing = true;
     notifyListeners();
 
-    // Listen once with a 6-second timeout
     final spoken = await VoiceService.instance.listenOnce(
       timeout: const Duration(seconds: 6),
     );
 
     if (spoken == null || spoken.isEmpty) {
-      // Timeout or empty — restart loop quietly
       _isVoiceProcessing = false;
       notifyListeners();
       await startQuestionLoop(question);
@@ -287,7 +284,6 @@ class DiagnosisProvider extends ChangeNotifier {
     }
 
     final matched = matcher(spoken);
-
     _isVoiceProcessing = false;
     notifyListeners();
 
@@ -296,15 +292,13 @@ class DiagnosisProvider extends ChangeNotifier {
       notifyListeners();
       onMatch(matched);
     } else {
-      // No match — restart loop and inform caller
       await startQuestionLoop(question);
       onNoMatch();
     }
   }
 
-  /// Applies a list of voice-detected symptom keys from SymptomVoiceProcessor.
-  /// Replaces current selection — voice detection is treated as a fresh pick.
-  /// Ignores any keys not in the valid set.
+  // ── applyVoiceSymptoms — kept for batch apply (backward compat) ────────────
+
   void applyVoiceSymptoms(List<String> detectedKeys) {
     const validKeys = {
       'drought', 'waterlogging', 'nutrient', 'pest', 'fungal', 'heat'
@@ -315,12 +309,130 @@ class DiagnosisProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Stops all voice activity (TTS + STT).
-  /// Call this on screen dispose or when user manually navigates.
+  /// Marks the beginning of the Step 4 backend voice session.
+  void startVoiceDetectionSession() {
+    _voiceDetectedSymptoms.clear();
+    _isContinuousListening = true;
+    notifyListeners();
+  }
+
+  /// Adds symptoms incrementally without touching manual selections.
+  void applyVoiceDetectedSymptoms(List<String> detectedKeys) {
+    const validKeys = {
+      'drought',
+      'waterlogging',
+      'nutrient',
+      'pest',
+      'fungal',
+      'heat',
+    };
+
+    var shouldNotify = false;
+    for (final key in detectedKeys) {
+      if (!validKeys.contains(key)) continue;
+
+      final wasVoiceDetected = _voiceDetectedSymptoms.add(key);
+      if (!_selectedSymptoms.contains(key)) {
+        _selectedSymptoms.add(key);
+        shouldNotify = true;
+      } else if (wasVoiceDetected) {
+        shouldNotify = true;
+      }
+    }
+
+    if (shouldNotify) {
+      notifyListeners();
+    }
+  }
+
+  /// Ends the active Step 4 backend voice session.
+  void endVoiceDetectionSession() {
+    if (_isContinuousListening) {
+      _isContinuousListening = false;
+      notifyListeners();
+    }
+  }
+
+  // ── Step 4: continuous listening ──────────────────────────────────────────
+
+  /// Starts continuous mic. Each chunk is processed by SymptomVoiceProcessor.
+  /// New symptoms are added incrementally; silence auto-stops after 5 s.
+  Future<void> startContinuousListening() async {
+    if (!_voiceEnabled) return;
+    if (_isContinuousListening) return;
+
+    _voiceDetectedSymptoms.clear();
+    _isContinuousListening = true;
+    notifyListeners();
+
+    await VoiceService.instance.startContinuous();
+
+    _transcriptSub = VoiceService.instance.transcriptStream.listen(
+      (chunk) {
+        _resetSilenceTimer();
+        processVoiceChunk(chunk);
+      },
+      onDone:        () => _onStreamDone(),
+      onError:       (_) => _onStreamDone(),
+      cancelOnError: false,
+    );
+
+    _resetSilenceTimer();
+  }
+
+  /// Processes one speech chunk: detects symptoms, adds new ones only.
+  void processVoiceChunk(String text) {
+    final detected = SymptomVoiceProcessor().detectSymptoms(text);
+    for (final key in detected) {
+      if (_voiceDetectedSymptoms.contains(key)) continue; // duplicate
+      if (_selectedSymptoms.contains(key)) {
+        _voiceDetectedSymptoms.add(key);
+        continue;
+      }
+      _voiceDetectedSymptoms.add(key);
+      _selectedSymptoms.add(key);
+      notifyListeners(); // live update per new symptom
+    }
+  }
+
+  void _onStreamDone() {
+    _silenceTimer?.cancel();
+    if (_isContinuousListening) {
+      _isContinuousListening = false;
+      notifyListeners();
+    }
+  }
+
+  void _resetSilenceTimer() {
+    _silenceTimer?.cancel();
+    _silenceTimer = Timer(_silenceTimeout, stopContinuousListening);
+  }
+
+  /// Manually stop continuous listening.
+  Future<void> stopContinuousListening() async {
+    _silenceTimer?.cancel();
+    _silenceTimer = null;
+    await _transcriptSub?.cancel();
+    _transcriptSub = null;
+    await VoiceService.instance.stopContinuous();
+    if (_isContinuousListening) {
+      _isContinuousListening = false;
+      notifyListeners();
+    }
+  }
+
+  // ── Full stop — all screens call this on dispose / nav ─────────────────────
+
   Future<void> stopVoiceCompletely() async {
+    _silenceTimer?.cancel();
+    _silenceTimer = null;
+    await _transcriptSub?.cancel();
+    _transcriptSub = null;
     await VoiceService.instance.stopAll();
-    _isVoiceActive     = false;
-    _isVoiceProcessing = false;
+    _isVoiceActive          = false;
+    _isVoiceProcessing      = false;
+    _isContinuousListening  = false;
+    _voiceDetectedSymptoms.clear();
     notifyListeners();
   }
 }

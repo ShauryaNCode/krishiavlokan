@@ -42,6 +42,7 @@ def load_root_environment() -> None:
 load_root_environment()
 
 from backend.routes.diagnosis import router as diagnosis_router  # noqa: E402
+from backend.routes.voice import router as voice_router  # noqa: E402
 
 
 app = FastAPI(
@@ -59,6 +60,7 @@ app.add_middleware(
 )
 
 app.include_router(diagnosis_router)
+app.include_router(voice_router)
 
 
 @app.get("/health")
