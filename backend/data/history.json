@@ -1820,5 +1820,140 @@
         "weatherMessage": "Fetched 120 daily records from 2025-07-15 to 2025-11-11"
       }
     }
+  },
+  {
+    "id": 16,
+    "createdAt": "2026-04-18T07:53:43.275169+00:00",
+    "request": {
+      "crop": "Cotton",
+      "state": "Maharashtra",
+      "district": "Pune",
+      "sowingDate": "2025-07-15",
+      "symptoms": [
+        "wilting",
+        "drysoil",
+        "leafcurling"
+      ],
+      "lat": 18.5204,
+      "lon": 73.8567
+    },
+    "response": {
+      "causeKey": "drought",
+      "causeTitle": "Drought Stress",
+      "confidenceScore": 1.0,
+      "explanation": "Cotton ki fasal mein. Aaj ka Easy step: Check field cracks: If cracks are widening, prioritize that plot for water or community irrigation support.",
+      "weatherPhases": [
+        {
+          "phase": "Early",
+          "startDate": "2025-07-15",
+          "endDate": "2025-08-23",
+          "status": "Mild Anomaly",
+          "dataDays": 40,
+          "rainfallMm": 291.9,
+          "expectedRainfallMm": 236.27,
+          "rainAnomaly": 0.2355,
+          "rainfallDeviationPct": 23.5,
+          "avgTempC": 24.35,
+          "expectedTempC": 24.51,
+          "tempAnomaly": -0.0065,
+          "temperatureDeviationPct": -0.6,
+          "avgHumidityPct": 85.92,
+          "expectedHumidityPct": 81.52,
+          "humidityAnomaly": 0.0541,
+          "humidityDeviationPct": 5.4,
+          "isolationScore": 0.0735
+        },
+        {
+          "phase": "Mid",
+          "startDate": "2025-08-24",
+          "endDate": "2025-10-02",
+          "status": "Moderate Anomaly",
+          "dataDays": 40,
+          "rainfallMm": 323.4,
+          "expectedRainfallMm": 236.27,
+          "rainAnomaly": 0.3688,
+          "rainfallDeviationPct": 36.9,
+          "avgTempC": 24.12,
+          "expectedTempC": 24.51,
+          "tempAnomaly": -0.016,
+          "temperatureDeviationPct": -1.6,
+          "avgHumidityPct": 86.4,
+          "expectedHumidityPct": 81.52,
+          "humidityAnomaly": 0.0599,
+          "humidityDeviationPct": 6.0,
+          "isolationScore": 0.0686
+        },
+        {
+          "phase": "Late",
+          "startDate": "2025-10-03",
+          "endDate": "2025-11-11",
+          "status": "Severe Anomaly",
+          "dataDays": 40,
+          "rainfallMm": 93.5,
+          "expectedRainfallMm": 236.27,
+          "rainAnomaly": -0.6043,
+          "rainfallDeviationPct": -60.4,
+          "avgTempC": 25.06,
+          "expectedTempC": 24.51,
+          "tempAnomaly": 0.0224,
+          "temperatureDeviationPct": 2.2,
+          "avgHumidityPct": 72.22,
+          "expectedHumidityPct": 81.52,
+          "humidityAnomaly": -0.114,
+          "humidityDeviationPct": -11.4,
+          "isolationScore": 0.0041
+        }
+      ],
+      "recommendations": [
+        {
+          "title": "Start protective irrigation",
+          "detail": "Give light irrigation in the cooler part of the day and avoid flooding the root zone.",
+          "priority": "High",
+          "effort_level": "Medium"
+        },
+        {
+          "title": "Reduce soil moisture loss",
+          "detail": "Use mulch or crop residue around plants to slow evaporation from the top soil.",
+          "priority": "Medium",
+          "effort_level": "Medium"
+        },
+        {
+          "title": "Check field cracks",
+          "detail": "If cracks are widening, prioritize that plot for water or community irrigation support.",
+          "priority": "High",
+          "effort_level": "Easy"
+        }
+      ],
+      "inputSummary": {
+        "crop": "Cotton",
+        "state": "Maharashtra",
+        "district": "Pune",
+        "sowingDate": "2025-07-15",
+        "season": "kharif",
+        "normalizedSymptoms": [
+          "wilting",
+          "drysoil",
+          "leafcurling"
+        ],
+        "symptomScore": 0.6,
+        "latitude": 18.5204,
+        "longitude": 73.8567
+      },
+      "modelDetails": {
+        "mode": "xgboost_live_weather",
+        "rawModelLabel": "drought",
+        "cropEncoderValue": 11,
+        "cropModelValue": "Cotton(lint)",
+        "featureVector": {
+          "crop_encoded": 11.0,
+          "rain_anomaly": -0.6043,
+          "temp_anomaly": 0.0224,
+          "humidity_anomaly": -0.114,
+          "symptom_score": 0.6
+        },
+        "weatherSource": "Open-Meteo Archive API",
+        "weatherMessage": "Fetched 120 daily records from 2025-07-15 to 2025-11-11"
+      }
+    }
   }
 ]
