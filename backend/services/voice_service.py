@@ -40,8 +40,14 @@ class VoiceProcessingService:
             raise ValueError("Audio payload is too large for inline transcription.")
 
         api_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
-        if requests is None or not api_key:
-            raise RuntimeError("Audio transcription is unavailable: Gemini API is not configured.")
+        if requests is None:
+            raise RuntimeError(
+                "Audio transcription is unavailable: install the 'requests' package in the backend environment."
+            )
+        if not api_key:
+            raise RuntimeError(
+                "Audio transcription is unavailable: GEMINI_API_KEY or GOOGLE_API_KEY is not set in the root .env."
+            )
 
         prompt = (
             "Transcribe this farmer audio clip faithfully. "
@@ -52,14 +58,16 @@ class VoiceProcessingService:
         if language_code:
             prompt += f" Expected language code: {language_code}."
 
+        normalized_mime_type = self._normalize_audio_mime_type(mime_type)
+
         payload = {
             "contents": [
                 {
                     "parts": [
                         {"text": prompt},
                         {
-                            "inline_data": {
-                                "mime_type": mime_type,
+                            "inlineData": {
+                                "mimeType": normalized_mime_type,
                                 "data": base64.b64encode(audio_bytes).decode("utf-8"),
                             }
                         },
@@ -81,7 +89,7 @@ class VoiceProcessingService:
             response.raise_for_status()
             payload = response.json()
         except Exception as exc:  # pragma: no cover - network/runtime dependent
-            raise RuntimeError("Gemini audio transcription failed.") from exc
+            raise RuntimeError(f"Gemini audio transcription failed: {exc}") from exc
 
         transcript = self._response_text(payload)
         transcript = re.sub(r"\s+", " ", transcript.casefold()).strip()
@@ -101,3 +109,16 @@ class VoiceProcessingService:
                 if text:
                     texts.append(text)
         return "\n".join(texts).strip()
+
+    def _normalize_audio_mime_type(self, mime_type: str) -> str:
+        normalized = (mime_type or "").strip().lower()
+        mime_aliases = {
+            "audio/x-wav": "audio/wav",
+            "audio/wave": "audio/wav",
+            "audio/vnd.wave": "audio/wav",
+            "audio/mpga": "audio/mp3",
+            "audio/mpeg": "audio/mp3",
+            "audio/x-m4a": "audio/aac",
+            "audio/m4a": "audio/aac",
+        }
+        return mime_aliases.get(normalized, normalized or "audio/wav")

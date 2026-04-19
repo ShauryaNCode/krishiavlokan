@@ -18,6 +18,10 @@ class DiagnosisRequest(BaseModel):
 
 
 class Recommendation(BaseModel):
+    advice_key: Optional[str] = Field(
+        default=None,
+        description="Stable snake_case key used for frontend image mapping",
+    )
     title: str
     detail: str
     priority: str = Field(..., description="High, Medium, or Low")

@@ -2405,5 +2405,1406 @@
         ]
       }
     }
+  },
+  {
+    "id": 23,
+    "createdAt": "2026-04-18T11:02:25.498573+00:00",
+    "request": {
+      "crop": "Tur",
+      "state": "Goa",
+      "district": "North Goa",
+      "sowingDate": "2026-01-01",
+      "symptoms": [
+        "nutrient",
+        "fungal"
+      ],
+      "lat": 15.4934276,
+      "lon": 73.822888
+    },
+    "response": {
+      "causeKey": "nutrient",
+      "causeTitle": "Nutrient Deficiency",
+      "confidenceScore": 0.56,
+      "explanation": "North Goa me Tur me nutrient deficiency ka pattern dikh raha hai. Aaj ka Easy step: Check nutrient pattern: Older yellow leaves often indicate nitrogen stress, while purpling may point to phosphorus stress.",
+      "weatherPhases": [
+        {
+          "phase": "Early",
+          "status": "veryLow",
+          "idealStatus": "normal",
+          "metric": "rainfall / soil moisture",
+          "matchScore": 0.38,
+          "rainfallMm": 8,
+          "avgTempC": 23,
+          "avgHumidityPct": 42,
+          "source": "mock_fallback",
+          "summary": "Early fallback rainfall / soil moisture is veryLow; the Nutrient Deficiency rule expects normal."
+        },
+        {
+          "phase": "Mid",
+          "status": "veryLow",
+          "idealStatus": "low",
+          "metric": "rainfall / soil moisture",
+          "matchScore": 0.72,
+          "rainfallMm": 8,
+          "avgTempC": 23,
+          "avgHumidityPct": 42,
+          "source": "mock_fallback",
+          "summary": "Mid fallback rainfall / soil moisture is veryLow; the Nutrient Deficiency rule expects low."
+        },
+        {
+          "phase": "Late",
+          "status": "low",
+          "idealStatus": "low",
+          "metric": "rainfall / soil moisture",
+          "matchScore": 1.0,
+          "rainfallMm": 24,
+          "avgTempC": 41,
+          "avgHumidityPct": 42,
+          "source": "mock_fallback",
+          "summary": "Late fallback rainfall / soil moisture is low; the Nutrient Deficiency rule expects low."
+        }
+      ],
+      "recommendations": [
+        {
+          "title": "Check nutrient pattern",
+          "detail": "Older yellow leaves often indicate nitrogen stress, while purpling may point to phosphorus stress.",
+          "priority": "High",
+          "effort_level": "Easy"
+        },
+        {
+          "title": "Apply balanced nutrition",
+          "detail": "Use soil-test guidance where available and avoid applying only one nutrient repeatedly.",
+          "priority": "Medium",
+          "effort_level": "Hard"
+        },
+        {
+          "title": "Maintain root-zone moisture",
+          "detail": "Nutrients move poorly in very dry soil, so correct moisture before expecting fertilizer response.",
+          "priority": "High",
+          "effort_level": "Easy"
+        }
+      ],
+      "inputSummary": {
+        "crop": "Tur",
+        "state": "Goa",
+        "district": "North Goa",
+        "sowingDate": "2026-01-01",
+        "season": "rabi",
+        "normalizedSymptoms": [
+          "nutrient",
+          "fungal"
+        ],
+        "symptomScore": 0.4,
+        "latitude": 15.4934276,
+        "longitude": 73.822888
+      },
+      "modelDetails": {
+        "mode": "rule_fallback",
+        "reason": "requests library is unavailable",
+        "matchedSymptoms": [
+          "nutrient"
+        ]
+      }
+    }
+  },
+  {
+    "id": 24,
+    "createdAt": "2026-04-18T11:43:25.274443+00:00",
+    "request": {
+      "crop": "Makka",
+      "state": "Goa",
+      "district": "North Goa",
+      "sowingDate": "2026-01-01",
+      "symptoms": [
+        "nutrient",
+        "heat"
+      ],
+      "lat": 15.493487,
+      "lon": 73.8228735
+    },
+    "response": {
+      "causeKey": "nutrient",
+      "causeTitle": "Nutrient Deficiency",
+      "confidenceScore": 0.56,
+      "explanation": "North Goa me Makka me nutrient deficiency ka pattern dikh raha hai. Aaj ka Easy step: Check nutrient pattern: Older yellow leaves often indicate nitrogen stress, while purpling may point to phosphorus stress.",
+      "weatherPhases": [
+        {
+          "phase": "Early",
+          "status": "veryLow",
+          "idealStatus": "normal",
+          "metric": "rainfall / soil moisture",
+          "matchScore": 0.38,
+          "rainfallMm": 8,
+          "avgTempC": 23,
+          "avgHumidityPct": 42,
+          "source": "mock_fallback",
+          "summary": "Early fallback rainfall / soil moisture is veryLow; the Nutrient Deficiency rule expects normal."
+        },
+        {
+          "phase": "Mid",
+          "status": "veryLow",
+          "idealStatus": "low",
+          "metric": "rainfall / soil moisture",
+          "matchScore": 0.72,
+          "rainfallMm": 8,
+          "avgTempC": 23,
+          "avgHumidityPct": 42,
+          "source": "mock_fallback",
+          "summary": "Mid fallback rainfall / soil moisture is veryLow; the Nutrient Deficiency rule expects low."
+        },
+        {
+          "phase": "Late",
+          "status": "low",
+          "idealStatus": "low",
+          "metric": "rainfall / soil moisture",
+          "matchScore": 1.0,
+          "rainfallMm": 24,
+          "avgTempC": 41,
+          "avgHumidityPct": 42,
+          "source": "mock_fallback",
+          "summary": "Late fallback rainfall / soil moisture is low; the Nutrient Deficiency rule expects low."
+        }
+      ],
+      "recommendations": [
+        {
+          "title": "Check nutrient pattern",
+          "detail": "Older yellow leaves often indicate nitrogen stress, while purpling may point to phosphorus stress.",
+          "priority": "High",
+          "effort_level": "Easy"
+        },
+        {
+          "title": "Apply balanced nutrition",
+          "detail": "Use soil-test guidance where available and avoid applying only one nutrient repeatedly.",
+          "priority": "Medium",
+          "effort_level": "Hard"
+        },
+        {
+          "title": "Maintain root-zone moisture",
+          "detail": "Nutrients move poorly in very dry soil, so correct moisture before expecting fertilizer response.",
+          "priority": "High",
+          "effort_level": "Easy"
+        }
+      ],
+      "inputSummary": {
+        "crop": "Makka",
+        "state": "Goa",
+        "district": "North Goa",
+        "sowingDate": "2026-01-01",
+        "season": "rabi",
+        "normalizedSymptoms": [
+          "nutrient",
+          "heat"
+        ],
+        "symptomScore": 0.4,
+        "latitude": 15.493487,
+        "longitude": 73.8228735
+      },
+      "modelDetails": {
+        "mode": "rule_fallback",
+        "reason": "requests library is unavailable",
+        "matchedSymptoms": [
+          "nutrient"
+        ]
+      }
+    }
+  },
+  {
+    "id": 25,
+    "createdAt": "2026-04-18T11:56:32.631064+00:00",
+    "request": {
+      "crop": "Makka",
+      "state": "Goa",
+      "district": "North Goa",
+      "sowingDate": "2026-01-01",
+      "symptoms": [
+        "pest",
+        "nutrient"
+      ],
+      "lat": 15.4933554,
+      "lon": 73.8228378
+    },
+    "response": {
+      "causeKey": "waterlogging",
+      "causeTitle": "Waterlogging Stress",
+      "confidenceScore": 1.0,
+      "explanation": "North Goa me Makka ke roots zyada paani me suffocate ho sakte hain. Aaj ka Easy step: Avoid more irrigation: Pause irrigation until the top soil starts drying and roots get air again.",
+      "weatherPhases": [
+        {
+          "phase": "Early",
+          "startDate": "2026-01-01",
+          "endDate": "2026-02-09",
+          "status": "Severe Anomaly",
+          "dataDays": 40,
+          "rainfallMm": 1.0,
+          "expectedRainfallMm": 5.12,
+          "rainAnomaly": -0.8047,
+          "rainfallDeviationPct": -80.5,
+          "avgTempC": 26.58,
+          "expectedTempC": 27.28,
+          "tempAnomaly": -0.0258,
+          "temperatureDeviationPct": -2.6,
+          "avgHumidityPct": 61.12,
+          "expectedHumidityPct": 69.04,
+          "humidityAnomaly": -0.1146,
+          "humidityDeviationPct": -11.5,
+          "isolationScore": 0.0587
+        },
+        {
+          "phase": "Mid",
+          "startDate": "2026-02-10",
+          "endDate": "2026-03-21",
+          "status": "Moderate Anomaly",
+          "dataDays": 40,
+          "rainfallMm": 2.9,
+          "expectedRainfallMm": 5.12,
+          "rainAnomaly": -0.4338,
+          "rainfallDeviationPct": -43.4,
+          "avgTempC": 27.04,
+          "expectedTempC": 27.28,
+          "tempAnomaly": -0.0088,
+          "temperatureDeviationPct": -0.9,
+          "avgHumidityPct": 72.7,
+          "expectedHumidityPct": 69.04,
+          "humidityAnomaly": 0.0531,
+          "humidityDeviationPct": 5.3,
+          "isolationScore": 0.0763
+        },
+        {
+          "phase": "Late",
+          "startDate": "2026-03-22",
+          "endDate": "2026-04-17",
+          "status": "Severe Anomaly",
+          "dataDays": 27,
+          "rainfallMm": 9.8,
+          "expectedRainfallMm": 3.46,
+          "rainAnomaly": 1.8348,
+          "rainfallDeviationPct": 183.5,
+          "avgTempC": 28.68,
+          "expectedTempC": 27.28,
+          "tempAnomaly": 0.0513,
+          "temperatureDeviationPct": 5.1,
+          "avgHumidityPct": 75.33,
+          "expectedHumidityPct": 69.04,
+          "humidityAnomaly": 0.0912,
+          "humidityDeviationPct": 9.1,
+          "isolationScore": 0.06
+        }
+      ],
+      "recommendations": [
+        {
+          "title": "Open drainage channels",
+          "detail": "Create shallow side channels so extra water can leave the plot within 24 hours.",
+          "priority": "High",
+          "effort_level": "Medium"
+        },
+        {
+          "title": "Avoid more irrigation",
+          "detail": "Pause irrigation until the top soil starts drying and roots get air again.",
+          "priority": "High",
+          "effort_level": "Easy"
+        },
+        {
+          "title": "Watch root health",
+          "detail": "Uproot one weak plant and check for black, soft, or foul-smelling roots.",
+          "priority": "Medium",
+          "effort_level": "Easy"
+        }
+      ],
+      "inputSummary": {
+        "crop": "Makka",
+        "state": "Goa",
+        "district": "North Goa",
+        "sowingDate": "2026-01-01",
+        "season": "rabi",
+        "normalizedSymptoms": [
+          "pest",
+          "nutrient"
+        ],
+        "symptomScore": 0.4,
+        "latitude": 15.4933554,
+        "longitude": 73.8228378
+      },
+      "modelDetails": {
+        "mode": "xgboost_live_weather",
+        "rawModelLabel": "flood",
+        "cropEncoderValue": 54,
+        "cropModelValue": "other oilseeds",
+        "featureVector": {
+          "crop_encoded": 54.0,
+          "rain_anomaly": 1.8348,
+          "temp_anomaly": 0.0513,
+          "humidity_anomaly": -0.1146,
+          "symptom_score": 0.4
+        },
+        "weatherSource": "Open-Meteo Archive API",
+        "weatherMessage": "Fetched 107 daily records from 2026-01-01 to 2026-04-17; season window was clipped to available historical data"
+      }
+    }
+  },
+  {
+    "id": 26,
+    "createdAt": "2026-04-18T12:54:24.884665+00:00",
+    "request": {
+      "crop": "Soybean",
+      "state": "Goa",
+      "district": "North Goa",
+      "sowingDate": "2026-01-01",
+      "symptoms": [
+        "nutrient",
+        "fungal"
+      ],
+      "lat": 15.4934341,
+      "lon": 73.822861
+    },
+    "response": {
+      "causeKey": "waterlogging",
+      "causeTitle": "Waterlogging Stress",
+      "confidenceScore": 1.0,
+      "explanation": "सोयाबीन में. Aaj ka Easy step: Avoid more irrigation: Pause irrigation until the top soil starts drying and roots get air again.",
+      "weatherPhases": [
+        {
+          "phase": "Early",
+          "startDate": "2026-01-01",
+          "endDate": "2026-02-09",
+          "status": "Severe Anomaly",
+          "dataDays": 40,
+          "rainfallMm": 1.0,
+          "expectedRainfallMm": 5.12,
+          "rainAnomaly": -0.8047,
+          "rainfallDeviationPct": -80.5,
+          "avgTempC": 26.58,
+          "expectedTempC": 27.28,
+          "tempAnomaly": -0.0258,
+          "temperatureDeviationPct": -2.6,
+          "avgHumidityPct": 61.12,
+          "expectedHumidityPct": 69.04,
+          "humidityAnomaly": -0.1146,
+          "humidityDeviationPct": -11.5,
+          "isolationScore": 0.0587
+        },
+        {
+          "phase": "Mid",
+          "startDate": "2026-02-10",
+          "endDate": "2026-03-21",
+          "status": "Moderate Anomaly",
+          "dataDays": 40,
+          "rainfallMm": 2.9,
+          "expectedRainfallMm": 5.12,
+          "rainAnomaly": -0.4338,
+          "rainfallDeviationPct": -43.4,
+          "avgTempC": 27.04,
+          "expectedTempC": 27.28,
+          "tempAnomaly": -0.0088,
+          "temperatureDeviationPct": -0.9,
+          "avgHumidityPct": 72.7,
+          "expectedHumidityPct": 69.04,
+          "humidityAnomaly": 0.0531,
+          "humidityDeviationPct": 5.3,
+          "isolationScore": 0.0763
+        },
+        {
+          "phase": "Late",
+          "startDate": "2026-03-22",
+          "endDate": "2026-04-17",
+          "status": "Severe Anomaly",
+          "dataDays": 27,
+          "rainfallMm": 9.8,
+          "expectedRainfallMm": 3.46,
+          "rainAnomaly": 1.8348,
+          "rainfallDeviationPct": 183.5,
+          "avgTempC": 28.68,
+          "expectedTempC": 27.28,
+          "tempAnomaly": 0.0513,
+          "temperatureDeviationPct": 5.1,
+          "avgHumidityPct": 75.33,
+          "expectedHumidityPct": 69.04,
+          "humidityAnomaly": 0.0912,
+          "humidityDeviationPct": 9.1,
+          "isolationScore": 0.06
+        }
+      ],
+      "recommendations": [
+        {
+          "title": "Open drainage channels",
+          "detail": "Create shallow side channels so extra water can leave the plot within 24 hours.",
+          "priority": "High",
+          "effort_level": "Medium"
+        },
+        {
+          "title": "Avoid more irrigation",
+          "detail": "Pause irrigation until the top soil starts drying and roots get air again.",
+          "priority": "High",
+          "effort_level": "Easy"
+        },
+        {
+          "title": "Watch root health",
+          "detail": "Uproot one weak plant and check for black, soft, or foul-smelling roots.",
+          "priority": "Medium",
+          "effort_level": "Easy"
+        }
+      ],
+      "inputSummary": {
+        "crop": "Soybean",
+        "state": "Goa",
+        "district": "North Goa",
+        "sowingDate": "2026-01-01",
+        "season": "rabi",
+        "normalizedSymptoms": [
+          "nutrient",
+          "fungal"
+        ],
+        "symptomScore": 0.4,
+        "latitude": 15.4934341,
+        "longitude": 73.822861
+      },
+      "modelDetails": {
+        "mode": "xgboost_live_weather",
+        "rawModelLabel": "flood",
+        "cropEncoderValue": 45,
+        "cropModelValue": "Soyabean",
+        "featureVector": {
+          "crop_encoded": 45.0,
+          "rain_anomaly": 1.8348,
+          "temp_anomaly": 0.0513,
+          "humidity_anomaly": -0.1146,
+          "symptom_score": 0.4
+        },
+        "weatherSource": "Open-Meteo Archive API",
+        "weatherMessage": "Fetched 107 daily records from 2026-01-01 to 2026-04-17; season window was clipped to available historical data"
+      }
+    }
+  },
+  {
+    "id": 27,
+    "createdAt": "2026-04-18T13:01:34.142625+00:00",
+    "request": {
+      "crop": "Kapas",
+      "state": "Goa",
+      "district": "North Goa",
+      "sowingDate": "2026-01-01",
+      "symptoms": [
+        "pest"
+      ],
+      "lat": 15.4934581,
+      "lon": 73.8228721
+    },
+    "response": {
+      "causeKey": "waterlogging",
+      "causeTitle": "Waterlogging Stress",
+      "confidenceScore": 1.0,
+      "explanation": "North Goa ke kapas. Aaj ka Easy step: Avoid more irrigation: Pause irrigation until the top soil starts drying and roots get air again.",
+      "weatherPhases": [
+        {
+          "phase": "Early",
+          "startDate": "2026-01-01",
+          "endDate": "2026-02-09",
+          "status": "Severe Anomaly",
+          "dataDays": 40,
+          "rainfallMm": 1.0,
+          "expectedRainfallMm": 5.12,
+          "rainAnomaly": -0.8047,
+          "rainfallDeviationPct": -80.5,
+          "avgTempC": 26.58,
+          "expectedTempC": 27.28,
+          "tempAnomaly": -0.0258,
+          "temperatureDeviationPct": -2.6,
+          "avgHumidityPct": 61.12,
+          "expectedHumidityPct": 69.04,
+          "humidityAnomaly": -0.1146,
+          "humidityDeviationPct": -11.5,
+          "isolationScore": 0.0587
+        },
+        {
+          "phase": "Mid",
+          "startDate": "2026-02-10",
+          "endDate": "2026-03-21",
+          "status": "Moderate Anomaly",
+          "dataDays": 40,
+          "rainfallMm": 2.9,
+          "expectedRainfallMm": 5.12,
+          "rainAnomaly": -0.4338,
+          "rainfallDeviationPct": -43.4,
+          "avgTempC": 27.04,
+          "expectedTempC": 27.28,
+          "tempAnomaly": -0.0088,
+          "temperatureDeviationPct": -0.9,
+          "avgHumidityPct": 72.7,
+          "expectedHumidityPct": 69.04,
+          "humidityAnomaly": 0.0531,
+          "humidityDeviationPct": 5.3,
+          "isolationScore": 0.0763
+        },
+        {
+          "phase": "Late",
+          "startDate": "2026-03-22",
+          "endDate": "2026-04-17",
+          "status": "Severe Anomaly",
+          "dataDays": 27,
+          "rainfallMm": 9.8,
+          "expectedRainfallMm": 3.46,
+          "rainAnomaly": 1.8348,
+          "rainfallDeviationPct": 183.5,
+          "avgTempC": 28.68,
+          "expectedTempC": 27.28,
+          "tempAnomaly": 0.0513,
+          "temperatureDeviationPct": 5.1,
+          "avgHumidityPct": 75.33,
+          "expectedHumidityPct": 69.04,
+          "humidityAnomaly": 0.0912,
+          "humidityDeviationPct": 9.1,
+          "isolationScore": 0.06
+        }
+      ],
+      "recommendations": [
+        {
+          "title": "Open drainage channels",
+          "detail": "Create shallow side channels so extra water can leave the plot within 24 hours.",
+          "priority": "High",
+          "effort_level": "Medium"
+        },
+        {
+          "title": "Avoid more irrigation",
+          "detail": "Pause irrigation until the top soil starts drying and roots get air again.",
+          "priority": "High",
+          "effort_level": "Easy"
+        },
+        {
+          "title": "Watch root health",
+          "detail": "Uproot one weak plant and check for black, soft, or foul-smelling roots.",
+          "priority": "Medium",
+          "effort_level": "Easy"
+        }
+      ],
+      "inputSummary": {
+        "crop": "Kapas",
+        "state": "Goa",
+        "district": "North Goa",
+        "sowingDate": "2026-01-01",
+        "season": "rabi",
+        "normalizedSymptoms": [
+          "pest"
+        ],
+        "symptomScore": 0.2,
+        "latitude": 15.4934581,
+        "longitude": 73.8228721
+      },
+      "modelDetails": {
+        "mode": "xgboost_live_weather",
+        "rawModelLabel": "flood",
+        "cropEncoderValue": 11,
+        "cropModelValue": "Cotton(lint)",
+        "featureVector": {
+          "crop_encoded": 11.0,
+          "rain_anomaly": 1.8348,
+          "temp_anomaly": 0.0513,
+          "humidity_anomaly": -0.1146,
+          "symptom_score": 0.2
+        },
+        "weatherSource": "Open-Meteo Archive API",
+        "weatherMessage": "Fetched 107 daily records from 2026-01-01 to 2026-04-17; season window was clipped to available historical data"
+      }
+    }
+  },
+  {
+    "id": 28,
+    "createdAt": "2026-04-18T15:29:41.403138+00:00",
+    "request": {
+      "crop": "Kapas",
+      "state": "Goa",
+      "district": "North Goa",
+      "sowingDate": "2026-01-01",
+      "symptoms": [
+        "nutrient",
+        "drought"
+      ],
+      "lat": 15.4934931,
+      "lon": 73.8228535
+    },
+    "response": {
+      "causeKey": "waterlogging",
+      "causeTitle": "Waterlogging Stress",
+      "confidenceScore": 1.0,
+      "explanation": "North Goa ke kapas. Aaj ka Easy step: Avoid more irrigation: Pause irrigation until the top soil starts drying and roots get air again.",
+      "weatherPhases": [
+        {
+          "phase": "Early",
+          "startDate": "2026-01-01",
+          "endDate": "2026-02-09",
+          "status": "Severe Anomaly",
+          "dataDays": 40,
+          "rainfallMm": 1.0,
+          "expectedRainfallMm": 5.12,
+          "rainAnomaly": -0.8047,
+          "rainfallDeviationPct": -80.5,
+          "avgTempC": 26.58,
+          "expectedTempC": 27.28,
+          "tempAnomaly": -0.0258,
+          "temperatureDeviationPct": -2.6,
+          "avgHumidityPct": 61.12,
+          "expectedHumidityPct": 69.04,
+          "humidityAnomaly": -0.1146,
+          "humidityDeviationPct": -11.5,
+          "isolationScore": 0.0587
+        },
+        {
+          "phase": "Mid",
+          "startDate": "2026-02-10",
+          "endDate": "2026-03-21",
+          "status": "Moderate Anomaly",
+          "dataDays": 40,
+          "rainfallMm": 2.9,
+          "expectedRainfallMm": 5.12,
+          "rainAnomaly": -0.4338,
+          "rainfallDeviationPct": -43.4,
+          "avgTempC": 27.04,
+          "expectedTempC": 27.28,
+          "tempAnomaly": -0.0088,
+          "temperatureDeviationPct": -0.9,
+          "avgHumidityPct": 72.7,
+          "expectedHumidityPct": 69.04,
+          "humidityAnomaly": 0.0531,
+          "humidityDeviationPct": 5.3,
+          "isolationScore": 0.0763
+        },
+        {
+          "phase": "Late",
+          "startDate": "2026-03-22",
+          "endDate": "2026-04-17",
+          "status": "Severe Anomaly",
+          "dataDays": 27,
+          "rainfallMm": 9.8,
+          "expectedRainfallMm": 3.46,
+          "rainAnomaly": 1.8348,
+          "rainfallDeviationPct": 183.5,
+          "avgTempC": 28.68,
+          "expectedTempC": 27.28,
+          "tempAnomaly": 0.0513,
+          "temperatureDeviationPct": 5.1,
+          "avgHumidityPct": 75.33,
+          "expectedHumidityPct": 69.04,
+          "humidityAnomaly": 0.0912,
+          "humidityDeviationPct": 9.1,
+          "isolationScore": 0.06
+        }
+      ],
+      "recommendations": [
+        {
+          "advice_key": "open_drainage_channels",
+          "title": "Open drainage channels",
+          "detail": "Create shallow side channels so extra water can leave the plot within 24 hours.",
+          "priority": "High",
+          "effort_level": "Medium"
+        },
+        {
+          "advice_key": "avoid_more_irrigation",
+          "title": "Avoid more irrigation",
+          "detail": "Pause irrigation until the top soil starts drying and roots get air again.",
+          "priority": "High",
+          "effort_level": "Easy"
+        },
+        {
+          "advice_key": "watch_root_health",
+          "title": "Watch root health",
+          "detail": "Uproot one weak plant and check for black, soft, or foul-smelling roots.",
+          "priority": "Medium",
+          "effort_level": "Easy"
+        }
+      ],
+      "inputSummary": {
+        "crop": "Kapas",
+        "state": "Goa",
+        "district": "North Goa",
+        "sowingDate": "2026-01-01",
+        "season": "rabi",
+        "normalizedSymptoms": [
+          "nutrient",
+          "drought"
+        ],
+        "symptomScore": 0.4,
+        "latitude": 15.4934931,
+        "longitude": 73.8228535
+      },
+      "modelDetails": {
+        "mode": "xgboost_live_weather",
+        "rawModelLabel": "flood",
+        "cropEncoderValue": 11,
+        "cropModelValue": "Cotton(lint)",
+        "featureVector": {
+          "crop_encoded": 11.0,
+          "rain_anomaly": 1.8348,
+          "temp_anomaly": 0.0513,
+          "humidity_anomaly": -0.1146,
+          "symptom_score": 0.4
+        },
+        "weatherSource": "Open-Meteo Archive API",
+        "weatherMessage": "Fetched 107 daily records from 2026-01-01 to 2026-04-17; season window was clipped to available historical data"
+      }
+    }
+  },
+  {
+    "id": 29,
+    "createdAt": "2026-04-18T15:40:45.961298+00:00",
+    "request": {
+      "crop": "Kapas",
+      "state": "Goa",
+      "district": "North Goa",
+      "sowingDate": "2026-01-01",
+      "symptoms": [
+        "nutrient",
+        "fungal"
+      ],
+      "lat": 15.4934601,
+      "lon": 73.8228649
+    },
+    "response": {
+      "causeKey": "waterlogging",
+      "causeTitle": "Waterlogging Stress",
+      "confidenceScore": 1.0,
+      "explanation": "गोवा के. Aaj ka Easy step: Avoid more irrigation: Pause irrigation until the top soil starts drying and roots get air again.",
+      "weatherPhases": [
+        {
+          "phase": "Early",
+          "startDate": "2026-01-01",
+          "endDate": "2026-02-09",
+          "status": "Severe Anomaly",
+          "dataDays": 40,
+          "rainfallMm": 1.0,
+          "expectedRainfallMm": 5.12,
+          "rainAnomaly": -0.8047,
+          "rainfallDeviationPct": -80.5,
+          "avgTempC": 26.58,
+          "expectedTempC": 27.28,
+          "tempAnomaly": -0.0258,
+          "temperatureDeviationPct": -2.6,
+          "avgHumidityPct": 61.12,
+          "expectedHumidityPct": 69.04,
+          "humidityAnomaly": -0.1146,
+          "humidityDeviationPct": -11.5,
+          "isolationScore": 0.0587
+        },
+        {
+          "phase": "Mid",
+          "startDate": "2026-02-10",
+          "endDate": "2026-03-21",
+          "status": "Moderate Anomaly",
+          "dataDays": 40,
+          "rainfallMm": 2.9,
+          "expectedRainfallMm": 5.12,
+          "rainAnomaly": -0.4338,
+          "rainfallDeviationPct": -43.4,
+          "avgTempC": 27.04,
+          "expectedTempC": 27.28,
+          "tempAnomaly": -0.0088,
+          "temperatureDeviationPct": -0.9,
+          "avgHumidityPct": 72.7,
+          "expectedHumidityPct": 69.04,
+          "humidityAnomaly": 0.0531,
+          "humidityDeviationPct": 5.3,
+          "isolationScore": 0.0763
+        },
+        {
+          "phase": "Late",
+          "startDate": "2026-03-22",
+          "endDate": "2026-04-17",
+          "status": "Severe Anomaly",
+          "dataDays": 27,
+          "rainfallMm": 9.8,
+          "expectedRainfallMm": 3.46,
+          "rainAnomaly": 1.8348,
+          "rainfallDeviationPct": 183.5,
+          "avgTempC": 28.68,
+          "expectedTempC": 27.28,
+          "tempAnomaly": 0.0513,
+          "temperatureDeviationPct": 5.1,
+          "avgHumidityPct": 75.33,
+          "expectedHumidityPct": 69.04,
+          "humidityAnomaly": 0.0912,
+          "humidityDeviationPct": 9.1,
+          "isolationScore": 0.06
+        }
+      ],
+      "recommendations": [
+        {
+          "advice_key": "open_drainage_channels",
+          "title": "Open drainage channels",
+          "detail": "Create shallow side channels so extra water can leave the plot within 24 hours.",
+          "priority": "High",
+          "effort_level": "Medium"
+        },
+        {
+          "advice_key": "avoid_more_irrigation",
+          "title": "Avoid more irrigation",
+          "detail": "Pause irrigation until the top soil starts drying and roots get air again.",
+          "priority": "High",
+          "effort_level": "Easy"
+        },
+        {
+          "advice_key": "watch_root_health",
+          "title": "Watch root health",
+          "detail": "Uproot one weak plant and check for black, soft, or foul-smelling roots.",
+          "priority": "Medium",
+          "effort_level": "Easy"
+        }
+      ],
+      "inputSummary": {
+        "crop": "Kapas",
+        "state": "Goa",
+        "district": "North Goa",
+        "sowingDate": "2026-01-01",
+        "season": "rabi",
+        "normalizedSymptoms": [
+          "nutrient",
+          "fungal"
+        ],
+        "symptomScore": 0.4,
+        "latitude": 15.4934601,
+        "longitude": 73.8228649
+      },
+      "modelDetails": {
+        "mode": "xgboost_live_weather",
+        "rawModelLabel": "flood",
+        "cropEncoderValue": 11,
+        "cropModelValue": "Cotton(lint)",
+        "featureVector": {
+          "crop_encoded": 11.0,
+          "rain_anomaly": 1.8348,
+          "temp_anomaly": 0.0513,
+          "humidity_anomaly": -0.1146,
+          "symptom_score": 0.4
+        },
+        "weatherSource": "Open-Meteo Archive API",
+        "weatherMessage": "Fetched 107 daily records from 2026-01-01 to 2026-04-17; season window was clipped to available historical data"
+      }
+    }
+  },
+  {
+    "id": 30,
+    "createdAt": "2026-04-18T15:47:13.336322+00:00",
+    "request": {
+      "crop": "Soybean",
+      "state": "Rajasthan",
+      "district": "Udaipur",
+      "sowingDate": "2026-01-01",
+      "symptoms": [
+        "drought",
+        "heat"
+      ],
+      "lat": 24.5854,
+      "lon": 73.7125
+    },
+    "response": {
+      "causeKey": "waterlogging",
+      "causeTitle": "Waterlogging Stress",
+      "confidenceScore": 1.0,
+      "explanation": "सोयाबीन. Aaj ka Easy step: Avoid more irrigation: Pause irrigation until the top soil starts drying and roots get air again.",
+      "weatherPhases": [
+        {
+          "phase": "Early",
+          "startDate": "2026-01-01",
+          "endDate": "2026-02-09",
+          "status": "Severe Anomaly",
+          "dataDays": 40,
+          "rainfallMm": 1.3,
+          "expectedRainfallMm": 4.86,
+          "rainAnomaly": -0.7325,
+          "rainfallDeviationPct": -73.2,
+          "avgTempC": 17.07,
+          "expectedTempC": 22.27,
+          "tempAnomaly": -0.2336,
+          "temperatureDeviationPct": -23.4,
+          "avgHumidityPct": 63.17,
+          "expectedHumidityPct": 46.86,
+          "humidityAnomaly": 0.3482,
+          "humidityDeviationPct": 34.8,
+          "isolationScore": 0.0455
+        },
+        {
+          "phase": "Mid",
+          "startDate": "2026-02-10",
+          "endDate": "2026-03-21",
+          "status": "Severe Anomaly",
+          "dataDays": 40,
+          "rainfallMm": 2.2,
+          "expectedRainfallMm": 4.86,
+          "rainAnomaly": -0.5473,
+          "rainfallDeviationPct": -54.7,
+          "avgTempC": 24.23,
+          "expectedTempC": 22.27,
+          "tempAnomaly": 0.088,
+          "temperatureDeviationPct": 8.8,
+          "avgHumidityPct": 38.12,
+          "expectedHumidityPct": 46.86,
+          "humidityAnomaly": -0.1864,
+          "humidityDeviationPct": -18.6,
+          "isolationScore": 0.0757
+        },
+        {
+          "phase": "Late",
+          "startDate": "2026-03-22",
+          "endDate": "2026-04-17",
+          "status": "Severe Anomaly",
+          "dataDays": 27,
+          "rainfallMm": 9.5,
+          "expectedRainfallMm": 3.28,
+          "rainAnomaly": 1.896,
+          "rainfallDeviationPct": 189.6,
+          "avgTempC": 27.07,
+          "expectedTempC": 22.27,
+          "tempAnomaly": 0.2158,
+          "temperatureDeviationPct": 21.6,
+          "avgHumidityPct": 35.63,
+          "expectedHumidityPct": 46.86,
+          "humidityAnomaly": -0.2397,
+          "humidityDeviationPct": -24.0,
+          "isolationScore": 0.044
+        }
+      ],
+      "recommendations": [
+        {
+          "advice_key": "open_drainage_channels",
+          "title": "Open drainage channels",
+          "detail": "Create shallow side channels so extra water can leave the plot within 24 hours.",
+          "priority": "High",
+          "effort_level": "Medium"
+        },
+        {
+          "advice_key": "avoid_more_irrigation",
+          "title": "Avoid more irrigation",
+          "detail": "Pause irrigation until the top soil starts drying and roots get air again.",
+          "priority": "High",
+          "effort_level": "Easy"
+        },
+        {
+          "advice_key": "watch_root_health",
+          "title": "Watch root health",
+          "detail": "Uproot one weak plant and check for black, soft, or foul-smelling roots.",
+          "priority": "Medium",
+          "effort_level": "Easy"
+        }
+      ],
+      "inputSummary": {
+        "crop": "Soybean",
+        "state": "Rajasthan",
+        "district": "Udaipur",
+        "sowingDate": "2026-01-01",
+        "season": "rabi",
+        "normalizedSymptoms": [
+          "drought",
+          "heat"
+        ],
+        "symptomScore": 0.4,
+        "latitude": 24.5854,
+        "longitude": 73.7125
+      },
+      "modelDetails": {
+        "mode": "xgboost_live_weather",
+        "rawModelLabel": "flood",
+        "cropEncoderValue": 45,
+        "cropModelValue": "Soyabean",
+        "featureVector": {
+          "crop_encoded": 45.0,
+          "rain_anomaly": 1.896,
+          "temp_anomaly": -0.2336,
+          "humidity_anomaly": 0.3482,
+          "symptom_score": 0.4
+        },
+        "weatherSource": "Open-Meteo Archive API",
+        "weatherMessage": "Fetched 107 daily records from 2026-01-01 to 2026-04-17; season window was clipped to available historical data"
+      }
+    }
+  },
+  {
+    "id": 31,
+    "createdAt": "2026-04-18T15:48:35.153446+00:00",
+    "request": {
+      "crop": "Gehu",
+      "state": "Goa",
+      "district": "North Goa",
+      "sowingDate": "2025-07-01",
+      "symptoms": [
+        "nutrient",
+        "pest"
+      ],
+      "lat": 15.4934984,
+      "lon": 73.8228484
+    },
+    "response": {
+      "causeKey": "normal",
+      "causeTitle": "No Major Failure Signal",
+      "confidenceScore": 1.0,
+      "explanation": "North Goa ke kisan. Aaj ka Easy step: Keep monitoring the crop: No strong failure signal was detected, so continue weekly field checks.",
+      "weatherPhases": [
+        {
+          "phase": "Early",
+          "startDate": "2025-07-01",
+          "endDate": "2025-08-09",
+          "status": "Mild Anomaly",
+          "dataDays": 40,
+          "rainfallMm": 863.5,
+          "expectedRainfallMm": 702.63,
+          "rainAnomaly": 0.2289,
+          "rainfallDeviationPct": 22.9,
+          "avgTempC": 25.95,
+          "expectedTempC": 26.07,
+          "tempAnomaly": -0.0047,
+          "temperatureDeviationPct": -0.5,
+          "avgHumidityPct": 89.38,
+          "expectedHumidityPct": 89.36,
+          "humidityAnomaly": 0.0002,
+          "humidityDeviationPct": 0.0,
+          "isolationScore": 0.0443
+        },
+        {
+          "phase": "Mid",
+          "startDate": "2025-08-10",
+          "endDate": "2025-09-18",
+          "status": "Mild Anomaly",
+          "dataDays": 40,
+          "rainfallMm": 778.0,
+          "expectedRainfallMm": 702.63,
+          "rainAnomaly": 0.1073,
+          "rainfallDeviationPct": 10.7,
+          "avgTempC": 25.57,
+          "expectedTempC": 26.07,
+          "tempAnomaly": -0.0195,
+          "temperatureDeviationPct": -1.9,
+          "avgHumidityPct": 90.33,
+          "expectedHumidityPct": 89.36,
+          "humidityAnomaly": 0.0108,
+          "humidityDeviationPct": 1.1,
+          "isolationScore": 0.047
+        },
+        {
+          "phase": "Late",
+          "startDate": "2025-09-19",
+          "endDate": "2025-10-28",
+          "status": "Moderate Anomaly",
+          "dataDays": 40,
+          "rainfallMm": 466.4,
+          "expectedRainfallMm": 702.63,
+          "rainAnomaly": -0.3362,
+          "rainfallDeviationPct": -33.6,
+          "avgTempC": 26.71,
+          "expectedTempC": 26.07,
+          "tempAnomaly": 0.0242,
+          "temperatureDeviationPct": 2.4,
+          "avgHumidityPct": 88.38,
+          "expectedHumidityPct": 89.36,
+          "humidityAnomaly": -0.011,
+          "humidityDeviationPct": -1.1,
+          "isolationScore": 0.0165
+        }
+      ],
+      "recommendations": [
+        {
+          "advice_key": "keep_monitoring_the_crop",
+          "title": "Keep monitoring the crop",
+          "detail": "No strong failure signal was detected, so continue weekly field checks.",
+          "priority": "Low",
+          "effort_level": "Easy"
+        },
+        {
+          "advice_key": "verify_with_local_advisory",
+          "title": "Verify with local advisory",
+          "detail": "If symptoms spread, confirm with a local extension worker before treatment.",
+          "priority": "Medium",
+          "effort_level": "Easy"
+        }
+      ],
+      "inputSummary": {
+        "crop": "Gehu",
+        "state": "Goa",
+        "district": "North Goa",
+        "sowingDate": "2025-07-01",
+        "season": "kharif",
+        "normalizedSymptoms": [
+          "nutrient",
+          "pest"
+        ],
+        "symptomScore": 0.4,
+        "latitude": 15.4934984,
+        "longitude": 73.8228484
+      },
+      "modelDetails": {
+        "mode": "xgboost_live_weather",
+        "rawModelLabel": "normal",
+        "cropEncoderValue": 54,
+        "cropModelValue": "other oilseeds",
+        "featureVector": {
+          "crop_encoded": 54.0,
+          "rain_anomaly": -0.3362,
+          "temp_anomaly": 0.0242,
+          "humidity_anomaly": -0.011,
+          "symptom_score": 0.4
+        },
+        "weatherSource": "Open-Meteo Archive API",
+        "weatherMessage": "Fetched 120 daily records from 2025-07-01 to 2025-10-28"
+      }
+    }
+  },
+  {
+    "id": 32,
+    "createdAt": "2026-04-18T15:49:19.527517+00:00",
+    "request": {
+      "crop": "Makka",
+      "state": "Goa",
+      "district": "North Goa",
+      "sowingDate": "2026-01-01",
+      "symptoms": [
+        "pest",
+        "fungal"
+      ],
+      "lat": 15.4934864,
+      "lon": 73.8228826
+    },
+    "response": {
+      "causeKey": "waterlogging",
+      "causeTitle": "Waterlogging Stress",
+      "confidenceScore": 1.0,
+      "explanation": "नॉर्थ गोवा के. Aaj ka Easy step: Avoid more irrigation: Pause irrigation until the top soil starts drying and roots get air again.",
+      "weatherPhases": [
+        {
+          "phase": "Early",
+          "startDate": "2026-01-01",
+          "endDate": "2026-02-09",
+          "status": "Severe Anomaly",
+          "dataDays": 40,
+          "rainfallMm": 1.0,
+          "expectedRainfallMm": 5.12,
+          "rainAnomaly": -0.8047,
+          "rainfallDeviationPct": -80.5,
+          "avgTempC": 26.58,
+          "expectedTempC": 27.28,
+          "tempAnomaly": -0.0258,
+          "temperatureDeviationPct": -2.6,
+          "avgHumidityPct": 61.12,
+          "expectedHumidityPct": 69.04,
+          "humidityAnomaly": -0.1146,
+          "humidityDeviationPct": -11.5,
+          "isolationScore": 0.0587
+        },
+        {
+          "phase": "Mid",
+          "startDate": "2026-02-10",
+          "endDate": "2026-03-21",
+          "status": "Moderate Anomaly",
+          "dataDays": 40,
+          "rainfallMm": 2.9,
+          "expectedRainfallMm": 5.12,
+          "rainAnomaly": -0.4338,
+          "rainfallDeviationPct": -43.4,
+          "avgTempC": 27.04,
+          "expectedTempC": 27.28,
+          "tempAnomaly": -0.0088,
+          "temperatureDeviationPct": -0.9,
+          "avgHumidityPct": 72.7,
+          "expectedHumidityPct": 69.04,
+          "humidityAnomaly": 0.0531,
+          "humidityDeviationPct": 5.3,
+          "isolationScore": 0.0763
+        },
+        {
+          "phase": "Late",
+          "startDate": "2026-03-22",
+          "endDate": "2026-04-17",
+          "status": "Severe Anomaly",
+          "dataDays": 27,
+          "rainfallMm": 9.8,
+          "expectedRainfallMm": 3.46,
+          "rainAnomaly": 1.8348,
+          "rainfallDeviationPct": 183.5,
+          "avgTempC": 28.68,
+          "expectedTempC": 27.28,
+          "tempAnomaly": 0.0513,
+          "temperatureDeviationPct": 5.1,
+          "avgHumidityPct": 75.33,
+          "expectedHumidityPct": 69.04,
+          "humidityAnomaly": 0.0912,
+          "humidityDeviationPct": 9.1,
+          "isolationScore": 0.06
+        }
+      ],
+      "recommendations": [
+        {
+          "advice_key": "open_drainage_channels",
+          "title": "Open drainage channels",
+          "detail": "Create shallow side channels so extra water can leave the plot within 24 hours.",
+          "priority": "High",
+          "effort_level": "Medium"
+        },
+        {
+          "advice_key": "avoid_more_irrigation",
+          "title": "Avoid more irrigation",
+          "detail": "Pause irrigation until the top soil starts drying and roots get air again.",
+          "priority": "High",
+          "effort_level": "Easy"
+        },
+        {
+          "advice_key": "watch_root_health",
+          "title": "Watch root health",
+          "detail": "Uproot one weak plant and check for black, soft, or foul-smelling roots.",
+          "priority": "Medium",
+          "effort_level": "Easy"
+        }
+      ],
+      "inputSummary": {
+        "crop": "Makka",
+        "state": "Goa",
+        "district": "North Goa",
+        "sowingDate": "2026-01-01",
+        "season": "rabi",
+        "normalizedSymptoms": [
+          "pest",
+          "fungal"
+        ],
+        "symptomScore": 0.4,
+        "latitude": 15.4934864,
+        "longitude": 73.8228826
+      },
+      "modelDetails": {
+        "mode": "xgboost_live_weather",
+        "rawModelLabel": "flood",
+        "cropEncoderValue": 54,
+        "cropModelValue": "other oilseeds",
+        "featureVector": {
+          "crop_encoded": 54.0,
+          "rain_anomaly": 1.8348,
+          "temp_anomaly": 0.0513,
+          "humidity_anomaly": -0.1146,
+          "symptom_score": 0.4
+        },
+        "weatherSource": "Open-Meteo Archive API",
+        "weatherMessage": "Fetched 107 daily records from 2026-01-01 to 2026-04-17; season window was clipped to available historical data"
+      }
+    }
+  },
+  {
+    "id": 33,
+    "createdAt": "2026-04-18T15:49:37.719275+00:00",
+    "request": {
+      "crop": "Bajra",
+      "state": "Goa",
+      "district": "North Goa",
+      "sowingDate": "2026-02-01",
+      "symptoms": [
+        "pest"
+      ],
+      "lat": 15.4935001,
+      "lon": 73.8228488
+    },
+    "response": {
+      "causeKey": "waterlogging",
+      "causeTitle": "Waterlogging Stress",
+      "confidenceScore": 1.0,
+      "explanation": "नॉर्थ गोवा. Aaj ka Easy step: Avoid more irrigation: Pause irrigation until the top soil starts drying and roots get air again.",
+      "weatherPhases": [
+        {
+          "phase": "Early",
+          "startDate": "2026-02-01",
+          "endDate": "2026-03-12",
+          "status": "Severe Anomaly",
+          "dataDays": 40,
+          "rainfallMm": 0.9,
+          "expectedRainfallMm": 6.68,
+          "rainAnomaly": -0.8654,
+          "rainfallDeviationPct": -86.5,
+          "avgTempC": 26.94,
+          "expectedTempC": 27.64,
+          "tempAnomaly": -0.0254,
+          "temperatureDeviationPct": -2.5,
+          "avgHumidityPct": 69.6,
+          "expectedHumidityPct": 72.16,
+          "humidityAnomaly": -0.0354,
+          "humidityDeviationPct": -3.5,
+          "isolationScore": 0.0506
+        },
+        {
+          "phase": "Mid",
+          "startDate": "2026-03-13",
+          "endDate": "2026-04-17",
+          "status": "Severe Anomaly",
+          "dataDays": 36,
+          "rainfallMm": 11.8,
+          "expectedRainfallMm": 6.02,
+          "rainAnomaly": 0.9615,
+          "rainfallDeviationPct": 96.2,
+          "avgTempC": 28.42,
+          "expectedTempC": 27.64,
+          "tempAnomaly": 0.0282,
+          "temperatureDeviationPct": 2.8,
+          "avgHumidityPct": 75.0,
+          "expectedHumidityPct": 72.16,
+          "humidityAnomaly": 0.0394,
+          "humidityDeviationPct": 3.9,
+          "isolationScore": 0.0769
+        },
+        {
+          "phase": "Late",
+          "status": "Unavailable",
+          "dataDays": 0,
+          "rainfallMm": 0.0,
+          "expectedRainfallMm": 0.0,
+          "rainAnomaly": 0.0,
+          "avgTempC": 0.0,
+          "expectedTempC": 27.64,
+          "tempAnomaly": 0.0,
+          "avgHumidityPct": 0.0,
+          "expectedHumidityPct": 72.16,
+          "humidityAnomaly": 0.0,
+          "isolationScore": 0.0
+        }
+      ],
+      "recommendations": [
+        {
+          "advice_key": "open_drainage_channels",
+          "title": "Open drainage channels",
+          "detail": "Create shallow side channels so extra water can leave the plot within 24 hours.",
+          "priority": "High",
+          "effort_level": "Medium"
+        },
+        {
+          "advice_key": "avoid_more_irrigation",
+          "title": "Avoid more irrigation",
+          "detail": "Pause irrigation until the top soil starts drying and roots get air again.",
+          "priority": "High",
+          "effort_level": "Easy"
+        },
+        {
+          "advice_key": "watch_root_health",
+          "title": "Watch root health",
+          "detail": "Uproot one weak plant and check for black, soft, or foul-smelling roots.",
+          "priority": "Medium",
+          "effort_level": "Easy"
+        }
+      ],
+      "inputSummary": {
+        "crop": "Bajra",
+        "state": "Goa",
+        "district": "North Goa",
+        "sowingDate": "2026-02-01",
+        "season": "rabi",
+        "normalizedSymptoms": [
+          "pest"
+        ],
+        "symptomScore": 0.2,
+        "latitude": 15.4935001,
+        "longitude": 73.8228488
+      },
+      "modelDetails": {
+        "mode": "xgboost_live_weather",
+        "rawModelLabel": "flood",
+        "cropEncoderValue": 2,
+        "cropModelValue": "Bajra",
+        "featureVector": {
+          "crop_encoded": 2.0,
+          "rain_anomaly": 0.9615,
+          "temp_anomaly": 0.0282,
+          "humidity_anomaly": 0.0394,
+          "symptom_score": 0.2
+        },
+        "weatherSource": "Open-Meteo Archive API",
+        "weatherMessage": "Fetched 76 daily records from 2026-02-01 to 2026-04-17; season window was clipped to available historical data"
+      }
+    }
   }
 ]

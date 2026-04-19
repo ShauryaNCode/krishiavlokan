@@ -89,8 +89,7 @@ class VoiceSessionManager {
     try {
       await _recorder.start(
         const RecordConfig(
-          encoder: AudioEncoder.aacLc,
-          bitRate: 64000,
+          encoder: AudioEncoder.wav,
           sampleRate: 16000,
           numChannels: 1,
         ),
@@ -186,7 +185,7 @@ class VoiceSessionManager {
 
   String _buildChunkPath() {
     final fileName =
-        'voice_${DateTime.now().microsecondsSinceEpoch.toString()}.m4a';
+        'voice_${DateTime.now().microsecondsSinceEpoch.toString()}.wav';
     return '${Directory.systemTemp.path}${Platform.pathSeparator}$fileName';
   }
 }

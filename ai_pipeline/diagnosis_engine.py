@@ -937,6 +937,7 @@ class DiagnosisEngine:
                 continue
             plan.append(
                 {
+                    "advice_key": self._recommendation_key(title=title, detail=detail, index=index),
                     "title": title or f"Step {index + 1}",
                     "detail": detail,
                     "priority": priority,
@@ -948,12 +949,18 @@ class DiagnosisEngine:
             return plan
         return [
             {
+                "advice_key": "confirm_diagnosis_locally",
                 "title": "Confirm diagnosis locally",
                 "detail": "Verify the crop symptoms with a local extension worker before treatment.",
                 "priority": "High",
                 "effort_level": "Easy",
             }
         ]
+
+    def _recommendation_key(self, title: str, detail: str, index: int) -> str:
+        source = title.strip() or detail.strip() or f"step_{index + 1}"
+        slug = re.sub(r"[^a-z0-9]+", "_", source.lower()).strip("_")
+        return slug or f"step_{index + 1}"
 
     def _recommendation_choice(self, value: Any, allowed_values: Sequence[str], default: str) -> str:
         candidate = str(value or "").replace("_", " ").strip()

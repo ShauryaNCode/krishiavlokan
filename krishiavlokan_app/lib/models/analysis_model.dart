@@ -1,29 +1,10 @@
 // lib/models/analysis_model.dart
-//
-// Updated to match the real backend API response exactly.
-// All fromJson factories parse the live JSON shape.
-// Backward-compatible with mock data — emoji and display status
-// are derived from API strings rather than stored separately.
+// Updated to match the latest backend JSON shape.
 
-/// Maps the API status string → internal display status key.
-/// API sends: "Severe Anomaly" | "Moderate Anomaly" | "Normal" | "Mild Anomaly"
-/// Internal keys drive color + label helpers in shared_widgets.dart.
-String _apiStatusToDisplay(String apiStatus, double rainAnomaly) {
-  final s = apiStatus.toLowerCase();
-  if (s.contains('severe')) {
-    return rainAnomaly >= 0 ? 'veryHigh' : 'veryLow';
-  }
-  if (s.contains('moderate')) {
-    return rainAnomaly >= 0 ? 'high' : 'low';
-  }
-  if (s.contains('mild')) {
-    return rainAnomaly >= 0 ? 'high' : 'low';
-  }
-  return 'normal';
-}
-
-/// Derives a display emoji from the internal status key.
-String _statusEmoji(String displayStatus) => switch (displayStatus) {
+// ─────────────────────────────────────────────────────────────────────────────
+// Status helpers — new API sends internal keys directly (veryLow / low / etc.)
+// ─────────────────────────────────────────────────────────────────────────────
+String _statusEmoji(String status) => switch (status) {
       'veryLow'  => '🔴',
       'low'      => '🟠',
       'high'     => '🔵',
@@ -34,32 +15,26 @@ String _statusEmoji(String displayStatus) => switch (displayStatus) {
 // ─────────────────────────────────────────────────────────────────────────────
 // WeatherPhase
 // ─────────────────────────────────────────────────────────────────────────────
-
 class WeatherPhase {
-  // ── Display fields (used by UI) ───────────────────────────────────────────
-  final String label;          // e.g. "Early\n(Nov–Dec)"
-  final String status;         // internal key: veryLow | low | normal | high | veryHigh
-  final String emoji;          // 🔴 🟠 🟢 🔵
+  final String label;        // UI label e.g. "Early\n(Nov–Dec)"
+  final String status;       // veryLow | low | normal | high | veryHigh
+  final String emoji;
 
-  // ── Raw API fields (available for debug / expanded UI) ────────────────────
-  final String  phase;                 // "Early" | "Mid" | "Late"
-  final String  apiStatus;            // original API string e.g. "Severe Anomaly"
-  final double  rainfallMm;
-  final double  expectedRainfallMm;
-  final double  rainAnomaly;
-  final double  rainfallDeviationPct;
-  final double  avgTempC;
-  final double  expectedTempC;
-  final double  tempAnomaly;
-  final double  temperatureDeviationPct;
-  final double  avgHumidityPct;
-  final double  expectedHumidityPct;
-  final double  humidityAnomaly;
-  final double  humidityDeviationPct;
-  final double  isolationScore;
-  final int     dataDays;
-  final String  startDate;
-  final String  endDate;
+  // ── Raw API fields ─────────────────────────────────────────────────────────
+  final String phase;           // "Early" | "Mid" | "Late"
+  final String apiStatus;       // original API string (same as status in new API)
+  final String idealStatus;     // expected status per crop rule
+  final String metric;          // "rainfall / soil moisture"
+  final double matchScore;      // 0.0–1.0
+  final double rainfallMm;
+  final double avgTempC;
+  final double avgHumidityPct;
+  final String source;          // "mock_fallback" | "open_meteo" etc.
+  final String summary;         // human-readable summary sentence
+
+  // Legacy fields — kept for backward compat, default 0
+  final double rainfallDeviationPct;
+  final double expectedRainfallMm;
 
   WeatherPhase({
     required this.label,
@@ -67,32 +42,26 @@ class WeatherPhase {
     required this.emoji,
     required this.phase,
     required this.apiStatus,
+    this.idealStatus            = '',
+    this.metric                 = '',
+    this.matchScore             = 0.0,
     required this.rainfallMm,
-    required this.expectedRainfallMm,
-    required this.rainAnomaly,
-    required this.rainfallDeviationPct,
     required this.avgTempC,
-    required this.expectedTempC,
-    required this.tempAnomaly,
-    required this.temperatureDeviationPct,
     required this.avgHumidityPct,
-    required this.expectedHumidityPct,
-    required this.humidityAnomaly,
-    required this.humidityDeviationPct,
-    required this.isolationScore,
-    required this.dataDays,
-    required this.startDate,
-    required this.endDate,
+    this.source                 = '',
+    this.summary                = '',
+    this.rainfallDeviationPct   = 0.0,
+    this.expectedRainfallMm     = 0.0,
   });
 
-  /// Parse one element of the "weatherPhases" array from the API.
   factory WeatherPhase.fromJson(Map<String, dynamic> json) {
-    final apiStatus   = (json['status'] as String?) ?? 'Normal';
-    final rainAnomaly = (json['rainAnomaly'] as num?)?.toDouble() ?? 0.0;
-    final display     = _apiStatusToDisplay(apiStatus, rainAnomaly);
-    final phaseLabel  = (json['phase'] as String?) ?? '';
+    final rawStatus  = (json['status'] as String?) ?? 'normal';
+    // New API sends internal keys directly; normalise to lowercase for safety
+    final status     = rawStatus.toLowerCase().replaceAll(' ', '');
+    // Map any legacy strings just in case
+    final display    = _normaliseStatus(status);
+    final phaseLabel = (json['phase'] as String?) ?? '';
 
-    // Build friendly date-range suffix for the label
     final start = (json['startDate'] as String?) ?? '';
     final end   = (json['endDate']   as String?) ?? '';
     final dateRange = (start.isNotEmpty && end.isNotEmpty)
@@ -103,98 +72,114 @@ class WeatherPhase {
         : phaseLabel;
 
     return WeatherPhase(
-      label:                  label,
-      status:                 display,
-      emoji:                  _statusEmoji(display),
-      phase:                  phaseLabel,
-      apiStatus:              apiStatus,
-      rainfallMm:             (json['rainfallMm'] as num?)?.toDouble() ?? 0.0,
-      expectedRainfallMm:     (json['expectedRainfallMm'] as num?)?.toDouble() ?? 0.0,
-      rainAnomaly:            rainAnomaly,
-      rainfallDeviationPct:   (json['rainfallDeviationPct'] as num?)?.toDouble() ?? 0.0,
-      avgTempC:               (json['avgTempC'] as num?)?.toDouble() ?? 0.0,
-      expectedTempC:          (json['expectedTempC'] as num?)?.toDouble() ?? 0.0,
-      tempAnomaly:            (json['tempAnomaly'] as num?)?.toDouble() ?? 0.0,
-      temperatureDeviationPct:(json['temperatureDeviationPct'] as num?)?.toDouble() ?? 0.0,
-      avgHumidityPct:         (json['avgHumidityPct'] as num?)?.toDouble() ?? 0.0,
-      expectedHumidityPct:    (json['expectedHumidityPct'] as num?)?.toDouble() ?? 0.0,
-      humidityAnomaly:        (json['humidityAnomaly'] as num?)?.toDouble() ?? 0.0,
-      humidityDeviationPct:   (json['humidityDeviationPct'] as num?)?.toDouble() ?? 0.0,
-      isolationScore:         (json['isolationScore'] as num?)?.toDouble() ?? 0.0,
-      dataDays:               (json['dataDays'] as num?)?.toInt() ?? 0,
-      startDate:              start,
-      endDate:                end,
+      label:                label,
+      status:               display,
+      emoji:                _statusEmoji(display),
+      phase:                phaseLabel,
+      apiStatus:            rawStatus,
+      idealStatus:          (json['idealStatus']    as String?) ?? '',
+      metric:               (json['metric']         as String?) ?? '',
+      matchScore:           (json['matchScore']     as num?)?.toDouble() ?? 0.0,
+      rainfallMm:           (json['rainfallMm']     as num?)?.toDouble() ?? 0.0,
+      avgTempC:             (json['avgTempC']       as num?)?.toDouble() ?? 0.0,
+      avgHumidityPct:       (json['avgHumidityPct'] as num?)?.toDouble() ?? 0.0,
+      source:               (json['source']         as String?) ?? '',
+      summary:              (json['summary']        as String?) ?? '',
+      // Legacy fields
+      rainfallDeviationPct: (json['rainfallDeviationPct'] as num?)?.toDouble() ?? 0.0,
+      expectedRainfallMm:   (json['expectedRainfallMm']   as num?)?.toDouble() ?? 0.0,
     );
   }
 
-  /// Shortens "2025-11-01" → "Nov'25"
+  static String _normaliseStatus(String s) {
+    if (s == 'verylow'  || s.contains('severe') && s.contains('low'))  return 'veryLow';
+    if (s == 'veryhigh' || s.contains('severe') && s.contains('high')) return 'veryHigh';
+    if (s == 'low'      || s.contains('moderate') && !s.contains('high')) return 'low';
+    if (s == 'high'     || s.contains('high'))  return 'high';
+    return 'normal';
+  }
+
   static String _shortDate(String iso) {
     try {
       final dt = DateTime.parse(iso);
-      const months = ['Jan','Feb','Mar','Apr','May','Jun',
-                      'Jul','Aug','Sep','Oct','Nov','Dec'];
-      return "${months[dt.month - 1]}'${dt.year.toString().substring(2)}";
-    } catch (_) {
-      return iso;
-    }
+      const m = ['Jan','Feb','Mar','Apr','May','Jun',
+                 'Jul','Aug','Sep','Oct','Nov','Dec'];
+      return "${m[dt.month-1]}'${dt.year.toString().substring(2)}";
+    } catch (_) { return iso; }
   }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // RecommendationItem
 // ─────────────────────────────────────────────────────────────────────────────
-
 class RecommendationItem {
-  final String emoji;  // derived from index — API doesn't send emoji
+  final String adviceKey;
+  final String emoji;
   final String title;
   final String detail;
+  final String priority;    // "High" | "Medium" | "Low"
+  final String effortLevel; // "Easy" | "Hard"
 
   const RecommendationItem({
+    required this.adviceKey,
     required this.emoji,
     required this.title,
     required this.detail,
+    this.priority    = '',
+    this.effortLevel = '',
   });
 
-  /// Parse one element of the "recommendations" array from the API.
-  /// [index] is used to pick a rotating emoji since API sends none.
   factory RecommendationItem.fromJson(Map<String, dynamic> json, int index) {
+    final title = (json['title'] as String?) ?? '';
+    final detail = (json['detail'] as String?) ?? '';
     const emojis = ['🌱', '💧', '🔍', '🌾', '🧪', '📅', '🌿', '🤝'];
     return RecommendationItem(
-      emoji:  emojis[index % emojis.length],
-      title:  (json['title']  as String?) ?? '',
-      detail: (json['detail'] as String?) ?? '',
+      adviceKey:   _adviceKeyFromJson(json, title, detail, index),
+      emoji:       emojis[index % emojis.length],
+      title:       title,
+      detail:      detail,
+      priority:    (json['priority']     as String?) ?? '',
+      effortLevel: (json['effort_level'] as String?) ?? '',
     );
+  }
+
+  static String _adviceKeyFromJson(
+    Map<String, dynamic> json,
+    String title,
+    String detail,
+    int index,
+  ) {
+    final rawKey = (json['advice_key'] as String?)?.trim() ?? '';
+    if (rawKey.isNotEmpty) return rawKey;
+
+    final source = (title.isNotEmpty ? title : detail).toLowerCase();
+    final normalized = source.replaceAll(RegExp(r'[^a-z0-9]+'), '_');
+    final compact =
+        normalized.replaceAll(RegExp(r'_+'), '_').replaceAll(RegExp(r'^_|_$'), '');
+    return compact.isNotEmpty ? compact : 'step_${index + 1}';
   }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // AnalysisResult
 // ─────────────────────────────────────────────────────────────────────────────
-
 class AnalysisResult {
   final String crop;
   final String state;
   final String district;
   final DateTime sowingDate;
   final List<String> symptoms;
-
-  // ── Diagnosis fields ───────────────────────────────────────────────────────
-  final String causeKey;        // e.g. "waterlogging"
-  final String causeTitle;      // e.g. "Waterlogging Stress"
-  final double confidenceScore; // 0.0 – 1.0
+  final String causeKey;
+  final String causeTitle;
+  final double confidenceScore;
   final String explanation;
-
-  final List<WeatherPhase>      weatherPhases;
+  final List<WeatherPhase>       weatherPhases;
   final List<RecommendationItem> recommendations;
-
-  // ── Meta ───────────────────────────────────────────────────────────────────
   final bool     isLimitedAnalysis;
   final DateTime analyzedAt;
   bool           adviceTaken;
-
-  // ── Raw model details (optional, for debug/display) ───────────────────────
-  final String? weatherSource;
-  final String? modelMode;
+  final String?  weatherSource;
+  final String?  modelMode;
 
   AnalysisResult({
     required this.crop,
@@ -215,41 +200,30 @@ class AnalysisResult {
     this.modelMode,
   }) : analyzedAt = analyzedAt ?? DateTime.now();
 
-  // ── fromJson — parses the live backend response ────────────────────────────
   factory AnalysisResult.fromJson(
     Map<String, dynamic> json, {
-    // These come from the provider since the API echoes them in inputSummary
     required String state,
     required String district,
     required List<String> originalSymptoms,
     bool isOffline = false,
   }) {
-    // inputSummary carries crop + sowingDate echoed back by backend
-    final summary = json['inputSummary'] as Map<String, dynamic>? ?? {};
-    final crop    = (summary['crop'] as String?) ??
-                    (json['crop']    as String?) ?? '';
+    final summary   = json['inputSummary'] as Map<String, dynamic>? ?? {};
+    final crop      = (summary['crop'] as String?) ?? (json['crop'] as String?) ?? '';
     final sowingStr = (summary['sowingDate'] as String?) ?? '';
     DateTime sowingDate;
-    try {
-      sowingDate = DateTime.parse(sowingStr);
-    } catch (_) {
-      sowingDate = DateTime.now();
-    }
+    try { sowingDate = DateTime.parse(sowingStr); }
+    catch (_) { sowingDate = DateTime.now(); }
 
-    // Weather phases
     final rawPhases = json['weatherPhases'] as List<dynamic>? ?? [];
     final phases = rawPhases
         .map((p) => WeatherPhase.fromJson(p as Map<String, dynamic>))
         .toList();
 
-    // Recommendations
     final rawRecs = json['recommendations'] as List<dynamic>? ?? [];
     final recs = rawRecs.asMap().entries
-        .map((e) =>
-            RecommendationItem.fromJson(e.value as Map<String, dynamic>, e.key))
+        .map((e) => RecommendationItem.fromJson(e.value as Map<String, dynamic>, e.key))
         .toList();
 
-    // Model details
     final model = json['modelDetails'] as Map<String, dynamic>? ?? {};
 
     return AnalysisResult(
@@ -258,10 +232,10 @@ class AnalysisResult {
       district:         district,
       sowingDate:       sowingDate,
       symptoms:         originalSymptoms,
-      causeKey:         (json['causeKey']    as String?) ?? 'unknown',
-      causeTitle:       (json['causeTitle']  as String?) ?? '',
+      causeKey:         (json['causeKey']        as String?) ?? 'unknown',
+      causeTitle:       (json['causeTitle']      as String?) ?? '',
       confidenceScore:  (json['confidenceScore'] as num?)?.toDouble() ?? 0.0,
-      explanation:      (json['explanation'] as String?) ?? '',
+      explanation:      (json['explanation']     as String?) ?? '',
       weatherPhases:    phases,
       recommendations:  recs,
       isLimitedAnalysis: isOffline,
@@ -269,8 +243,6 @@ class AnalysisResult {
       modelMode:        (model['mode']          as String?),
     );
   }
-
-  // ── Helpers ────────────────────────────────────────────────────────────────
 
   String get season {
     final m = sowingDate.month;
