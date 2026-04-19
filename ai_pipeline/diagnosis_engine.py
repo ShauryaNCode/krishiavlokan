@@ -668,12 +668,18 @@ class DiagnosisEngine:
 
         # ── 3. Build the feature vector (using damped anomaly values) ────────
         feature_names = self._model_feature_names()
+        
+        # Package the anomalies into a single dictionary to match the function signature
+        anomalies_map = {
+            "rain_anomaly": effective_anomaly_features.get("rain_anomaly", 0.0),
+            "temp_anomaly": effective_anomaly_features.get("temp_anomaly", 0.0),
+            "humidity_anomaly": effective_anomaly_features.get("humidity_anomaly", 0.0),
+        }
+        
         feature_vector = build_model_feature_vector(
             crop_encoded=crop_encoded,
+            anomalies=anomalies_map, # Pass the map instead of separate arguments
             symptom_score=float(features.get("symptomScore", 0.0)),
-            rain_anomaly=effective_anomaly_features.get("rain_anomaly", 0.0),
-            temp_anomaly=effective_anomaly_features.get("temp_anomaly", 0.0),
-            humidity_anomaly=effective_anomaly_features.get("humidity_anomaly", 0.0),
             feature_names=feature_names,
         )
 
@@ -695,6 +701,7 @@ class DiagnosisEngine:
             raw_label=raw_label,
             symptoms=features.get("symptoms", []),
             anomaly_features=effective_anomaly_features,
+            symptom_priority_score=symptom_priority_score,
         )
 
         confidence = self._prediction_confidence(model_input)
@@ -1021,17 +1028,28 @@ class DiagnosisEngine:
         raw_label: str,
         symptoms: Sequence[str],
         anomaly_features: Mapping[str, float],
+        symptom_priority_score: float = 0.0,  # Added score parameter
     ) -> str:
+        # Rule-based Override: If biotic symptoms are strong, ignore the ML model
+        if symptom_priority_score >= 0.5:
+            # Check for fungal indicators in the symptoms list
+            fungal_triggers = normalize_symptoms(self.causes.get("fungal", {}).get("trigger_symptoms", []))
+            if self._match_symptoms(symptoms, fungal_triggers) or \
+               any(kw in str(symptoms).lower() for kw in ["fungal", "mold", "spots"]):
+                return "fungal"
+            return "pest"
+
+        # ML Model Path (Fallback)
         label_key = raw_label.strip().lower()
         if label_key == "pest_disease":
-            fungal_triggers = normalize_symptoms(self.causes["fungal"].get("trigger_symptoms", []))
+            fungal_triggers = normalize_symptoms(self.causes.get("fungal", {}).get("trigger_symptoms", []))
             if self._match_symptoms(symptoms, fungal_triggers):
                 return "fungal"
             if anomaly_features.get("humidity_anomaly", 0.0) > 0.2:
                 return "fungal"
             return "pest"
+        
         return MODEL_LABEL_TO_CAUSE.get(label_key, label_key)
-
     # ------------------------------------------------------------------
     # Cause metadata & recommendation plan
     # ------------------------------------------------------------------
