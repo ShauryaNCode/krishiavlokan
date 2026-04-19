@@ -8,3 +8,4 @@ scikit-learn
 xgboost
 google-generativeai
 python-dotenv
+firebase-admin

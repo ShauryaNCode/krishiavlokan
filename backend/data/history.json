@@ -3806,5 +3806,213 @@
         "weatherMessage": "Fetched 76 daily records from 2026-02-01 to 2026-04-17; season window was clipped to available historical data"
       }
     }
+  },
+  {
+    "id": 34,
+    "createdAt": "2026-04-19T10:19:35.310644+00:00",
+    "request": {
+      "crop": "Kapas",
+      "state": "Maharashtra",
+      "district": "Pune",
+      "sowingDate": "2025-08-01",
+      "symptoms": [
+        "waterlogging",
+        "fungal"
+      ],
+      "lat": 18.5204,
+      "lon": 73.8567
+    },
+    "response": {
+      "causeKey": "waterlogging",
+      "causeTitle": "Waterlogging Stress",
+      "confidenceScore": 0.58,
+      "explanation": "Pune me Kapas ke roots zyada paani me suffocate ho sakte hain. Aaj ka Easy step: Avoid more irrigation: Pause irrigation until the top soil starts drying and roots get air again.",
+      "weatherPhases": [
+        {
+          "phase": "Early",
+          "status": "veryHigh",
+          "idealStatus": "high",
+          "metric": "rainfall / soil moisture",
+          "matchScore": 0.72,
+          "rainfallMm": 142,
+          "avgTempC": 29,
+          "avgHumidityPct": 88,
+          "source": "mock_fallback",
+          "summary": "Early fallback rainfall / soil moisture is veryHigh; the Waterlogging Stress rule expects high."
+        },
+        {
+          "phase": "Mid",
+          "status": "high",
+          "idealStatus": "veryHigh",
+          "metric": "rainfall / soil moisture",
+          "matchScore": 0.72,
+          "rainfallMm": 96,
+          "avgTempC": 29,
+          "avgHumidityPct": 74,
+          "source": "mock_fallback",
+          "summary": "Mid fallback rainfall / soil moisture is high; the Waterlogging Stress rule expects veryHigh."
+        },
+        {
+          "phase": "Late",
+          "status": "normal",
+          "idealStatus": "high",
+          "metric": "rainfall / soil moisture",
+          "matchScore": 0.72,
+          "rainfallMm": 58,
+          "avgTempC": 35,
+          "avgHumidityPct": 42,
+          "source": "mock_fallback",
+          "summary": "Late fallback rainfall / soil moisture is normal; the Waterlogging Stress rule expects high."
+        }
+      ],
+      "recommendations": [
+        {
+          "title": "Open drainage channels",
+          "detail": "Create shallow side channels so extra water can leave the plot within 24 hours.",
+          "priority": "High",
+          "effort_level": "Medium",
+          "category": "Immediate"
+        },
+        {
+          "title": "Avoid more irrigation",
+          "detail": "Pause irrigation until the top soil starts drying and roots get air again.",
+          "priority": "High",
+          "effort_level": "Easy",
+          "category": "Immediate"
+        },
+        {
+          "title": "Watch root health",
+          "detail": "Uproot one weak plant and check for black, soft, or foul-smelling roots.",
+          "priority": "Medium",
+          "effort_level": "Easy",
+          "category": "Preventive"
+        }
+      ],
+      "inputSummary": {
+        "crop": "Kapas",
+        "state": "Maharashtra",
+        "district": "Pune",
+        "sowingDate": "2025-08-01",
+        "season": "kharif",
+        "normalizedSymptoms": [
+          "waterlogging",
+          "fungal"
+        ],
+        "symptomScore": 0.4,
+        "latitude": 18.5204,
+        "longitude": 73.8567
+      },
+      "modelDetails": {
+        "mode": "rule_fallback",
+        "reason": "build_model_feature_vector() got an unexpected keyword argument 'rain_anomaly'",
+        "matchedSymptoms": [
+          "waterlogging"
+        ]
+      }
+    }
+  },
+  {
+    "id": 35,
+    "createdAt": "2026-04-19T10:20:14.853083+00:00",
+    "request": {
+      "crop": "Tur",
+      "state": "Maharashtra",
+      "district": "Pune",
+      "sowingDate": "2026-01-01",
+      "symptoms": [
+        "nutrient",
+        "fungal"
+      ],
+      "lat": 18.5204,
+      "lon": 73.8567
+    },
+    "response": {
+      "causeKey": "nutrient",
+      "causeTitle": "Nutrient Deficiency",
+      "confidenceScore": 0.56,
+      "explanation": "Pune me Tur me nutrient deficiency ka pattern dikh raha hai. Aaj ka Easy step: Check nutrient pattern: Older yellow leaves often indicate nitrogen stress, while purpling may point to phosphorus stress.",
+      "weatherPhases": [
+        {
+          "phase": "Early",
+          "status": "veryLow",
+          "idealStatus": "normal",
+          "metric": "rainfall / soil moisture",
+          "matchScore": 0.38,
+          "rainfallMm": 8,
+          "avgTempC": 23,
+          "avgHumidityPct": 58,
+          "source": "mock_fallback",
+          "summary": "Early fallback rainfall / soil moisture is veryLow; the Nutrient Deficiency rule expects normal."
+        },
+        {
+          "phase": "Mid",
+          "status": "veryLow",
+          "idealStatus": "low",
+          "metric": "rainfall / soil moisture",
+          "matchScore": 0.72,
+          "rainfallMm": 8,
+          "avgTempC": 23,
+          "avgHumidityPct": 42,
+          "source": "mock_fallback",
+          "summary": "Mid fallback rainfall / soil moisture is veryLow; the Nutrient Deficiency rule expects low."
+        },
+        {
+          "phase": "Late",
+          "status": "low",
+          "idealStatus": "low",
+          "metric": "rainfall / soil moisture",
+          "matchScore": 1.0,
+          "rainfallMm": 24,
+          "avgTempC": 41,
+          "avgHumidityPct": 28,
+          "source": "mock_fallback",
+          "summary": "Late fallback rainfall / soil moisture is low; the Nutrient Deficiency rule expects low."
+        }
+      ],
+      "recommendations": [
+        {
+          "title": "Check nutrient pattern",
+          "detail": "Older yellow leaves often indicate nitrogen stress, while purpling may point to phosphorus stress.",
+          "priority": "High",
+          "effort_level": "Easy",
+          "category": "Immediate"
+        },
+        {
+          "title": "Maintain root-zone moisture",
+          "detail": "Nutrients move poorly in very dry soil, so correct moisture before expecting fertilizer response.",
+          "priority": "High",
+          "effort_level": "Easy",
+          "category": "Immediate"
+        },
+        {
+          "title": "Apply balanced nutrition",
+          "detail": "Use soil-test guidance where available and avoid applying only one nutrient repeatedly.",
+          "priority": "Medium",
+          "effort_level": "Hard",
+          "category": "Preventive"
+        }
+      ],
+      "inputSummary": {
+        "crop": "Tur",
+        "state": "Maharashtra",
+        "district": "Pune",
+        "sowingDate": "2026-01-01",
+        "season": "rabi",
+        "normalizedSymptoms": [
+          "nutrient",
+          "fungal"
+        ],
+        "symptomScore": 0.4,
+        "latitude": 18.5204,
+        "longitude": 73.8567
+      },
+      "modelDetails": {
+        "mode": "rule_fallback",
+        "reason": "build_model_feature_vector() got an unexpected keyword argument 'rain_anomaly'",
+        "matchedSymptoms": [
+          "nutrient"
+        ]
+      }
+    }
   }
 ]

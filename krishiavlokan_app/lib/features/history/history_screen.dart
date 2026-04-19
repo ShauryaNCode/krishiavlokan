@@ -1,4 +1,8 @@
 // lib/features/history/history_screen.dart
+//
+// Loads history from the backend (POST /history/{userId}) on screen open.
+// Falls back gracefully to the local in-memory list if the network fails.
+// Shows a loading spinner, error banner, and empty state as appropriate.
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -18,8 +22,18 @@ class HistoryScreen extends StatefulWidget {
 }
 
 class _HistoryScreenState extends State<HistoryScreen> {
-  // Filter: 'all' | 'Kharif' | 'Rabi'
   String _filter = 'all';
+
+  @override
+  void initState() {
+    super.initState();
+    // Trigger remote fetch after the first frame so the provider is available
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        context.read<DiagnosisProvider>().loadRemoteHistory();
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +41,6 @@ class _HistoryScreenState extends State<HistoryScreen> {
       builder: (ctx, provider, _) {
         final all = provider.history;
 
-        // Apply season filter
         final filtered = _filter == 'all'
             ? all
             : all.where((r) => r.season == _filter).toList();
@@ -35,11 +48,16 @@ class _HistoryScreenState extends State<HistoryScreen> {
         return Scaffold(
           backgroundColor: AppColors.offWhite,
           appBar: AppBar(
-            title: const Text('Mera Itihas'),
-            leading: BackButton(
-              onPressed: () => context.go(AppRoutes.home),
-            ),
+            title: const Text('My History'),
+            leading: BackButton(onPressed: () => context.go(AppRoutes.home)),
             actions: [
+              // Manual refresh button
+              if (!provider.historyLoading)
+                IconButton(
+                  icon: const Icon(Icons.refresh_rounded),
+                  tooltip: 'Refresh from server',
+                  onPressed: () => provider.loadRemoteHistory(),
+                ),
               IconButton(
                 icon: const Icon(Icons.filter_list_rounded),
                 onPressed: () => _showFilterSheet(context),
@@ -50,31 +68,36 @@ class _HistoryScreenState extends State<HistoryScreen> {
             children: [
               if (provider.offlineMode) const OfflineBanner(),
 
-              // Filter tabs
+              // ── Error banner (non-blocking — local data still shown) ────────
+              if (provider.historyError != null)
+                _ErrorBanner(
+                  message: provider.historyError!,
+                  onRetry: () => provider.loadRemoteHistory(),
+                ),
+
+              // ── Filter tabs ────────────────────────────────────────────────
               _FilterTabBar(
-                selected: _filter,
+                selected:  _filter,
                 onChanged: (f) => setState(() => _filter = f),
               ),
 
-              // List
+              // ── Body ───────────────────────────────────────────────────────
               Expanded(
-                child: filtered.isEmpty
-                    ? _EmptyState(filter: _filter)
-                    : ListView.builder(
-                        padding: const EdgeInsets.all(16),
-                        itemCount: filtered.length,
-                        itemBuilder: (ctx, i) => _HistoryCard(
-                          result: filtered[i],
-                          index: i,
-                          onTap: () {
-                            // Set result as current and open results screen
-                            // (In production, pass ID via router extra)
-                            context.go(AppRoutes.results);
-                          },
-                          onToggleAdvice: () =>
-                              provider.toggleAdviceTaken(filtered[i]),
-                        ),
-                      ),
+                child: provider.historyLoading && all.isEmpty
+                    ? const _LoadingState()
+                    : filtered.isEmpty
+                        ? _EmptyState(filter: _filter)
+                        : ListView.builder(
+                            padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                            itemCount: filtered.length,
+                            itemBuilder: (_, i) => _HistoryCard(
+                              result:          filtered[i],
+                              index:           i,
+                              onTap:           () => context.go(AppRoutes.results),
+                              onToggleAdvice:  () =>
+                                  provider.toggleAdviceTaken(filtered[i]),
+                            ),
+                          ),
               ),
             ],
           ),
@@ -88,8 +111,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (_) => Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -107,7 +129,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       : Icons.radio_button_off_rounded,
                   color: AppColors.deepGreen,
                 ),
-                title: Text(f == 'all' ? 'Sab (All)' : f),
+                title: Text(f == 'all' ? 'All' : f),
                 onTap: () {
                   setState(() => _filter = f);
                   Navigator.pop(context);
@@ -121,22 +143,88 @@ class _HistoryScreenState extends State<HistoryScreen> {
   }
 }
 
-// ── Filter Tab Bar ─────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// Error banner — shown when backend fetch failed but local data is available
+// ─────────────────────────────────────────────────────────────────────────────
+class _ErrorBanner extends StatelessWidget {
+  final String message;
+  final VoidCallback onRetry;
+  const _ErrorBanner({required this.message, required this.onRetry});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      color: AppColors.terracotta.withOpacity(0.1),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Row(
+        children: [
+          const Icon(Icons.cloud_off_rounded,
+              color: AppColors.terracotta, size: 16),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              'Could not sync with server. Showing local data.',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: AppColors.terracotta,
+                    fontWeight: FontWeight.w600,
+                  ),
+            ),
+          ),
+          TextButton(
+            onPressed: onRetry,
+            child: const Text('Retry',
+                style: TextStyle(
+                    color: AppColors.terracotta, fontWeight: FontWeight.bold)),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Loading state — spinner shown only on first remote load
+// ─────────────────────────────────────────────────────────────────────────────
+class _LoadingState extends StatelessWidget {
+  const _LoadingState();
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const SizedBox(
+            width: 40,
+            height: 40,
+            child: CircularProgressIndicator(
+              color: AppColors.deepGreen, strokeWidth: 2.5),
+          ),
+          const SizedBox(height: 16),
+          Text('Loading your history...',
+              style: Theme.of(context).textTheme.bodyMedium),
+        ],
+      ),
+    ).animate().fadeIn(duration: 300.ms);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Filter Tab Bar
+// ─────────────────────────────────────────────────────────────────────────────
 class _FilterTabBar extends StatelessWidget {
   final String selected;
   final ValueChanged<String> onChanged;
 
-  const _FilterTabBar({
-    required this.selected,
-    required this.onChanged,
-  });
+  const _FilterTabBar({required this.selected, required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
     final tabs = [
-      ('all', 'Sab'),
+      ('all',    'All'),
       ('Kharif', 'Kharif 🌧️'),
-      ('Rabi', 'Rabi ❄️'),
+      ('Rabi',   'Rabi ❄️'),
     ];
 
     return Container(
@@ -153,9 +241,7 @@ class _FilterTabBar extends StatelessWidget {
                 margin: const EdgeInsets.symmetric(horizontal: 4),
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 decoration: BoxDecoration(
-                  color: isSelected
-                      ? AppColors.lightGreen
-                      : Colors.transparent,
+                  color: isSelected ? AppColors.lightGreen : Colors.transparent,
                   borderRadius: BorderRadius.circular(10),
                   border: isSelected
                       ? Border.all(color: AppColors.deepGreen)
@@ -181,12 +267,14 @@ class _FilterTabBar extends StatelessWidget {
   }
 }
 
-// ── History Card ────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// History Card
+// ─────────────────────────────────────────────────────────────────────────────
 class _HistoryCard extends StatelessWidget {
   final AnalysisResult result;
-  final int index;
-  final VoidCallback onTap;
-  final VoidCallback onToggleAdvice;
+  final int           index;
+  final VoidCallback  onTap;
+  final VoidCallback  onToggleAdvice;
 
   const _HistoryCard({
     required this.result,
@@ -206,10 +294,9 @@ class _HistoryCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           boxShadow: const [
             BoxShadow(
-              color: AppColors.shadowColor,
-              blurRadius: 8,
-              offset: Offset(0, 2),
-            ),
+                color: AppColors.shadowColor,
+                blurRadius: 8,
+                offset: Offset(0, 2)),
           ],
         ),
         child: ClipRRect(
@@ -222,14 +309,12 @@ class _HistoryCard extends StatelessWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Crop emoji in circle
+                    // Cause emoji in circle
                     Container(
-                      width: 52,
-                      height: 52,
+                      width: 52, height: 52,
                       decoration: const BoxDecoration(
-                        color: AppColors.lightGreen,
-                        shape: BoxShape.circle,
-                      ),
+                          color: AppColors.lightGreen,
+                          shape: BoxShape.circle),
                       child: Center(
                         child: Text(
                           causeEmoji(result.causeKey),
@@ -242,19 +327,14 @@ class _HistoryCard extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            result.crop,
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleLarge
-                                ?.copyWith(fontSize: 16),
-                          ),
+                          Text(result.crop,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleLarge
+                                  ?.copyWith(fontSize: 16)),
                           const SizedBox(height: 2),
-                          Text(
-                            result.seasonYear,
-                            style:
-                                Theme.of(context).textTheme.bodyMedium,
-                          ),
+                          Text(result.seasonYear,
+                              style: Theme.of(context).textTheme.bodyMedium),
                           const SizedBox(height: 6),
                           // Cause badge
                           Container(
@@ -295,7 +375,7 @@ class _HistoryCard extends StatelessWidget {
                 ),
               ),
 
-              // Footer strip — advice taken toggle
+              // Advice taken footer strip
               GestureDetector(
                 onTap: onToggleAdvice,
                 child: AnimatedContainer(
@@ -320,8 +400,8 @@ class _HistoryCard extends StatelessWidget {
                       const SizedBox(width: 6),
                       Text(
                         result.adviceTaken
-                            ? 'Salah Li — Advice Taken ✅'
-                            : 'Salah Li? Tap to mark',
+                            ? 'Advice Taken ✅'
+                            : 'Mark as advice taken',
                         style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.w600,
@@ -340,7 +420,7 @@ class _HistoryCard extends StatelessWidget {
       )
           .animate(delay: (index * 60).ms)
           .fadeIn(duration: 300.ms)
-          .slideY(begin: 0.08, end: 0),
+          .slideY(begin: 0.06, end: 0),
     );
   }
 
@@ -355,7 +435,9 @@ class _HistoryCard extends StatelessWidget {
   ];
 }
 
-// ── Empty State ──────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// Empty state
+// ─────────────────────────────────────────────────────────────────────────────
 class _EmptyState extends StatelessWidget {
   final String filter;
   const _EmptyState({required this.filter});
@@ -370,30 +452,31 @@ class _EmptyState extends StatelessWidget {
           const SizedBox(height: 16),
           Text(
             filter == 'all'
-                ? 'Koi purana vishleshan nahi mila'
-                : 'Koi $filter vishleshan nahi mila',
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: AppColors.midGrey,
-                ),
+                ? 'No history yet'
+                : 'No $filter history found',
+            style: Theme.of(context)
+                .textTheme
+                .titleLarge
+                ?.copyWith(color: AppColors.midGrey),
           ),
           const SizedBox(height: 8),
-          Text(
-            'Pehle ek naya vishleshan karo',
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
+          Text('Run a diagnosis to see results here',
+              style: Theme.of(context).textTheme.bodyMedium),
           const SizedBox(height: 24),
           ElevatedButton.icon(
             onPressed: () => context.go(AppRoutes.step1),
             icon: const Icon(Icons.add_rounded),
-            label: const Text('Naya Vishleshan'),
+            label: const Text('New Analysis'),
           ),
         ],
       ),
-    ).animate().fadeIn(duration: 500.ms);
+    ).animate().fadeIn(duration: 400.ms);
   }
 }
 
-// ── Bottom Nav ───────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// Bottom Nav
+// ─────────────────────────────────────────────────────────────────────────────
 class _HistoryBottomNav extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

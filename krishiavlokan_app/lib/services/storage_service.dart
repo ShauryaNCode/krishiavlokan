@@ -1,8 +1,10 @@
 // lib/services/storage_service.dart
 //
-// Mock storage service. In production, replace with Hive / Firestore.
+// Local storage service — SharedPreferences for settings,
+// in-memory list for session history (remote history loaded via HistoryApiService).
 
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
 import '../models/analysis_model.dart';
 import '../core/constants/app_constants.dart';
 
@@ -63,6 +65,19 @@ class StorageService {
   Future<bool> getOfflineMode() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getBool(AppConstants.kOfflineMode) ?? false;
+  }
+
+  // ── Device user ID ─────────────────────────────────────────────────────────
+  // A stable UUID generated once per device install.
+  // Used as the Firestore user identifier since the app has no login.
+
+  Future<String> getUserId() async {
+    final prefs = await SharedPreferences.getInstance();
+    final existing = prefs.getString(AppConstants.kUserId);
+    if (existing != null && existing.isNotEmpty) return existing;
+    final newId = const Uuid().v4();
+    await prefs.setString(AppConstants.kUserId, newId);
+    return newId;
   }
 
   // ── History ────────────────────────────────────────────────────────────────

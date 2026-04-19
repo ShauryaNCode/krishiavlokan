@@ -10,6 +10,7 @@ class AppConstants {
   static const kVoiceEnabled   = 'voice_enabled';
   static const kOfflineMode    = 'offline_mode';
   static const kTextSize       = 'text_size';
+  static const kUserId         = 'device_user_id'; // stable UUID per device
 
   // App strings
   static const appName   = 'KrishiAvalokan';
@@ -21,11 +22,12 @@ class AppConstants {
   static const totalSteps = 4;
 
   // ── Backend ────────────────────────────────────────────────────────────────
-  // Replace with your deployed backend URL.
-  static const backendBaseUrl = 'http://192.168.0.173:8000';
-  static const analyzeEndpoint = '$backendBaseUrl/diagnose';
-  static const connectTimeoutMs = 12000;
-  static const receiveTimeoutMs = 20000;
+  // Replace with your deployed backend URL before release.
+  static const backendBaseUrl    = 'http://192.168.0.173:8000';
+  static const analyzeEndpoint   = '$backendBaseUrl/diagnose';
+  static const historyEndpoint   = '$backendBaseUrl/history'; // + /{userId}
+  static const connectTimeoutMs  = 12000;
+  static const receiveTimeoutMs  = 20000;
 }
 
 /// All supported regional languages
@@ -66,23 +68,14 @@ class AppLocations {
   AppLocations._();
 
   static const Map<String, List<String>> statesDistricts = {
-    'Maharashtra': [
-      'Pune', 
-      'Nagpur', 
-      'Nashik', 
-      'Chhatrapati Sambhajinagar', // Fixed: Geocoding usually returns the new name
-      'Amravati', 
-      'Yavatmal',
-      'Mumbai'
-    ],
-    'Punjab': ['Ludhiana', 'Amritsar', 'Jalandhar', 'Patiala', 'Bathinda'],
-    'Uttar Pradesh': ['Lucknow', 'Kanpur', 'Varanasi', 'Agra', 'Meerut', 'Gorakhpur'],
-    'Madhya Pradesh': ['Bhopal', 'Indore', 'Gwalior', 'Jabalpur', 'Rewa'],
-    'Rajasthan': ['Jaipur', 'Jodhpur', 'Udaipur', 'Bikaner', 'Kota'],
-    'Gujarat': ['Ahmedabad', 'Surat', 'Vadodara', 'Rajkot', 'Bhavnagar'],
-    'Andhra Pradesh': ['Visakhapatnam', 'Vijayawada', 'Guntur', 'Kurnool', 'Tirupati'],
-    'Karnataka': ['Bengaluru', 'Mysuru', 'Hubli-Dharwad', 'Belagavi'], // Fixed: Bengaluru name
-    'Goa': ['North Goa', 'South Goa']
+    'Maharashtra':  ['Pune', 'Nagpur', 'Nashik', 'Aurangabad', 'Amravati', 'Yavatmal'],
+    'Punjab':       ['Ludhiana', 'Amritsar', 'Jalandhar', 'Patiala', 'Bathinda'],
+    'Uttar Pradesh':['Lucknow', 'Kanpur', 'Varanasi', 'Agra', 'Meerut', 'Gorakhpur'],
+    'Madhya Pradesh':['Bhopal', 'Indore', 'Gwalior', 'Jabalpur', 'Rewa'],
+    'Rajasthan':    ['Jaipur', 'Jodhpur', 'Udaipur', 'Bikaner', 'Kota'],
+    'Gujarat':      ['Ahmedabad', 'Surat', 'Vadodara', 'Rajkot', 'Bhavnagar'],
+    'Andhra Pradesh':['Visakhapatnam', 'Vijayawada', 'Guntur', 'Kurnool', 'Tirupati'],
+    'Karnataka':    ['Bengaluru', 'Mysuru', 'Hubli', 'Dharwad', 'Belagavi'],
   };
 
   /// Approximate centre-point coordinates for known districts.
