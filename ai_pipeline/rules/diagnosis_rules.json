@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "1.1",
+  "schemaVersion": "1.2",
   "weatherStatusEnum": [
     "veryLow",
     "low",
@@ -12,6 +12,25 @@
     "Mid",
     "Late"
   ],
+  "_placeholder_reference": {
+    "note": "Placeholders in 'detail' strings are replaced at runtime with values from the strongest anomaly phase.",
+    "available_tokens": [
+      "{strongest_phase}",
+      "{rainfall_mm}",
+      "{expected_rainfall_mm}",
+      "{rainfall_deviation_pct}",
+      "{rainfall_status}",
+      "{avg_temp_c}",
+      "{expected_temp_c}",
+      "{temp_deviation_pct}",
+      "{temp_status}",
+      "{avg_humidity_pct}",
+      "{expected_humidity_pct}",
+      "{humidity_deviation_pct}",
+      "{humidity_status}",
+      "{anomaly_severity}"
+    ]
+  },
   "causes": {
     "drought": {
       "cause_title": "Drought Stress",
@@ -34,22 +53,22 @@
       ],
       "recommendations": [
         {
-          "title": "Start protective irrigation",
-          "detail": "Give light irrigation in the cooler part of the day and avoid flooding the root zone.",
+          "title": "Start protective irrigation immediately",
+          "detail": "Rainfall in the {strongest_phase} phase was only {rainfall_mm} mm against an expected {expected_rainfall_mm} mm ({rainfall_deviation_pct}% deviation, status: {rainfall_status}). Give light irrigation in the cooler part of the day and avoid flooding the root zone.",
           "priority": "High",
           "effort_level": "Medium",
           "category": "Immediate"
         },
         {
           "title": "Reduce soil moisture loss",
-          "detail": "Use mulch or crop residue around plants to slow evaporation from the top soil.",
+          "detail": "With a {rainfall_status} rainfall status this season, use mulch or crop residue around plants to slow evaporation from the top soil and extend the benefit of each irrigation.",
           "priority": "Medium",
           "effort_level": "Medium",
           "category": "Preventive"
         },
         {
           "title": "Check field cracks",
-          "detail": "If cracks are widening, prioritize that plot for water or community irrigation support.",
+          "detail": "The {anomaly_severity} moisture deficit detected in the {strongest_phase} phase means cracks are likely widening. Prioritize affected plots for water or community irrigation support.",
           "priority": "High",
           "effort_level": "Easy",
           "category": "Immediate"
@@ -76,22 +95,22 @@
       ],
       "recommendations": [
         {
-          "title": "Open drainage channels",
-          "detail": "Create shallow side channels so extra water can leave the plot within 24 hours.",
+          "title": "Open drainage channels urgently",
+          "detail": "The {strongest_phase} phase received {rainfall_mm} mm of rain — {rainfall_deviation_pct}% above the expected {expected_rainfall_mm} mm (status: {rainfall_status}). Create shallow side channels so excess water leaves the plot within 24 hours.",
           "priority": "High",
           "effort_level": "Medium",
           "category": "Immediate"
         },
         {
-          "title": "Avoid more irrigation",
-          "detail": "Pause irrigation until the top soil starts drying and roots get air again.",
+          "title": "Pause all irrigation",
+          "detail": "Rainfall is already at a {rainfall_status} level ({rainfall_mm} mm vs {expected_rainfall_mm} mm expected). Stop irrigation completely until the top soil starts drying and roots can get air again.",
           "priority": "High",
           "effort_level": "Easy",
           "category": "Immediate"
         },
         {
-          "title": "Watch root health",
-          "detail": "Uproot one weak plant and check for black, soft, or foul-smelling roots.",
+          "title": "Monitor root health",
+          "detail": "Given the {anomaly_severity} rainfall anomaly in the {strongest_phase} phase, uproot one weak plant and check for black, soft, or foul-smelling roots — early rot can spread quickly in waterlogged soil.",
           "priority": "Medium",
           "effort_level": "Easy",
           "category": "Preventive"
@@ -119,22 +138,22 @@
       ],
       "recommendations": [
         {
-          "title": "Scout the underside of leaves",
-          "detail": "Check 10 random plants for larvae, egg clusters, and fresh feeding marks.",
+          "title": "Scout the underside of leaves today",
+          "detail": "The {strongest_phase} phase humidity is at {avg_humidity_pct}% (status: {humidity_status}), which is {humidity_deviation_pct}% from normal — conditions that favour pest outbreaks. Check 10 random plants for larvae, egg clusters, and fresh feeding marks.",
           "priority": "High",
           "effort_level": "Easy",
           "category": "Immediate"
         },
         {
-          "title": "Use traps or manual removal",
-          "detail": "Install pheromone or yellow sticky traps where suitable and remove visible egg masses.",
+          "title": "Deploy traps or manual removal",
+          "detail": "High humidity ({avg_humidity_pct}%, {humidity_deviation_pct}% above normal) in the {strongest_phase} phase accelerates pest cycles. Install pheromone or yellow sticky traps and remove visible egg masses before the next generation hatches.",
           "priority": "Medium",
           "effort_level": "Medium",
           "category": "Immediate"
         },
         {
           "title": "Escalate only if threshold is crossed",
-          "detail": "Use pesticide only after local advisory confirms the pest level is above economic threshold.",
+          "detail": "Use pesticide only after local advisory confirms the pest level is above economic threshold. Current conditions ({humidity_status} humidity, {anomaly_severity}) are notable but not always spray-worthy.",
           "priority": "Low",
           "effort_level": "Hard",
           "category": "Preventive"
@@ -161,22 +180,22 @@
       ],
       "recommendations": [
         {
-          "title": "Remove infected leaves",
-          "detail": "Take out heavily infected leaves from the field edge first and keep them away from compost.",
+          "title": "Remove infected leaves immediately",
+          "detail": "Canopy humidity of {avg_humidity_pct}% in the {strongest_phase} phase ({humidity_deviation_pct}% above the expected {expected_humidity_pct}%) creates ideal fungal spread conditions. Remove heavily infected leaves from the field edge first and keep them away from compost.",
           "priority": "High",
           "effort_level": "Easy",
           "category": "Immediate"
         },
         {
-          "title": "Improve air movement",
-          "detail": "Remove dense weeds and avoid unnecessary evening irrigation that keeps leaves wet overnight.",
+          "title": "Improve canopy airflow",
+          "detail": "Humidity at {avg_humidity_pct}% (status: {humidity_status}) is sustaining the infection environment. Remove dense weeds and avoid evening irrigation that keeps leaves wet overnight.",
           "priority": "Medium",
           "effort_level": "Medium",
           "category": "Preventive"
         },
         {
-          "title": "Confirm before spraying",
-          "detail": "Match the spot pattern with a local extension worker before choosing a fungicide.",
+          "title": "Confirm disease identity before spraying",
+          "detail": "The {anomaly_severity} humidity anomaly in the {strongest_phase} phase matches fungal risk conditions, but spot patterns vary by pathogen. Match the pattern with a local extension worker before choosing a fungicide.",
           "priority": "Medium",
           "effort_level": "Easy",
           "category": "Preventive"
@@ -204,21 +223,21 @@
       "recommendations": [
         {
           "title": "Irrigate before peak heat",
-          "detail": "Water early morning or evening so the crop can handle afternoon temperature spikes.",
+          "detail": "The {strongest_phase} phase average temperature is {avg_temp_c}°C — {temp_deviation_pct}% above the expected {expected_temp_c}°C (status: {temp_status}). Water early morning or evening so the crop can buffer afternoon temperature spikes.",
           "priority": "High",
           "effort_level": "Easy",
           "category": "Immediate"
         },
         {
-          "title": "Protect flowering stage",
-          "detail": "If the crop is flowering, keep moisture steady because heat can reduce pollination.",
+          "title": "Protect the flowering stage",
+          "detail": "At {avg_temp_c}°C ({temp_status} status), pollen viability drops sharply. If the crop is currently flowering, keep soil moisture steady to reduce pollination failure from heat.",
           "priority": "Medium",
           "effort_level": "Medium",
           "category": "Preventive"
         },
         {
           "title": "Use temporary shade where practical",
-          "detail": "For nursery or vegetable plots, use shade netting during extreme hot afternoons.",
+          "detail": "For nursery or vegetable plots exposed to {avg_temp_c}°C ({anomaly_severity}), shade netting during peak afternoon hours (12 PM–4 PM) can cut leaf temperature by 3–5°C.",
           "priority": "Low",
           "effort_level": "Medium",
           "category": "Preventive"
@@ -246,22 +265,22 @@
       ],
       "recommendations": [
         {
-          "title": "Check nutrient pattern",
-          "detail": "Older yellow leaves often indicate nitrogen stress, while purpling may point to phosphorus stress.",
+          "title": "Identify the deficiency pattern",
+          "detail": "Rainfall in the {strongest_phase} phase was {rainfall_mm} mm ({rainfall_status} status), which affects which nutrients are available. Older yellow leaves often indicate nitrogen stress; purpling points to phosphorus. Identify the pattern before treating.",
           "priority": "High",
           "effort_level": "Easy",
           "category": "Immediate"
         },
         {
-          "title": "Maintain root-zone moisture",
-          "detail": "Nutrients move poorly in very dry soil, so correct moisture before expecting fertilizer response.",
+          "title": "Restore root-zone moisture first",
+          "detail": "With a {rainfall_status} moisture status ({rainfall_mm} mm vs {expected_rainfall_mm} mm expected in the {strongest_phase} phase), nutrients are poorly mobile. Correct soil moisture before applying fertilizer to ensure uptake.",
           "priority": "High",
           "effort_level": "Easy",
           "category": "Immediate"
         },
         {
-          "title": "Apply balanced nutrition",
-          "detail": "Use soil-test guidance where available and avoid applying only one nutrient repeatedly.",
+          "title": "Apply balanced nutrition after moisture is restored",
+          "detail": "Use soil-test guidance where available. Avoid applying only one nutrient repeatedly — the {anomaly_severity} weather anomaly may have disrupted the balance of multiple elements simultaneously.",
           "priority": "Medium",
           "effort_level": "Hard",
           "category": "Preventive"

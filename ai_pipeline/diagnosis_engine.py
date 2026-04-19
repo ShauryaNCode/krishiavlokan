@@ -179,37 +179,35 @@ DEFAULT_RECOMMENDATION_EFFORT_LEVELS = ("Easy", "Medium", "Hard")
 # ---------------------------------------------------------------------------
 _PEST_BIO_KEYWORDS: frozenset[str] = frozenset(
     {
-        "insect",
-        "insects",
-        "pest",
-        "pests",
-        "larvae",
-        "larva",
-        "hole",
-        "holes",
-        "holesinleaves",
-        "chewedleaves",
-        "eggsunderleaves",
-        "stickyresidue",
-        "fungal",
-        "fungus",
-        "mold",
-        "mildew",
-        "leafspots",
-        "whitepowder",
-        "blackspots",
-        "moldgrowth",
+        "insect", "insects", "pest", "pests", "larvae", "larva",
+        "hole", "holes", "holesinleaves", "chewedleaves", "eggsunderleaves",
+        "stickyresidue", "fungal", "fungus", "mold", "mildew",
+        "leafspots", "whitepowder", "blackspots", "moldgrowth",
     }
 )
 
-# Threshold: if the symptom priority score meets or exceeds this value the
-# rain_anomaly feature is damped before XGBoost sees it.
 _SYMPTOM_PRIORITY_THRESHOLD = 0.3
-
-# Rain-anomaly damping factor applied when pest/fungal symptoms dominate.
-# A value of 0.25 reduces a rain_anomaly of 1.0 to 0.25, preventing the
-# model from latching onto rainfall as the primary signal.
 _RAIN_ANOMALY_DAMP_FACTOR = 0.25
+
+# ---------------------------------------------------------------------------
+# Recognised placeholder tokens in diagnosis_rules.json ``detail`` strings.
+#
+#   {strongest_phase}         – name of the phase with the biggest anomaly
+#   {rainfall_mm}             – observed rainfall (mm) in that phase
+#   {expected_rainfall_mm}    – historical-average rainfall (mm)
+#   {rainfall_deviation_pct}  – % deviation (+ = excess, - = deficit)
+#   {rainfall_status}         – veryLow / low / normal / high / veryHigh
+#   {avg_temp_c}              – average temperature (°C)
+#   {expected_temp_c}         – historical-average temperature (°C)
+#   {temp_deviation_pct}      – % deviation from historical mean
+#   {temp_status}             – veryLow / low / normal / high / veryHigh
+#   {avg_humidity_pct}        – average relative humidity (%)
+#   {expected_humidity_pct}   – historical-average humidity (%)
+#   {humidity_deviation_pct}  – % deviation from historical mean
+#   {humidity_status}         – veryLow / low / normal / high / veryHigh
+#   {anomaly_severity}        – "Severe Anomaly" / "Moderate Anomaly" / etc.
+# ---------------------------------------------------------------------------
+_WEATHER_PLACEHOLDER_PATTERN = re.compile(r"\{[a-z_]+\}")
 
 
 class WeatherFetchError(RuntimeError):
@@ -316,13 +314,21 @@ class DiagnosisEngine:
             return self._diagnose_with_rules(features, str(exc))
 
         cause_key = prediction["causeKey"]
-        cause_meta = self._cause_metadata(cause_key)
+        weather_phases = anomaly_result["weatherPhases"]
+
+        # Enrich recommendations with live weather context before they are
+        # consumed by the explanation generator or written to history.json.
+        cause_meta = self._cause_metadata(
+            cause_key=cause_key,
+            weather_phases=weather_phases,
+        )
+
         explanation = self._generate_explanation(
             cause_key=cause_key,
             cause_title=cause_meta["cause_title"],
             crop=features["cropDisplay"],
             district=features["districtDisplay"],
-            weather_phases=anomaly_result["weatherPhases"],
+            weather_phases=weather_phases,
             recommendations=cause_meta["recommendations"],
             model_label=prediction["rawLabel"],
         )
@@ -332,7 +338,7 @@ class DiagnosisEngine:
             "causeTitle": cause_meta["cause_title"],
             "confidenceScore": prediction["confidenceScore"],
             "explanation": explanation,
-            "weatherPhases": anomaly_result["weatherPhases"],
+            "weatherPhases": weather_phases,
             "recommendations": cause_meta["recommendations"],
             "inputSummary": self._input_summary(features),
             "modelDetails": {
@@ -593,25 +599,14 @@ class DiagnosisEngine:
         return [float(score) for score in detector.decision_function(matrix)]
 
     # ------------------------------------------------------------------
-    # ★ NEW: XGBoost prediction with Symptom Priority Multiplier
+    # XGBoost prediction with Symptom Priority Multiplier
     # ------------------------------------------------------------------
 
     def _symptom_priority_score(self, symptoms: Sequence[str]) -> float:
-        """Return a 0–1 score representing how strongly pest/bio symptoms dominate.
-
-        The score is the fraction of the reported symptoms that match the
-        pest-biological keyword set.  A value ≥ _SYMPTOM_PRIORITY_THRESHOLD
-        means the reporter is clearly describing a biotic problem, not a
-        weather event, and the rain_anomaly signal should be damped before
-        the XGBoost model sees it.
-        """
+        """Return a 0–1 score representing how strongly pest/bio symptoms dominate."""
         if not symptoms:
             return 0.0
-        hits = sum(
-            1
-            for s in symptoms
-            if any(kw in s for kw in _PEST_BIO_KEYWORDS)
-        )
+        hits = sum(1 for s in symptoms if any(kw in s for kw in _PEST_BIO_KEYWORDS))
         return round(hits / len(symptoms), 4)
 
     def _predict_with_xgboost(
@@ -619,20 +614,7 @@ class DiagnosisEngine:
         features: Mapping[str, Any],
         anomaly_features: Mapping[str, float],
     ) -> Dict[str, Any]:
-        """Run the XGBoost model and return a standardised prediction dict.
-
-        Symptom Priority Multiplier
-        ---------------------------
-        XGBoost was trained on weather features and can therefore conflate any
-        positive ``rain_anomaly`` with ``flood`` / ``waterlogging``.  When the
-        farmer's reported symptoms are clearly biotic (pest or fungal keywords),
-        the rain_anomaly fed to the model is damped by ``_RAIN_ANOMALY_DAMP_FACTOR``
-        so that the model cannot override an obvious biotic signal with a weather
-        artefact.
-
-        The original (un-damped) anomaly values are preserved in ``modelFeatures``
-        for auditing; only the *model input* is adjusted.
-        """
+        """Run the XGBoost model and return a standardised prediction dict."""
         if self.xgb_model is None or self.crop_encoder is None or self.failure_encoder is None:
             raise ModelInferenceError("One or more XGBoost artefacts are unavailable")
 
@@ -648,8 +630,7 @@ class DiagnosisEngine:
             )
             rain_anomaly_damped = True
             LOGGER.info(
-                "Symptom Priority Multiplier applied: score=%.3f, "
-                "rain_anomaly %.4f → %.4f",
+                "Symptom Priority Multiplier applied: score=%.3f, rain_anomaly %.4f → %.4f",
                 symptom_priority_score,
                 original_rain_anomaly,
                 effective_anomaly_features["rain_anomaly"],
@@ -666,19 +647,16 @@ class DiagnosisEngine:
         except Exception as exc:
             raise ModelInferenceError(f"Crop encoding failed: {exc}") from exc
 
-        # ── 3. Build the feature vector (using damped anomaly values) ────────
+        # ── 3. Build the feature vector ──────────────────────────────────────
         feature_names = self._model_feature_names()
-        
-        # Package the anomalies into a single dictionary to match the function signature
         anomalies_map = {
             "rain_anomaly": effective_anomaly_features.get("rain_anomaly", 0.0),
             "temp_anomaly": effective_anomaly_features.get("temp_anomaly", 0.0),
             "humidity_anomaly": effective_anomaly_features.get("humidity_anomaly", 0.0),
         }
-        
         feature_vector = build_model_feature_vector(
             crop_encoded=crop_encoded,
-            anomalies=anomalies_map, # Pass the map instead of separate arguments
+            anomalies=anomalies_map,
             symptom_score=float(features.get("symptomScore", 0.0)),
             feature_names=feature_names,
         )
@@ -696,7 +674,7 @@ class DiagnosisEngine:
         except Exception:
             raw_label = str(raw_label_encoded)
 
-        # ── 5. Resolve label → cause key (with symptom override guard) ────────
+        # ── 5. Resolve label → cause key ─────────────────────────────────────
         cause_key = self._map_model_label_to_cause(
             raw_label=raw_label,
             symptoms=features.get("symptoms", []),
@@ -744,12 +722,7 @@ class DiagnosisEngine:
         if gemini_text:
             return gemini_text
         return self._fallback_explanation(
-            cause_key,
-            cause_title,
-            crop,
-            district,
-            weather_phases,
-            easy_step,
+            cause_key, cause_title, crop, district, weather_phases, easy_step,
         )
 
     def _generate_gemini_explanation(
@@ -764,9 +737,11 @@ class DiagnosisEngine:
     ) -> str | None:
         """Build a Hinglish prompt that includes tiered recommendation context.
 
-        The prompt now surfaces every recommendation's ``priority``,
-        ``effort_level``, and ``category`` so that Gemini can weave the
-        action plan into the explanation naturally.
+        The ``recommendations`` list received here has already been enriched by
+        ``_recommendation_plan`` — every ``detail`` string has had its weather
+        placeholders replaced with live values.  Gemini therefore receives the
+        final farmer-facing text and can incorporate the specific numbers
+        (e.g. "rainfall 142 mm, +85% above normal") into its explanation.
         """
         if not self.gemini_models:
             return None
@@ -774,7 +749,6 @@ class DiagnosisEngine:
         strongest = self._strongest_phase_summary(weather_phases)
         easy_step_text = easy_step or "field me affected plants ko inspect karein"
 
-        # Build a compact action-plan string from the structured recommendations.
         action_lines: List[str] = []
         for rec in recommendations:
             priority = rec.get("priority", "Medium")
@@ -863,7 +837,15 @@ class DiagnosisEngine:
             reverse=True,
         )
         top = ranked_causes[0]
-        cause_meta = self._cause_metadata(top["causeKey"])
+
+        # Convert the mock snapshot to a weather-phase list so the rule-fallback
+        # path can also inject weather context into recommendation details.
+        mock_phases = self._mock_phases_as_weather_phase_list(weather_snapshot)
+
+        cause_meta = self._cause_metadata(
+            cause_key=top["causeKey"],
+            weather_phases=mock_phases,
+        )
 
         return {
             "causeKey": top["causeKey"],
@@ -877,7 +859,9 @@ class DiagnosisEngine:
                 weather_phases=[],
                 easy_step=self._easy_recommendation_step(cause_meta["recommendations"]),
             ),
-            "weatherPhases": self._mock_weather_phase_response(top["causeKey"], cause_meta, weather_snapshot),
+            "weatherPhases": self._mock_weather_phase_response(
+                top["causeKey"], cause_meta, weather_snapshot
+            ),
             "recommendations": cause_meta["recommendations"],
             "inputSummary": self._input_summary(features),
             "modelDetails": {
@@ -1006,6 +990,42 @@ class DiagnosisEngine:
             }
         return phases
 
+    def _mock_phases_as_weather_phase_list(
+        self,
+        weather_snapshot: Mapping[str, Mapping[str, Any]],
+    ) -> List[Dict[str, Any]]:
+        """Reshape the mock-snapshot dict to match the live weatherPhases schema.
+
+        This lets ``_weather_context_for_substitution`` work identically for
+        both the live-weather path and the rule-fallback path, removing any
+        need for special-casing in ``_recommendation_plan``.
+        """
+        result: List[Dict[str, Any]] = []
+        for phase_name in PHASES:
+            snap = weather_snapshot.get(phase_name, {})
+            result.append(
+                {
+                    "phase": phase_name,
+                    "dataDays": 40,           # mock sentinel — treated as non-zero
+                    "rainfallMm": snap.get("rainfallMm", 0.0),
+                    "expectedRainfallMm": snap.get("rainfallMm", 0.0),
+                    "rainfallDeviationPct": 0.0,
+                    "avgTempC": snap.get("temperatureC", 29.0),
+                    "expectedTempC": snap.get("temperatureC", 29.0),
+                    "temperatureDeviationPct": 0.0,
+                    "avgHumidityPct": snap.get("humidityPct", 58.0),
+                    "expectedHumidityPct": snap.get("humidityPct", 58.0),
+                    "humidityDeviationPct": 0.0,
+                    "rainAnomaly": 0.0,
+                    "tempAnomaly": 0.0,
+                    "humidityAnomaly": 0.0,
+                    "isolationScore": 0.0,
+                    "status": snap.get("rainfallStatus", "normal"),
+                    "source": "mock_fallback",
+                }
+            )
+        return result
+
     def _seasonal_baseline(self, month: int) -> Dict[str, str]:
         if month in (12, 1, 2):
             return {"rainfallStatus": "veryLow", "temperatureStatus": "low", "humidityStatus": "low"}
@@ -1028,33 +1048,52 @@ class DiagnosisEngine:
         raw_label: str,
         symptoms: Sequence[str],
         anomaly_features: Mapping[str, float],
-        symptom_priority_score: float = 0.0,  # Added score parameter
+        symptom_priority_score: float = 0.0,
     ) -> str:
-        # Rule-based Override: If biotic symptoms are strong, ignore the ML model
+        # Rule-based override: if biotic symptoms are strong, skip the ML label.
         if symptom_priority_score >= 0.5:
-            # Check for fungal indicators in the symptoms list
-            fungal_triggers = normalize_symptoms(self.causes.get("fungal", {}).get("trigger_symptoms", []))
+            fungal_triggers = normalize_symptoms(
+                self.causes.get("fungal", {}).get("trigger_symptoms", [])
+            )
             if self._match_symptoms(symptoms, fungal_triggers) or \
                any(kw in str(symptoms).lower() for kw in ["fungal", "mold", "spots"]):
                 return "fungal"
             return "pest"
 
-        # ML Model Path (Fallback)
+        # ML model path.
         label_key = raw_label.strip().lower()
         if label_key == "pest_disease":
-            fungal_triggers = normalize_symptoms(self.causes.get("fungal", {}).get("trigger_symptoms", []))
+            fungal_triggers = normalize_symptoms(
+                self.causes.get("fungal", {}).get("trigger_symptoms", [])
+            )
             if self._match_symptoms(symptoms, fungal_triggers):
                 return "fungal"
             if anomaly_features.get("humidity_anomaly", 0.0) > 0.2:
                 return "fungal"
             return "pest"
-        
+
         return MODEL_LABEL_TO_CAUSE.get(label_key, label_key)
+
     # ------------------------------------------------------------------
     # Cause metadata & recommendation plan
     # ------------------------------------------------------------------
 
-    def _cause_metadata(self, cause_key: str) -> Mapping[str, Any]:
+    def _cause_metadata(
+        self,
+        cause_key: str,
+        weather_phases: Sequence[Mapping[str, Any]] | None = None,
+    ) -> Mapping[str, Any]:
+        """Return cause metadata with recommendation details enriched by live weather.
+
+        Parameters
+        ----------
+        cause_key:
+            Diagnosed cause key (e.g. ``"drought"``, ``"pest"``).
+        weather_phases:
+            Per-phase anomaly dicts from ``_process_weather_anomalies`` or the
+            mock equivalent.  When ``None`` or empty, placeholder substitution
+            is skipped and template strings are returned verbatim.
+        """
         if cause_key in self.causes:
             metadata = dict(self.causes[cause_key])
         elif cause_key == "normal":
@@ -1065,22 +1104,182 @@ class DiagnosisEngine:
                 "recommendations": [
                     {
                         "title": "Confirm diagnosis locally",
-                        "detail": "The model returned an uncommon label, so verify before taking treatment action.",
+                        "detail": "The model returned an uncommon label; verify before taking treatment action.",
                         "priority": "High",
                         "effort_level": "Easy",
                         "category": "Immediate",
                     }
                 ],
             }
-        metadata["recommendations"] = self._recommendation_plan(metadata.get("recommendations", []))
+        metadata["recommendations"] = self._recommendation_plan(
+            recommendations=metadata.get("recommendations", []),
+            weather_phases=weather_phases or [],
+        )
         return metadata
 
-    def _recommendation_plan(self, recommendations: Any) -> List[Dict[str, str]]:
-        """Normalise raw recommendation dicts into the full tiered schema.
+    # ── ★ NEW: weather context extractor ────────────────────────────────────
+
+    def _weather_context_for_substitution(
+        self,
+        weather_phases: Sequence[Mapping[str, Any]],
+    ) -> Dict[str, str]:
+        """Extract the most anomalous growth-phase and return a flat substitution
+        context dict ready for ``str.format_map``.
+
+        Selection logic
+        ───────────────
+        The phase with the largest absolute deviation across rain / temp /
+        humidity is selected.  This is the same criterion used by
+        ``_strongest_phase_summary``, so the recommendation details and the
+        Hinglish explanation always reference the same period.
+
+        Graceful degradation
+        ────────────────────
+        When no phases have data (dataDays == 0) — which can occur for very
+        recent sowing dates or mock fallback with all-zero anomalies — every
+        placeholder is filled with "—" so that ``str.format_map`` never raises
+        a ``KeyError`` and the detail string remains human-readable.
+        """
+        live_phases = [p for p in weather_phases if int(p.get("dataDays", 0)) > 0]
+
+        if not live_phases:
+            neutral = "—"
+            return {
+                "strongest_phase": neutral,
+                "rainfall_mm": neutral,
+                "expected_rainfall_mm": neutral,
+                "rainfall_deviation_pct": neutral,
+                "rainfall_status": neutral,
+                "avg_temp_c": neutral,
+                "expected_temp_c": neutral,
+                "temp_deviation_pct": neutral,
+                "temp_status": neutral,
+                "avg_humidity_pct": neutral,
+                "expected_humidity_pct": neutral,
+                "humidity_deviation_pct": neutral,
+                "humidity_status": neutral,
+                "anomaly_severity": neutral,
+            }
+
+        strongest = max(
+            live_phases,
+            key=lambda p: max(
+                abs(float(p.get("rainAnomaly", 0.0))),
+                abs(float(p.get("tempAnomaly", 0.0))),
+                abs(float(p.get("humidityAnomaly", 0.0))),
+            ),
+        )
+
+        rainfall_mm = float(strongest.get("rainfallMm", 0.0))
+        avg_temp_c = float(strongest.get("avgTempC", 29.0))
+        avg_humidity_pct = float(strongest.get("avgHumidityPct", 58.0))
+
+        rainfall_status = self._value_to_status(rainfall_mm, STATUS_TO_RAINFALL_MM)
+        temp_status = self._value_to_status(avg_temp_c, STATUS_TO_TEMP_C)
+        humidity_status = self._value_to_status(avg_humidity_pct, STATUS_TO_HUMIDITY)
+
+        strongest_deviation = max(
+            abs(float(strongest.get("rainAnomaly", 0.0))),
+            abs(float(strongest.get("tempAnomaly", 0.0))),
+            abs(float(strongest.get("humidityAnomaly", 0.0))),
+        )
+        isolation_score = float(strongest.get("isolationScore", 0.0))
+        anomaly_severity = self._anomaly_status(strongest_deviation, isolation_score)
+
+        return {
+            "strongest_phase": str(strongest.get("phase", "—")),
+            "rainfall_mm": str(round(rainfall_mm, 1)),
+            "expected_rainfall_mm": str(round(float(strongest.get("expectedRainfallMm", rainfall_mm)), 1)),
+            "rainfall_deviation_pct": str(round(float(strongest.get("rainfallDeviationPct", 0.0)), 1)),
+            "rainfall_status": rainfall_status,
+            "avg_temp_c": str(round(avg_temp_c, 1)),
+            "expected_temp_c": str(round(float(strongest.get("expectedTempC", avg_temp_c)), 1)),
+            "temp_deviation_pct": str(round(float(strongest.get("temperatureDeviationPct", 0.0)), 1)),
+            "temp_status": temp_status,
+            "avg_humidity_pct": str(round(avg_humidity_pct, 1)),
+            "expected_humidity_pct": str(round(float(strongest.get("expectedHumidityPct", avg_humidity_pct)), 1)),
+            "humidity_deviation_pct": str(round(float(strongest.get("humidityDeviationPct", 0.0)), 1)),
+            "humidity_status": humidity_status,
+            "anomaly_severity": anomaly_severity,
+        }
+
+    def _value_to_status(self, value: float, lookup: Mapping[str, float]) -> str:
+        """Map an observed numeric value to the nearest STATUS_ORDER bucket.
+
+        Uses the representative-value lookup table (e.g. STATUS_TO_RAINFALL_MM)
+        and picks the bucket whose value is closest to the observation.
+        Ties are broken in favour of the lower status.
+        """
+        best_status = "normal"
+        best_distance = float("inf")
+        for status, representative in lookup.items():
+            distance = abs(value - representative)
+            if distance < best_distance:
+                best_distance = distance
+                best_status = status
+        return best_status
+
+    def _apply_weather_substitution(
+        self,
+        detail: str,
+        weather_context: Mapping[str, str],
+    ) -> str:
+        """Safely substitute weather-context tokens into a recommendation detail.
+
+        Uses a ``_SafeWeatherContext`` wrapper so that any placeholder that is
+        not present in the context (e.g. a typo in the JSON) is left verbatim
+        as ``{token}`` rather than raising a ``KeyError``.  This turns authoring
+        mistakes into visible, diagnosable output instead of runtime crashes.
+
+        This is a no-op when the detail contains no ``{…}`` tokens, so
+        un-templated recommendations pay zero substitution cost.
+        """
+        if not _WEATHER_PLACEHOLDER_PATTERN.search(detail):
+            return detail
+
+        class _SafeWeatherContext(dict):  # type: ignore[type-arg]
+            """Return the key wrapped in braces for any unrecognised placeholder."""
+
+            def __missing__(self, key: str) -> str:
+                LOGGER.warning(
+                    "Unknown weather placeholder '{%s}' in recommendation detail; "
+                    "leaving verbatim. Check diagnosis_rules.json.",
+                    key,
+                )
+                return f"{{{key}}}"
+
+        try:
+            return detail.format_map(_SafeWeatherContext(weather_context))
+        except Exception as exc:
+            LOGGER.error("Weather substitution failed for detail %r: %s", detail[:80], exc)
+            return detail  # return raw template rather than crashing
+
+    # ── ★ REFACTORED: _recommendation_plan now accepts weather_phases ────────
+
+    def _recommendation_plan(
+        self,
+        recommendations: Any,
+        weather_phases: Sequence[Mapping[str, Any]] | None = None,
+    ) -> List[Dict[str, str]]:
+        """Normalise raw recommendations and inject live weather into detail strings.
+
+        Processing pipeline
+        ───────────────────
+        1. ``_weather_context_for_substitution`` selects the most anomalous
+           growth phase and builds a flat key→value dict from it.
+        2. Each recommendation's ``detail`` string is passed through
+           ``_apply_weather_substitution``, which calls ``str.format_map``
+           with the weather context.  Placeholders like ``{rainfall_mm}``,
+           ``{temp_status}``, or ``{strongest_phase}`` are replaced in-place.
+        3. If a detail contains no ``{…}`` tokens it is returned unchanged,
+           so recommendations without placeholders have zero extra cost.
 
         Every output dict is guaranteed to contain:
             title, detail, priority, effort_level, category
         """
+        # Build the weather context exactly once for all recommendations.
+        weather_context = self._weather_context_for_substitution(weather_phases or [])
+
         if isinstance(recommendations, str):
             raw_recommendations = [recommendations]
         elif isinstance(recommendations, Mapping):
@@ -1096,12 +1295,11 @@ class DiagnosisEngine:
             default_effort = DEFAULT_RECOMMENDATION_EFFORT_LEVELS[
                 min(index, len(DEFAULT_RECOMMENDATION_EFFORT_LEVELS) - 1)
             ]
-            # First recommendation defaults to "Immediate"; subsequent ones to "Preventive".
             default_category: str = "Immediate" if index == 0 else "Preventive"
 
             if isinstance(recommendation, Mapping):
                 title = str(recommendation.get("title") or f"Step {index + 1}").strip()
-                detail = str(
+                raw_detail = str(
                     recommendation.get("detail")
                     or recommendation.get("description")
                     or recommendation.get("action")
@@ -1117,7 +1315,6 @@ class DiagnosisEngine:
                     RECOMMENDATION_EFFORT_LEVELS,
                     default_effort,
                 )
-                # ★ NEW: resolve category field
                 category = self._recommendation_choice(
                     recommendation.get("category"),
                     RECOMMENDATION_CATEGORIES,
@@ -1125,21 +1322,24 @@ class DiagnosisEngine:
                 )
             else:
                 title = f"Step {index + 1}"
-                detail = str(recommendation).strip()
+                raw_detail = str(recommendation).strip()
                 priority = default_priority
                 effort_level = default_effort
                 category = default_category
 
-            if not detail:
+            if not raw_detail:
                 continue
+
+            # ── Inject live weather values into the detail string ────────────
+            enriched_detail = self._apply_weather_substitution(raw_detail, weather_context)
 
             plan.append(
                 {
                     "title": title or f"Step {index + 1}",
-                    "detail": detail,
+                    "detail": enriched_detail,
                     "priority": priority,
                     "effort_level": effort_level,
-                    "category": category,          # ★ NEW field persisted here
+                    "category": category,
                 }
             )
 
