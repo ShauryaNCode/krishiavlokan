@@ -24,6 +24,7 @@ def load_root_environment() -> None:
     """Load GEMINI_API_KEY and other settings from the project root .env file."""
 
     env_path = PROJECT_ROOT / ".env"
+
     if load_dotenv is not None:
         load_dotenv(env_path)
         return
@@ -33,22 +34,28 @@ def load_root_environment() -> None:
 
     for line in env_path.read_text(encoding="utf-8").splitlines():
         stripped = line.strip()
+
         if not stripped or stripped.startswith("#") or "=" not in stripped:
             continue
+
         key, value = stripped.split("=", 1)
-        os.environ.setdefault(key.strip(), value.strip().strip('"').strip("'"))
+        os.environ.setdefault(
+            key.strip(),
+            value.strip().strip('"').strip("'")
+        )
 
 
 load_root_environment()
 
 from backend.routes.diagnosis import router as diagnosis_router  # noqa: E402
 from backend.routes.voice import router as voice_router  # noqa: E402
+from backend.routes.history import router as history_router  # noqa: E402
 
 
 app = FastAPI(
     title="KrishiAvalokan Backend",
     version="1.0.0",
-    description="Crop failure diagnosis API backed by live weather, XGBoost, and Gemini.",
+    description="Crop failure diagnosis API backed by live weather, XGBoost, Gemini, and Firestore history.",
 )
 
 app.add_middleware(
@@ -59,8 +66,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Routes
 app.include_router(diagnosis_router)
 app.include_router(voice_router)
+app.include_router(history_router)
 
 
 @app.get("/health")
