@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "1.0",
+  "schemaVersion": "1.1",
   "weatherStatusEnum": [
     "veryLow",
     "low",
@@ -37,19 +37,22 @@
           "title": "Start protective irrigation",
           "detail": "Give light irrigation in the cooler part of the day and avoid flooding the root zone.",
           "priority": "High",
-          "effort_level": "Medium"
+          "effort_level": "Medium",
+          "category": "Immediate"
         },
         {
           "title": "Reduce soil moisture loss",
           "detail": "Use mulch or crop residue around plants to slow evaporation from the top soil.",
           "priority": "Medium",
-          "effort_level": "Medium"
+          "effort_level": "Medium",
+          "category": "Preventive"
         },
         {
           "title": "Check field cracks",
           "detail": "If cracks are widening, prioritize that plot for water or community irrigation support.",
           "priority": "High",
-          "effort_level": "Easy"
+          "effort_level": "Easy",
+          "category": "Immediate"
         }
       ]
     },
@@ -76,19 +79,22 @@
           "title": "Open drainage channels",
           "detail": "Create shallow side channels so extra water can leave the plot within 24 hours.",
           "priority": "High",
-          "effort_level": "Medium"
+          "effort_level": "Medium",
+          "category": "Immediate"
         },
         {
           "title": "Avoid more irrigation",
           "detail": "Pause irrigation until the top soil starts drying and roots get air again.",
           "priority": "High",
-          "effort_level": "Easy"
+          "effort_level": "Easy",
+          "category": "Immediate"
         },
         {
           "title": "Watch root health",
           "detail": "Uproot one weak plant and check for black, soft, or foul-smelling roots.",
           "priority": "Medium",
-          "effort_level": "Easy"
+          "effort_level": "Easy",
+          "category": "Preventive"
         }
       ]
     },
@@ -116,19 +122,22 @@
           "title": "Scout the underside of leaves",
           "detail": "Check 10 random plants for larvae, egg clusters, and fresh feeding marks.",
           "priority": "High",
-          "effort_level": "Easy"
+          "effort_level": "Easy",
+          "category": "Immediate"
         },
         {
           "title": "Use traps or manual removal",
           "detail": "Install pheromone or yellow sticky traps where suitable and remove visible egg masses.",
           "priority": "Medium",
-          "effort_level": "Medium"
+          "effort_level": "Medium",
+          "category": "Immediate"
         },
         {
           "title": "Escalate only if threshold is crossed",
           "detail": "Use pesticide only after local advisory confirms the pest level is above economic threshold.",
           "priority": "Low",
-          "effort_level": "Hard"
+          "effort_level": "Hard",
+          "category": "Preventive"
         }
       ]
     },
@@ -152,22 +161,25 @@
       ],
       "recommendations": [
         {
-          "title": "Improve air movement",
-          "detail": "Remove dense weeds and avoid unnecessary evening irrigation that keeps leaves wet overnight.",
-          "priority": "Medium",
-          "effort_level": "Medium"
-        },
-        {
           "title": "Remove infected leaves",
           "detail": "Take out heavily infected leaves from the field edge first and keep them away from compost.",
           "priority": "High",
-          "effort_level": "Easy"
+          "effort_level": "Easy",
+          "category": "Immediate"
+        },
+        {
+          "title": "Improve air movement",
+          "detail": "Remove dense weeds and avoid unnecessary evening irrigation that keeps leaves wet overnight.",
+          "priority": "Medium",
+          "effort_level": "Medium",
+          "category": "Preventive"
         },
         {
           "title": "Confirm before spraying",
           "detail": "Match the spot pattern with a local extension worker before choosing a fungicide.",
           "priority": "Medium",
-          "effort_level": "Easy"
+          "effort_level": "Easy",
+          "category": "Preventive"
         }
       ]
     },
@@ -194,19 +206,22 @@
           "title": "Irrigate before peak heat",
           "detail": "Water early morning or evening so the crop can handle afternoon temperature spikes.",
           "priority": "High",
-          "effort_level": "Easy"
+          "effort_level": "Easy",
+          "category": "Immediate"
         },
         {
           "title": "Protect flowering stage",
           "detail": "If the crop is flowering, keep moisture steady because heat can reduce pollination.",
           "priority": "Medium",
-          "effort_level": "Medium"
+          "effort_level": "Medium",
+          "category": "Preventive"
         },
         {
           "title": "Use temporary shade where practical",
           "detail": "For nursery or vegetable plots, use shade netting during extreme hot afternoons.",
           "priority": "Low",
-          "effort_level": "Medium"
+          "effort_level": "Medium",
+          "category": "Preventive"
         }
       ]
     },
@@ -234,19 +249,22 @@
           "title": "Check nutrient pattern",
           "detail": "Older yellow leaves often indicate nitrogen stress, while purpling may point to phosphorus stress.",
           "priority": "High",
-          "effort_level": "Easy"
-        },
-        {
-          "title": "Apply balanced nutrition",
-          "detail": "Use soil-test guidance where available and avoid applying only one nutrient repeatedly.",
-          "priority": "Medium",
-          "effort_level": "Hard"
+          "effort_level": "Easy",
+          "category": "Immediate"
         },
         {
           "title": "Maintain root-zone moisture",
           "detail": "Nutrients move poorly in very dry soil, so correct moisture before expecting fertilizer response.",
           "priority": "High",
-          "effort_level": "Easy"
+          "effort_level": "Easy",
+          "category": "Immediate"
+        },
+        {
+          "title": "Apply balanced nutrition",
+          "detail": "Use soil-test guidance where available and avoid applying only one nutrient repeatedly.",
+          "priority": "Medium",
+          "effort_level": "Hard",
+          "category": "Preventive"
         }
       ]
     }

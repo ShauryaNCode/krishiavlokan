@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from typing import Any, Dict, List, Optional
-
 from pydantic import BaseModel, Field
 
 
@@ -18,14 +17,23 @@ class DiagnosisRequest(BaseModel):
 
 
 class Recommendation(BaseModel):
-    advice_key: Optional[str] = Field(
-        default=None,
-        description="Stable snake_case key used for frontend image mapping",
-    )
     title: str
     detail: str
-    priority: str = Field(..., description="High, Medium, or Low")
-    effort_level: str = Field(..., description="Easy, Medium, or Hard")
+    priority: str = Field(
+        ...,
+        description="Urgency level: High, Medium, or Low",
+    )
+    effort_level: str = Field(
+        ...,
+        description="Implementation effort: Easy, Medium, or Hard",
+    )
+    category: str = Field(
+        ...,
+        description=(
+            "Action type: 'Immediate' (take action today) or "
+            "'Preventive' (longer-term safeguard)"
+        ),
+    )
 
     class Config:
         extra = "allow"

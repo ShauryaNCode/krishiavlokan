@@ -153,20 +153,63 @@ NORMAL_CAUSE = {
             "detail": "No strong failure signal was detected, so continue weekly field checks.",
             "priority": "Low",
             "effort_level": "Easy",
+            "category": "Preventive",
         },
         {
             "title": "Verify with local advisory",
             "detail": "If symptoms spread, confirm with a local extension worker before treatment.",
             "priority": "Medium",
             "effort_level": "Easy",
+            "category": "Preventive",
         },
     ],
 }
 
 RECOMMENDATION_PRIORITIES = ("High", "Medium", "Low")
 RECOMMENDATION_EFFORT_LEVELS = ("Easy", "Medium", "Hard")
+RECOMMENDATION_CATEGORIES = ("Immediate", "Preventive")
 DEFAULT_RECOMMENDATION_PRIORITIES = ("High", "Medium", "Low")
 DEFAULT_RECOMMENDATION_EFFORT_LEVELS = ("Easy", "Medium", "Hard")
+
+# ---------------------------------------------------------------------------
+# Symptom keywords that indicate pest / biological causes.
+# When any of these appear in the normalised symptom list the engine applies
+# a multiplier that suppresses the XGBoost model's tendency to over-predict
+# waterlogging whenever rain_anomaly is positive.
+# ---------------------------------------------------------------------------
+_PEST_BIO_KEYWORDS: frozenset[str] = frozenset(
+    {
+        "insect",
+        "insects",
+        "pest",
+        "pests",
+        "larvae",
+        "larva",
+        "hole",
+        "holes",
+        "holesinleaves",
+        "chewedleaves",
+        "eggsunderleaves",
+        "stickyresidue",
+        "fungal",
+        "fungus",
+        "mold",
+        "mildew",
+        "leafspots",
+        "whitepowder",
+        "blackspots",
+        "moldgrowth",
+    }
+)
+
+# Threshold: if the symptom priority score meets or exceeds this value the
+# rain_anomaly feature is damped before XGBoost sees it.
+_SYMPTOM_PRIORITY_THRESHOLD = 0.3
+
+# Rain-anomaly damping factor applied when pest/fungal symptoms dominate.
+# A value of 0.25 reduces a rain_anomaly of 1.0 to 0.25, preventing the
+# model from latching onto rainfall as the primary signal.
+_RAIN_ANOMALY_DAMP_FACTOR = 0.25
 
 
 class WeatherFetchError(RuntimeError):
@@ -225,6 +268,10 @@ class DiagnosisEngine:
         self.gemini_models = self._build_gemini_models(self.gemini_model_names)
         self.gemini_model = self.gemini_models[0] if self.gemini_models else None
         self.session = requests.Session() if requests is not None else None
+
+    # ------------------------------------------------------------------
+    # Public interface
+    # ------------------------------------------------------------------
 
     def diagnose(
         self,
@@ -294,6 +341,8 @@ class DiagnosisEngine:
                 "cropEncoderValue": prediction["cropEncoded"],
                 "cropModelValue": prediction["cropModelValue"],
                 "featureVector": prediction["featureVector"],
+                "symptomPriorityScore": prediction.get("symptomPriorityScore", 0.0),
+                "rainAnomalyDamped": prediction.get("rainAnomalyDamped", False),
                 "weatherSource": weather.source,
                 "weatherMessage": weather.message,
             },
@@ -313,6 +362,10 @@ class DiagnosisEngine:
             lat=payload.get("lat"),
             lon=payload.get("lon"),
         )
+
+    # ------------------------------------------------------------------
+    # Weather fetching
+    # ------------------------------------------------------------------
 
     def _fetch_weather_data(
         self,
@@ -430,6 +483,10 @@ class DiagnosisEngine:
 
         return {day: self._mean(day_values) for day, day_values in grouped.items()}
 
+    # ------------------------------------------------------------------
+    # Weather anomaly processing
+    # ------------------------------------------------------------------
+
     def _process_weather_anomalies(self, daily: Sequence[DailyWeather]) -> Dict[str, Any]:
         averages = self._period_averages(daily)
         isolation_scores = self._isolation_scores(daily)
@@ -535,54 +592,127 @@ class DiagnosisEngine:
         detector.fit(matrix)
         return [float(score) for score in detector.decision_function(matrix)]
 
+    # ------------------------------------------------------------------
+    # ★ NEW: XGBoost prediction with Symptom Priority Multiplier
+    # ------------------------------------------------------------------
+
+    def _symptom_priority_score(self, symptoms: Sequence[str]) -> float:
+        """Return a 0–1 score representing how strongly pest/bio symptoms dominate.
+
+        The score is the fraction of the reported symptoms that match the
+        pest-biological keyword set.  A value ≥ _SYMPTOM_PRIORITY_THRESHOLD
+        means the reporter is clearly describing a biotic problem, not a
+        weather event, and the rain_anomaly signal should be damped before
+        the XGBoost model sees it.
+        """
+        if not symptoms:
+            return 0.0
+        hits = sum(
+            1
+            for s in symptoms
+            if any(kw in s for kw in _PEST_BIO_KEYWORDS)
+        )
+        return round(hits / len(symptoms), 4)
+
     def _predict_with_xgboost(
         self,
         features: Mapping[str, Any],
         anomaly_features: Mapping[str, float],
     ) -> Dict[str, Any]:
-        if self.xgb_model is None or self.crop_encoder is None or self.failure_encoder is None:
-            raise ModelInferenceError("XGBoost model or encoders are missing")
+        """Run the XGBoost model and return a standardised prediction dict.
 
-        known_crops = list(getattr(self.crop_encoder, "classes_", []))
-        crop_model_value = canonicalize_crop(features["cropDisplay"], known_crops)
-        if crop_model_value not in known_crops:
-            crop_model_value = self._fallback_crop_value(known_crops)
+        Symptom Priority Multiplier
+        ---------------------------
+        XGBoost was trained on weather features and can therefore conflate any
+        positive ``rain_anomaly`` with ``flood`` / ``waterlogging``.  When the
+        farmer's reported symptoms are clearly biotic (pest or fungal keywords),
+        the rain_anomaly fed to the model is damped by ``_RAIN_ANOMALY_DAMP_FACTOR``
+        so that the model cannot override an obvious biotic signal with a weather
+        artefact.
+
+        The original (un-damped) anomaly values are preserved in ``modelFeatures``
+        for auditing; only the *model input* is adjusted.
+        """
+        if self.xgb_model is None or self.crop_encoder is None or self.failure_encoder is None:
+            raise ModelInferenceError("One or more XGBoost artefacts are unavailable")
+
+        # ── 1. Symptom Priority Multiplier ──────────────────────────────────
+        symptom_priority_score = self._symptom_priority_score(features.get("symptoms", []))
+        rain_anomaly_damped = False
+        effective_anomaly_features = dict(anomaly_features)
+
+        if symptom_priority_score >= _SYMPTOM_PRIORITY_THRESHOLD:
+            original_rain_anomaly = effective_anomaly_features.get("rain_anomaly", 0.0)
+            effective_anomaly_features["rain_anomaly"] = (
+                original_rain_anomaly * _RAIN_ANOMALY_DAMP_FACTOR
+            )
+            rain_anomaly_damped = True
+            LOGGER.info(
+                "Symptom Priority Multiplier applied: score=%.3f, "
+                "rain_anomaly %.4f → %.4f",
+                symptom_priority_score,
+                original_rain_anomaly,
+                effective_anomaly_features["rain_anomaly"],
+            )
+
+        # ── 2. Encode the crop ──────────────────────────────────────────────
+        known_crops: List[str] = list(getattr(self.crop_encoder, "classes_", []))
+        crop_canonical = canonicalize_crop(features.get("crop", ""), known_crops)
+        if crop_canonical not in known_crops:
+            crop_canonical = self._fallback_crop_value(known_crops)
 
         try:
-            crop_encoded = int(self.crop_encoder.transform([crop_model_value])[0])
+            crop_encoded = int(self.crop_encoder.transform([crop_canonical])[0])
         except Exception as exc:
-            raise ModelInferenceError(f"Crop encoding failed for {crop_model_value}") from exc
+            raise ModelInferenceError(f"Crop encoding failed: {exc}") from exc
 
+        # ── 3. Build the feature vector (using damped anomaly values) ────────
         feature_names = self._model_feature_names()
         feature_vector = build_model_feature_vector(
             crop_encoded=crop_encoded,
-            anomalies=anomaly_features,
-            symptom_score=features["symptomScore"],
+            symptom_score=float(features.get("symptomScore", 0.0)),
+            rain_anomaly=effective_anomaly_features.get("rain_anomaly", 0.0),
+            temp_anomaly=effective_anomaly_features.get("temp_anomaly", 0.0),
+            humidity_anomaly=effective_anomaly_features.get("humidity_anomaly", 0.0),
             feature_names=feature_names,
         )
+
+        # ── 4. Run the model ─────────────────────────────────────────────────
         model_input = self._model_input_frame(feature_vector, feature_names)
-
         try:
-            prediction_id = int(self.xgb_model.predict(model_input)[0])
-            raw_label = str(self.failure_encoder.inverse_transform([prediction_id])[0])
-            confidence = self._prediction_confidence(model_input)
+            raw_prediction = self.xgb_model.predict(model_input)
         except Exception as exc:
-            raise ModelInferenceError(f"XGBoost prediction failed: {exc}") from exc
+            raise ModelInferenceError(f"XGBoost predict failed: {exc}") from exc
 
+        raw_label_encoded = int(raw_prediction[0])
+        try:
+            raw_label = str(self.failure_encoder.inverse_transform([raw_label_encoded])[0])
+        except Exception:
+            raw_label = str(raw_label_encoded)
+
+        # ── 5. Resolve label → cause key (with symptom override guard) ────────
         cause_key = self._map_model_label_to_cause(
             raw_label=raw_label,
-            symptoms=features["symptoms"],
-            anomaly_features=anomaly_features,
+            symptoms=features.get("symptoms", []),
+            anomaly_features=effective_anomaly_features,
         )
+
+        confidence = self._prediction_confidence(model_input)
 
         return {
             "causeKey": cause_key,
             "rawLabel": raw_label,
-            "confidenceScore": round(confidence, 2),
+            "confidenceScore": round(confidence, 4),
             "cropEncoded": crop_encoded,
-            "cropModelValue": crop_model_value,
+            "cropModelValue": crop_canonical,
             "featureVector": feature_vector,
+            "symptomPriorityScore": symptom_priority_score,
+            "rainAnomalyDamped": rain_anomaly_damped,
         }
+
+    # ------------------------------------------------------------------
+    # Explanation generation
+    # ------------------------------------------------------------------
 
     def _generate_explanation(
         self,
@@ -600,6 +730,7 @@ class DiagnosisEngine:
             crop=crop,
             district=district,
             weather_phases=weather_phases,
+            recommendations=recommendations,
             easy_step=easy_step,
             model_label=model_label,
         )
@@ -620,20 +751,45 @@ class DiagnosisEngine:
         crop: str,
         district: str,
         weather_phases: Sequence[Mapping[str, Any]],
+        recommendations: Sequence[Mapping[str, Any]],
         easy_step: str | None,
         model_label: str,
     ) -> str | None:
+        """Build a Hinglish prompt that includes tiered recommendation context.
+
+        The prompt now surfaces every recommendation's ``priority``,
+        ``effort_level``, and ``category`` so that Gemini can weave the
+        action plan into the explanation naturally.
+        """
         if not self.gemini_models:
             return None
 
         strongest = self._strongest_phase_summary(weather_phases)
         easy_step_text = easy_step or "field me affected plants ko inspect karein"
+
+        # Build a compact action-plan string from the structured recommendations.
+        action_lines: List[str] = []
+        for rec in recommendations:
+            priority = rec.get("priority", "Medium")
+            effort = rec.get("effort_level", "Medium")
+            category = rec.get("category", "Immediate")
+            title = rec.get("title", "")
+            detail = rec.get("detail", "")
+            if title and detail:
+                action_lines.append(
+                    f"- [{priority} priority | {effort} effort | {category}] {title}: {detail}"
+                )
+        action_plan_text = "\n".join(action_lines) if action_lines else "N/A"
+
         prompt = (
-            f"{district} ke farmer ke liye 2 short Hinglish sentences likho. "
-            f"Crop: {crop}. Problem: {cause_title}. Weather reason: {strongest}. "
-            "Second sentence exactly 'Aaj ka Easy step:' se start ho aur "
-            f"farmer ko aaj ye kaam bataye: {easy_step_text}. "
-            "Markdown mat use karo."
+            f"{district} ke farmer ke liye 2 short Hinglish sentences likho.\n"
+            f"Crop: {crop}. Problem: {cause_title}. Weather reason: {strongest}.\n"
+            f"Tiered action plan (for context only — do NOT list all steps verbatim):\n"
+            f"{action_plan_text}\n"
+            "First sentence: problem aur uski wajah explain karo.\n"
+            "Second sentence: exactly 'Aaj ka Easy step:' se start ho aur "
+            f"farmer ko HIGH priority, EASY effort ka kaam batao: {easy_step_text}.\n"
+            "Markdown mat use karo. Koi bullet points ya headers mat add karo."
         )
 
         last_error: Exception | None = None
@@ -641,7 +797,7 @@ class DiagnosisEngine:
             try:
                 response = model.generate_content(
                     prompt,
-                    generation_config={"temperature": 0.35, "max_output_tokens": 120},
+                    generation_config={"temperature": 0.35, "max_output_tokens": 150},
                 )
                 text = getattr(response, "text", "") or ""
                 generated = self._two_sentence_text(text.strip())
@@ -674,6 +830,10 @@ class DiagnosisEngine:
             f"{strongest}, isliye field ko closely monitor karein aur local advisory se confirm karein."
         )
         return self._explanation_with_easy_step(explanation, easy_step)
+
+    # ------------------------------------------------------------------
+    # Rule-based fallback diagnosis
+    # ------------------------------------------------------------------
 
     def _diagnose_with_rules(self, features: Mapping[str, Any], reason: str) -> Dict[str, Any]:
         weather_snapshot = self._generate_mock_weather_phases(
@@ -872,6 +1032,10 @@ class DiagnosisEngine:
             return "pest"
         return MODEL_LABEL_TO_CAUSE.get(label_key, label_key)
 
+    # ------------------------------------------------------------------
+    # Cause metadata & recommendation plan
+    # ------------------------------------------------------------------
+
     def _cause_metadata(self, cause_key: str) -> Mapping[str, Any]:
         if cause_key in self.causes:
             metadata = dict(self.causes[cause_key])
@@ -886,6 +1050,7 @@ class DiagnosisEngine:
                         "detail": "The model returned an uncommon label, so verify before taking treatment action.",
                         "priority": "High",
                         "effort_level": "Easy",
+                        "category": "Immediate",
                     }
                 ],
             }
@@ -893,6 +1058,11 @@ class DiagnosisEngine:
         return metadata
 
     def _recommendation_plan(self, recommendations: Any) -> List[Dict[str, str]]:
+        """Normalise raw recommendation dicts into the full tiered schema.
+
+        Every output dict is guaranteed to contain:
+            title, detail, priority, effort_level, category
+        """
         if isinstance(recommendations, str):
             raw_recommendations = [recommendations]
         elif isinstance(recommendations, Mapping):
@@ -908,6 +1078,8 @@ class DiagnosisEngine:
             default_effort = DEFAULT_RECOMMENDATION_EFFORT_LEVELS[
                 min(index, len(DEFAULT_RECOMMENDATION_EFFORT_LEVELS) - 1)
             ]
+            # First recommendation defaults to "Immediate"; subsequent ones to "Preventive".
+            default_category: str = "Immediate" if index == 0 else "Preventive"
 
             if isinstance(recommendation, Mapping):
                 title = str(recommendation.get("title") or f"Step {index + 1}").strip()
@@ -927,21 +1099,29 @@ class DiagnosisEngine:
                     RECOMMENDATION_EFFORT_LEVELS,
                     default_effort,
                 )
+                # ★ NEW: resolve category field
+                category = self._recommendation_choice(
+                    recommendation.get("category"),
+                    RECOMMENDATION_CATEGORIES,
+                    default_category,
+                )
             else:
                 title = f"Step {index + 1}"
                 detail = str(recommendation).strip()
                 priority = default_priority
                 effort_level = default_effort
+                category = default_category
 
             if not detail:
                 continue
+
             plan.append(
                 {
-                    "advice_key": self._recommendation_key(title=title, detail=detail, index=index),
                     "title": title or f"Step {index + 1}",
                     "detail": detail,
                     "priority": priority,
                     "effort_level": effort_level,
+                    "category": category,          # ★ NEW field persisted here
                 }
             )
 
@@ -949,18 +1129,17 @@ class DiagnosisEngine:
             return plan
         return [
             {
-                "advice_key": "confirm_diagnosis_locally",
                 "title": "Confirm diagnosis locally",
                 "detail": "Verify the crop symptoms with a local extension worker before treatment.",
                 "priority": "High",
                 "effort_level": "Easy",
+                "category": "Immediate",
             }
         ]
 
-    def _recommendation_key(self, title: str, detail: str, index: int) -> str:
-        source = title.strip() or detail.strip() or f"step_{index + 1}"
-        slug = re.sub(r"[^a-z0-9]+", "_", source.lower()).strip("_")
-        return slug or f"step_{index + 1}"
+    # ------------------------------------------------------------------
+    # Small helpers
+    # ------------------------------------------------------------------
 
     def _recommendation_choice(self, value: Any, allowed_values: Sequence[str], default: str) -> str:
         candidate = str(value or "").replace("_", " ").strip()
