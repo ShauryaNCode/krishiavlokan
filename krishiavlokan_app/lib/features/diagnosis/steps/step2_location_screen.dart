@@ -135,8 +135,6 @@ void _applyMockFallback() {
           Text('Select state and district, or use GPS.',
               style: Theme.of(context).textTheme.bodyMedium),
           const SizedBox(height: 16),
-          VoiceButton(),
-          const SizedBox(height: 24),
 
           // State dropdown
           _DropdownCard(

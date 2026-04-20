@@ -4,11 +4,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import '../core/theme/app_colors.dart';
 import 'package:go_router/go_router.dart';
-import '../../../providers/diagnosis_provider.dart';
 import 'package:provider/provider.dart';
-
+import '../core/theme/app_colors.dart';
+import '../providers/diagnosis_provider.dart';
+import '../routes/app_router.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // KA App Card — base card with optional left accent border
@@ -146,8 +146,7 @@ class VoiceButton extends StatelessWidget {
                 ),
               ),
       child: Container(
-        padding:
-            const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         decoration: BoxDecoration(
           color: AppColors.amber,
           borderRadius: BorderRadius.circular(50),
@@ -246,6 +245,7 @@ class OfflineBanner extends StatelessWidget {
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Diagnosis Step Screen wrapper
+// Back button routes correctly per step and stops voice activity.
 // ─────────────────────────────────────────────────────────────────────────────
 class DiagnosisStepScaffold extends StatelessWidget {
   final int step;
@@ -270,15 +270,14 @@ class DiagnosisStepScaffold extends StatelessWidget {
       appBar: AppBar(
         title: Text(title),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back), 
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             context.read<DiagnosisProvider>().stopVoiceCompletely();
             switch (step) {
-              case 2: context.go("/diagnosis/crop"); break;
-              case 3: context.go("/diagnosis/location"); break;
-              case 4: context.go("/diagnosis/sowing"); break;
-              default: context.go("/home"); break;
-              // ... rest of your steps
+              case 2:  context.go(AppRoutes.step1);  break;
+              case 3:  context.go(AppRoutes.step2);  break;
+              case 4:  context.go(AppRoutes.step3);  break;
+              default: context.go(AppRoutes.home);   break;
             }
           },
         ),
@@ -313,39 +312,33 @@ class DiagnosisStepScaffold extends StatelessWidget {
 String causeEmoji(String key) {
   final k = key.toLowerCase();
   if (k.contains('waterlog') || k.contains('flood')) return '💧';
-  if (k.contains('drought') || k.contains('dry'))    return '🏜️';
-  if (k.contains('pest')    || k.contains('insect')) return '🐛';
-  if (k.contains('fungal')  || k.contains('blight')) return '🍂';
-  if (k.contains('heat')    || k.contains('temp'))   return '🌡️';
-  if (k.contains('nutrient')|| k.contains('defic'))  return '🟡';
+  if (k.contains('drought')  || k.contains('dry'))   return '🏜️';
+  if (k.contains('pest')     || k.contains('insect')) return '🐛';
+  if (k.contains('fungal')   || k.contains('blight')) return '🍂';
+  if (k.contains('heat')     || k.contains('temp'))   return '🌡️';
+  if (k.contains('nutrient') || k.contains('defic'))  return '🟡';
   return '🌿';
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Weather phase helpers
-// Accept both internal keys (veryLow / normal / veryHigh …)
-// AND raw API status strings ("Severe Anomaly", "Moderate Anomaly", "Normal").
 // ─────────────────────────────────────────────────────────────────────────────
 Color weatherStatusColor(String status) {
   final s = status.toLowerCase();
-  // Internal keys
-  if (s == 'verylow' || s == 'veryhigh') return AppColors.dangerRed;
-  if (s == 'low'     || s == 'high')     return AppColors.amber;
-  // API strings
-  if (s.contains('severe'))   return AppColors.dangerRed;
-  if (s.contains('moderate')) return AppColors.amber;
-  if (s.contains('mild'))     return AppColors.amber;
-  return AppColors.successGreen; // "Normal" or unknown
+  if (s == 'verylow'  || s == 'veryhigh')   return AppColors.dangerRed;
+  if (s == 'low'      || s == 'high')       return AppColors.amber;
+  if (s.contains('severe'))                  return AppColors.dangerRed;
+  if (s.contains('moderate'))               return AppColors.amber;
+  if (s.contains('mild'))                   return AppColors.amber;
+  return AppColors.successGreen;
 }
 
 String weatherStatusLabel(String status) {
   final s = status.toLowerCase();
-  // Internal keys
   if (s == 'verylow')  return 'Very Low';
   if (s == 'low')      return 'Low';
   if (s == 'high')     return 'High';
   if (s == 'veryhigh') return 'Very High';
-  // API strings — surface them directly but title-cased
   if (s.contains('severe'))   return 'Severe';
   if (s.contains('moderate')) return 'Moderate';
   if (s.contains('mild'))     return 'Mild';

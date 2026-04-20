@@ -144,22 +144,6 @@ class _Step4SymptomsScreenState extends State<Step4SymptomsScreen> {
               ),
               const SizedBox(height: 16),
 
-              // ── Voice toggle button ─────────────────────────────────────
-              _ContinuousVoiceButton(
-                isListening: isListening,
-                onTap:       () => _handleVoiceTap(provider),
-              ),
-
-              // ── Active listening status bar ─────────────────────────────
-              if (isListening) const _ListeningStatusBar(),
-
-              // ── Tip (shown only when mic is off) ────────────────────────
-              if (!isListening) ...[
-                const SizedBox(height: 12),
-                _HintRow(),
-              ],
-              const SizedBox(height: 16),
-
               // ── Symptom cards ────────────────────────────────────────────
               ...AppSymptoms.symptoms.asMap().entries.map((e) {
                 final i          = e.key;

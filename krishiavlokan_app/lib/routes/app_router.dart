@@ -12,67 +12,58 @@ import '../features/diagnosis/loading_screen.dart';
 import '../features/results/results_screen.dart';
 import '../features/history/history_screen.dart';
 import '../features/settings/settings_screen.dart';
+import '../features/learn/learn_screen.dart';
+import '../features/learn/learn_detail_screen.dart';
 
 class AppRoutes {
-  static const splash    = '/';
-  static const language  = '/language';
-  static const home      = '/home';
-  static const step1     = '/diagnosis/crop';
-  static const step2     = '/diagnosis/location';
-  static const step3     = '/diagnosis/sowing';
-  static const step4     = '/diagnosis/symptoms';
-  static const loading   = '/diagnosis/loading';
-  static const results   = '/results';
-  static const history   = '/history';
-  static const settings  = '/settings';
+  static const splash      = '/';
+  static const language    = '/language';
+  static const home        = '/home';
+  static const step1       = '/diagnosis/crop';
+  static const step2       = '/diagnosis/location';
+  static const step3       = '/diagnosis/sowing';
+  static const step4       = '/diagnosis/symptoms';
+  static const loading     = '/diagnosis/loading';
+  static const results     = '/results';
+  static const history     = '/history';
+  static const settings    = '/settings';
+  static const learn       = '/learn';
+  static const learnDetail = '/learn/:articleId';
 }
 
 final appRouter = GoRouter(
   initialLocation: AppRoutes.splash,
   routes: [
+    GoRoute(path: AppRoutes.splash,
+        pageBuilder: (ctx, state) => _slide(state, const SplashScreen())),
+    GoRoute(path: AppRoutes.language,
+        pageBuilder: (ctx, state) => _slide(state, const LanguageScreen())),
+    GoRoute(path: AppRoutes.home,
+        pageBuilder: (ctx, state) => _slide(state, const HomeScreen())),
+    GoRoute(path: AppRoutes.step1,
+        pageBuilder: (ctx, state) => _slide(state, const Step1CropScreen())),
+    GoRoute(path: AppRoutes.step2,
+        pageBuilder: (ctx, state) => _slide(state, const Step2LocationScreen())),
+    GoRoute(path: AppRoutes.step3,
+        pageBuilder: (ctx, state) => _slide(state, const Step3SowingScreen())),
+    GoRoute(path: AppRoutes.step4,
+        pageBuilder: (ctx, state) => _slide(state, const Step4SymptomsScreen())),
+    GoRoute(path: AppRoutes.loading,
+        pageBuilder: (ctx, state) => _fade(state, const LoadingScreen())),
+    GoRoute(path: AppRoutes.results,
+        pageBuilder: (ctx, state) => _slide(state, const ResultsScreen())),
+    GoRoute(path: AppRoutes.history,
+        pageBuilder: (ctx, state) => _slide(state, const HistoryScreen())),
+    GoRoute(path: AppRoutes.settings,
+        pageBuilder: (ctx, state) => _slide(state, const SettingsScreen())),
+    GoRoute(path: AppRoutes.learn,
+        pageBuilder: (ctx, state) => _fade(state, const LearnScreen())),
     GoRoute(
-      path: AppRoutes.splash,
-      pageBuilder: (ctx, state) => _slide(state, const SplashScreen()),
-    ),
-    GoRoute(
-      path: AppRoutes.language,
-      pageBuilder: (ctx, state) => _slide(state, const LanguageScreen()),
-    ),
-    GoRoute(
-      path: AppRoutes.home,
-      pageBuilder: (ctx, state) => _slide(state, const HomeScreen()),
-    ),
-    GoRoute(
-      path: AppRoutes.step1,
-      pageBuilder: (ctx, state) => _slide(state, const Step1CropScreen()),
-    ),
-    GoRoute(
-      path: AppRoutes.step2,
-      pageBuilder: (ctx, state) => _slide(state, const Step2LocationScreen()),
-    ),
-    GoRoute(
-      path: AppRoutes.step3,
-      pageBuilder: (ctx, state) => _slide(state, const Step3SowingScreen()),
-    ),
-    GoRoute(
-      path: AppRoutes.step4,
-      pageBuilder: (ctx, state) => _slide(state, const Step4SymptomsScreen()),
-    ),
-    GoRoute(
-      path: AppRoutes.loading,
-      pageBuilder: (ctx, state) => _fade(state, const LoadingScreen()),
-    ),
-    GoRoute(
-      path: AppRoutes.results,
-      pageBuilder: (ctx, state) => _slide(state, const ResultsScreen()),
-    ),
-    GoRoute(
-      path: AppRoutes.history,
-      pageBuilder: (ctx, state) => _slide(state, const HistoryScreen()),
-    ),
-    GoRoute(
-      path: AppRoutes.settings,
-      pageBuilder: (ctx, state) => _slide(state, const SettingsScreen()),
+      path: AppRoutes.learnDetail,
+      pageBuilder: (ctx, state) {
+        final id = state.pathParameters['articleId'] ?? '';
+        return _slide(state, LearnDetailScreen(articleId: id));
+      },
     ),
   ],
 );

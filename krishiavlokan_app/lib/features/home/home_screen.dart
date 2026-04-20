@@ -382,7 +382,7 @@ class _BottomNavBar extends StatelessWidget {
                 context.go(AppRoutes.home);
               case 1:
                 context.read<DiagnosisProvider>().resetDiagnosis();
-                context.go(AppRoutes.step1);
+                context.go(AppRoutes.learn);
               case 2:
                 context.go(AppRoutes.history);
               case 3:
@@ -395,8 +395,8 @@ class _BottomNavBar extends StatelessWidget {
               label: 'Home',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.biotech_rounded),
-              label: 'New Analysis',
+              icon: Icon(Icons.menu_book_rounded),
+              label: 'Learn',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.history_rounded),

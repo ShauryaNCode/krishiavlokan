@@ -23,7 +23,7 @@ class AppConstants {
 
   // ── Backend ────────────────────────────────────────────────────────────────
   // Replace with your deployed backend URL before release.
-  static const backendBaseUrl    = 'http://192.168.0.173:8000';
+  static const backendBaseUrl    = 'http://10.18.80.119:8000';
   static const analyzeEndpoint   = '$backendBaseUrl/diagnose';
   static const historyEndpoint   = '$backendBaseUrl/history'; // + /{userId}
   static const connectTimeoutMs  = 12000;
