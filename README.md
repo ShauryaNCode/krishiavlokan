@@ -429,7 +429,7 @@ krishiavlokan_app/lib/core/constants/app_constants.dart
 Current constants:
 
 ```dart
-static const backendBaseUrl = 'http://192.168.0.173:8000';
+static const backendBaseUrl = 'http://<your-lan-ip>:8000';
 static const analyzeEndpoint = '$backendBaseUrl/diagnose';
 ```
 
