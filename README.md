@@ -1,230 +1,142 @@
-<div align="center">
+# KrishiAvlokan
+![Flutter](https://img.shields.io/badge/Flutter-3.x-02569B?style=for-the-badge&logo=flutter&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-Backend-009688?style=for-the-badge&logo=fastapi&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![XGBoost](https://img.shields.io/badge/ML-XGBoost-orange?style=for-the-badge)
+![MeteoAPI](https://img.shields.io/badge/Weather-Open--Meteo-005BBB?style=for-the-badge&logo=icloud&logoColor=white)
+![Geocoding](https://img.shields.io/badge/Geocoding-Nominatim-4A4A4A?style=for-the-badge&logo=openstreetmap&logoColor=white)
+![Gemini](https://img.shields.io/badge/LLM-Gemini_API-4285F4?style=for-the-badge&logo=google&logoColor=white)
+![Provider](https://img.shields.io/badge/State-Provider-purple?style=for-the-badge)
+![go_router](https://img.shields.io/badge/Routing-go__router-blue?style=for-the-badge)
 
-```
-██╗  ██╗██████╗ ██╗███████╗██╗  ██╗██╗ █████╗ ██╗   ██╗██╗      ██████╗ ██╗  ██╗ █████╗ ███╗   ██╗
-██║ ██╔╝██╔══██╗██║██╔════╝██║  ██║██║██╔══██╗██║   ██║██║     ██╔═══██╗██║ ██╔╝██╔══██╗████╗  ██║
-█████╔╝ ██████╔╝██║███████╗███████║██║███████║██║   ██║██║     ██║   ██║█████╔╝ ███████║██╔██╗ ██║
-██╔═██╗ ██╔══██╗██║╚════██║██╔══██║██║██╔══██║╚██╗ ██╔╝██║     ██║   ██║██╔═██╗ ██╔══██║██║╚██╗██║
-██║  ██╗██║  ██║██║███████║██║  ██║██║██║  ██║ ╚████╔╝ ███████╗╚██████╔╝██║  ██╗██║  ██║██║ ╚████║
-╚═╝  ╚═╝╚═╝  ╚═╝╚═╝╚══════╝╚═╝  ╚═╝╚═╝╚═╝  ╚═╝  ╚═══╝  ╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝
-```
+> AI-powered crop diagnosis for field-level farmers — real-time, voice-first, weather-aware
 
-**KrishiAvlokan**
+<img width="1200" height="700" alt="KrishsiAvlokanMain" src="https://github.com/user-attachments/assets/c19a3bf6-60e5-4de8-8fa5-cc9e88aaeae1" />
 
-*AI-Powered Crop Diagnosis Platform*
 
-*Hackathon Build - April 2026*
+## Why This Matters
 
----
+India has over **140 million farming households**. When a crop starts failing, the average farmer has no fast, reliable way to diagnose the cause in the field. Agronomists are scarce, internet searches are generic, and most AI tools require fluent English and a stable connection.
 
-</div>
-
-## 📋 Table of Contents
-
-1. [Project Overview](#1-project-overview)
-2. [System Architecture](#2-system-architecture)
-3. [Tech Stack](#3-tech-stack)
-4. [Complete File Structure](#4-complete-file-structure)
-5. [Quick Start - Repository](#5-quick-start---repository)
-6. [Quick Start - Flutter App](#6-quick-start---flutter-app)
-7. [Quick Start - Backend](#7-quick-start---backend)
-8. [Quick Start - AI Pipeline](#8-quick-start---ai-pipeline)
-9. [API Contract](#9-api-contract)
-10. [Voice Diagnosis Pipeline](#10-voice-diagnosis-pipeline)
-11. [Screens and Navigation](#11-screens-and-navigation)
-12. [Design System](#12-design-system)
-13. [Connecting Frontend to Backend](#13-connecting-frontend-to-backend)
-14. [Demo Scenarios](#14-demo-scenarios)
-15. [Troubleshooting](#15-troubleshooting)
-16. [Team Ownership](#16-team-ownership)
-17. [Demo Day Checklist](#17-demo-day-checklist)
+KrishiAvlokan changes that. A farmer picks a crop, drops a pin, sets a sowing date, and describes symptoms in **Hindi, Hinglish, or English — by voice**. In seconds, the system returns a diagnosis, a plain-language explanation, and actionable recommendations — all informed by live weather data.
 
 ---
 
-## 1. Project Overview
+<img width="1200" height="542" alt="KrishiAvlokanStep" src="https://github.com/user-attachments/assets/22a2c4fc-16b0-4172-a1ef-7de82870a841" />
 
-KrishiAvlokan is a guided crop diagnosis system built for fast field-level crop failure assessment. It combines a **Flutter mobile app**, a **FastAPI backend**, and a separate **AI pipeline** that reasons over crop, location, sowing date, symptoms, weather anomalies, and now voice-described symptoms.
+*Guided 4-step diagnosis flow with voice symptom capture and live-weather-aware AI reasoning*
 
-```text
-Farmer selects crop + location + sowing date + symptoms
-         ↓
-Flutter app builds a structured diagnosis request
-         ↓
-FastAPI backend validates request and calls AI pipeline
-         ↓
-Diagnosis engine combines weather + model/rule reasoning
-         ↓
-Cause, explanation, and recommendations are returned
-         ↓
-Result is shown in app and stored in history
-```
+## What It Does
 
-### What makes it different
+A farmer opens the app and walks through a guided 4-step flow. Before a diagnosis is returned, KrishiAvlokan:
 
-- Guided 4-step diagnosis flow designed for non-technical users
-- Hybrid AI backend with live-weather-aware diagnosis engine
-- Voice symptom capture for messy Hindi, Hinglish, and English speech
-- Separate voice extraction pipeline with backend-driven processing
-- Offline-friendly frontend patterns with persisted settings and history
+1. Collects **crop, location, sowing date, and symptoms** through a simple guided UI
+2. Optionally captures **voice symptoms** in Hindi/Hinglish via a chunked audio pipeline
+3. Sends the structured request to a **FastAPI backend** for validation and routing
+4. Runs the case through a **weather-aware AI diagnosis engine** combining live weather, ML models, and rule-based reasoning
+5. Returns a **cause, confidence score, plain-language explanation, and recommendations**
+
+The result is displayed immediately — with a diagnosis summary, weather context, and a history entry saved for later.
 
 ---
 
-## 2. System Architecture
+## Key Engineering Highlights
 
-```text
-┌────────────────────────────────────────────────────────────────────┐
-│                         FLUTTER FRONTEND                           │
-│                                                                    │
-│  Splash → Language → Home → Diagnosis Step 1 → Step 2 → Step 3    │
-│                                              ↓                     │
-│                                      Step 4 Symptoms               │
-│                                              ↓                     │
-│                                 Manual Select + Voice Input        │
-│                                              ↓                     │
-│                                      Loading → Results → History   │
-└───────────────────────────────┬────────────────────────────────────┘
-                                │
-                                │ POST /diagnose
-                                │ POST /voice/transcribe
-                                │ POST /voice/extract
-                                ↓
-┌────────────────────────────────────────────────────────────────────┐
-│                          FASTAPI BACKEND                           │
-│                                                                    │
-│   Pydantic Validation → Diagnosis Route → AI Pipeline             │
-│                   │                           │                    │
-│                   └──── Voice Routes ────────┘                    │
-│                         /transcribe /extract                      │
-└───────────────────────────────┬────────────────────────────────────┘
-                                ↓
-┌────────────────────────────────────────────────────────────────────┐
-│                           AI PIPELINE                              │
-│                                                                    │
-│   Feature Builder → Live Weather / Model Features → Diagnosis      │
-│   Rules + Templates → Explanation Generation → Recommendations     │
-│   Voice Symptom Extractor → symptom keys for Step 4                │
-└────────────────────────────────────────────────────────────────────┘
+### Hybrid Diagnosis Engine
+- **Weather-aware path** — fetches live weather anomalies for the farmer's coordinates; drought, heat, and waterlogging signals feed directly into the model
+- **XGBoost + rule-based ensemble** — supervised ML for known symptom patterns, diagnosis rules for edge cases and sparse symptom sets
+- **Explanation templates** — structured, localized output from `explanation_templates.json` so responses stay readable at low literacy levels
+
+### Voice Symptom Pipeline
+- **Chunked audio recording** via `record` package — audio sent to backend in short segments so no long upload stalls the UX
+- **Gemini-backed transcription** (`/voice/transcribe`) handles mixed-language speech, noise, and incomplete sentences
+- **Structured extraction** (`/voice/extract`) maps free-form transcripts to canonical symptom keys like `nutrient`, `fungal`, `pest`
+- **Incremental symptom injection** — voice-detected symptoms merge into the existing Step 4 selection without overwriting manual choices
+
+### Guided UX for Non-Technical Users
+- 4-step flow with large tap targets, designed for one-handed field use
+- Voice state surfaced via status bars and badges — no extra navigation required
+- Offline-friendly patterns: settings and history persisted locally
+- Hinglish diagnosis explanations as the default output format
+
+---
+
+## Example: What Happens on a Drought Symptom Report
+
+> Farmer selects Wheat in Pune, sowing date 1 July, and says "patte peele hain, sukh rahe hain"
+
+- Voice pipeline transcribes and extracts: `drought`, `heat`
+- Live weather confirms below-average rainfall anomaly for Pune coordinates
+- `amount_log` feature + `is_heat_stress` flag + weather signal compound
+- **Diagnosis output: Drought Stress — confidence 0.87**
+- Explanation generated in Hinglish with water management recommendations
+
+---
+
+## Architecture
+
+```
+Flutter App
+    │
+    ├── Guided 4-step symptom collection
+    ├── Optional voice capture (chunked audio)
+    ├── Voice API calls → /voice/transcribe → /voice/extract
+    ├── Symptom keys merged into DiagnosisProvider
+    │
+    └──▶  POST /diagnose
+                │
+                ├── Pydantic schema validation
+                ├── Feature builder (location + sowing + symptoms + weather)
+                ├── XGBoost inference + rule overlay
+                ├── Explanation template rendering
+                └── Diagnosis stored in history.json
+                │
+                └──▶  { causeKey, causeTitle, confidenceScore, explanation, recommendations }
+                            │
+                            └── Flutter displays results screen
+                                History entry saved
+                                Next diagnosis ready
 ```
 
 ---
 
-## 3. Tech Stack
+## Tech Stack
 
-| Layer | Technology | Purpose |
-|---|---|---|
-| Frontend | Flutter 3.x | Cross-platform mobile UI |
-| State Management | Provider | Shared diagnosis state |
-| Routing | go_router | App navigation |
-| Voice UX | speech_to_text, flutter_tts, record | Voice prompts, capture, chunk recording |
-| HTTP | http | Backend API integration |
-| Backend | FastAPI | REST API and route orchestration |
-| Validation | Pydantic | Request and response schema validation |
-| AI Engine | Python | Diagnosis and voice reasoning |
-| Weather + ML | requests, pandas, scikit-learn, XGBoost pickles | Weather-aware diagnosis path |
-| LLM Integration | Gemini API | Voice transcription and text extraction fallback/intelligence |
-
----
-
-## 4. Complete File Structure
-
-```text
-KrishiAvalokan/
-│
-├── README.md
-├── TEAM_INTEGRATION_GUIDE.md
-├── krishiavlokan_app/
-│   ├── README.md
-│   ├── pubspec.yaml
-│   ├── android/
-│   ├── ios/
-│   └── lib/
-│       ├── main.dart
-│       ├── core/
-│       │   ├── constants/app_constants.dart
-│       │   └── theme/
-│       ├── features/
-│       │   ├── diagnosis/
-│       │   │   ├── loading_screen.dart
-│       │   │   ├── steps/
-│       │   │   │   ├── step1_crop_screen.dart
-│       │   │   │   ├── step2_location_screen.dart
-│       │   │   │   ├── step3_sowing_screen.dart
-│       │   │   │   └── step4_symptoms_screen.dart
-│       │   │   └── voice/
-│       │   │       ├── voice_api_service.dart
-│       │   │       ├── voice_controller.dart
-│       │   │       └── voice_session_manager.dart
-│       │   ├── history/history_screen.dart
-│       │   ├── home/home_screen.dart
-│       │   ├── language/language_screen.dart
-│       │   ├── results/results_screen.dart
-│       │   ├── settings/settings_screen.dart
-│       │   └── splash/splash_screen.dart
-│       ├── models/analysis_model.dart
-│       ├── providers/diagnosis_provider.dart
-│       ├── routes/app_router.dart
-│       ├── services/
-│       │   ├── diagnosis_service.dart
-│       │   ├── storage_service.dart
-│       │   ├── symptom_voice_processor.dart
-│       │   └── voice_service.dart
-│       └── widgets/shared_widgets.dart
-│
-├── backend/
-│   ├── README.md
-│   ├── main.py
-│   ├── schemas.py
-│   ├── storage.py
-│   ├── data/history.json
-│   ├── routes/
-│   │   ├── diagnosis.py
-│   │   ├── voice.py
-│   │   └── __init__.py
-│   └── services/
-│       ├── voice_service.py
-│       └── __init__.py
-│
-└── ai_pipeline/
-    ├── README.md
-    ├── AI_NOTES.md
-    ├── KrishiAvalokan_Backend_Documentation.md
-    ├── diagnosis_engine.py
-    ├── voice_symptom_extractor.py
-    ├── data/
-    ├── models/
-    ├── rules/diagnosis_rules.json
-    ├── templates/explanation_templates.json
-    └── utils/feature_builder.py
-```
+| Layer | Technology |
+|---|---|
+| Mobile Frontend | Flutter 3.x + Provider |
+| Routing | go_router |
+| Voice UX | speech_to_text, flutter_tts, record |
+| HTTP | http |
+| Backend API | FastAPI + Uvicorn |
+| Validation | Pydantic |
+| AI Engine | Python (custom diagnosis engine) |
+| Weather + ML | requests, pandas, scikit-learn, XGBoost |
+| LLM Integration | Gemini API (voice transcription + extraction) |
 
 ---
 
-## 5. Quick Start - Repository
+## Screens
 
-### Prerequisites
-
-- Flutter SDK 3.x
-- Python 3.10+ recommended
-- Android Studio or VS Code for Flutter
-- A `.env` file at repo root if using Gemini-backed voice or explanation features
-
-### Clone and inspect
-
-```bash
-git clone <your-repo-url>
-cd KrishiAvalokan
-```
-
-### Recommended reading order
-
-1. Read this root README for the full system view
-2. Read `krishiavlokan_app/README.md` for mobile app details
-3. Read `backend/README.md` for API and runtime details
-4. Read `ai_pipeline/README.md` for diagnosis and voice reasoning internals
+| Screen | Purpose |
+|---|---|
+| Splash | App bootstrap and first-run transition |
+| Language | Regional language selection |
+| Home | Entry point into diagnosis flow |
+| Step 1 — Crop | Crop selection |
+| Step 2 — Location | State, district, GPS coordinates |
+| Step 3 — Sowing Date | Date input |
+| Step 4 — Symptoms | Manual selection + voice input |
+| Loading | Wait state during diagnosis |
+| Results | Diagnosis explanation and recommendations |
+| History | Past diagnosis records |
+| Settings | Language, voice, and app preferences |
 
 ---
 
-## 6. Quick Start - Flutter App
+## Quick Start
+
+### Frontend (Flutter)
 
 ```bash
 cd krishiavlokan_app
@@ -232,11 +144,9 @@ flutter pub get
 flutter run
 ```
 
-The app expects the backend base URL from `lib/core/constants/app_constants.dart`.
+Update the backend URL in `lib/core/constants/app_constants.dart` to point to your machine.
 
----
-
-## 7. Quick Start - Backend
+### Backend (FastAPI)
 
 ```bash
 cd backend
@@ -245,292 +155,36 @@ uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
 Health check:
-
 ```bash
 curl http://localhost:8000/health
 ```
 
----
-
-## 8. Quick Start - AI Pipeline
-
-```bash
-cd ai_pipeline
-python diagnosis_engine.py
-```
-
-The AI pipeline is also used indirectly through the backend routes.
+> Full setup details, API contract, voice pipeline docs, and demo scenarios are in [`DEVELOPER_GUIDE.md`](./DEVELOPER_GUIDE.md)
 
 ---
 
-## 9. API Contract
+## What We Would Build Next
 
-### Core diagnosis endpoint
-
-```text
-POST /diagnose
-Content-Type: application/json
-```
-
-### Diagnosis request
-
-```json
-{
-  "crop": "Wheat",
-  "state": "Maharashtra",
-  "district": "Pune",
-  "sowingDate": "2025-07-01",
-  "symptoms": ["drought", "heat"],
-  "lat": 18.5204,
-  "lon": 73.8567
-}
-```
-
-### Diagnosis response
-
-```json
-{
-  "causeKey": "drought",
-  "causeTitle": "Drought Stress",
-  "confidenceScore": 0.87,
-  "explanation": "Pune ke farmer ke liye short Hinglish explanation.",
-  "weatherPhases": [],
-  "recommendations": [],
-  "inputSummary": {},
-  "modelDetails": {}
-}
-```
-
-### Voice endpoints
-
-```text
-POST /voice/transcribe
-POST /voice/extract
-```
-
-`/voice/transcribe` accepts multipart audio and returns:
-
-```json
-{
-  "transcript": "patte peele ho rahe hain aur kale daag bhi hain"
-}
-```
-
-`/voice/extract` accepts text and returns:
-
-```json
-{
-  "symptoms": ["nutrient", "fungal"]
-}
-```
+- **Offline diagnosis fallback** — on-device rule engine for no-connectivity field conditions
+- **Regional language expansion** — Tamil, Telugu, and Marathi voice and output support
+- **Image-based diagnosis** — photo of affected crop as an additional symptom input
+- **Push alerts** — proactive weather-risk warnings before symptoms appear
+- **Crowdsourced symptom database** — anonymized farmer reports to improve diagnosis accuracy over time
+- **SMS fallback** — for feature phones with no data connection
 
 ---
 
-## 10. Voice Diagnosis Pipeline
+## 👥 Team
 
-The Step 4 voice flow is now backend-driven and layered on top of the existing symptom selection UX.
+Built during Build With AI Hackathon — April 2026
+(Google Developers Group (GDG) Goa x PCCE)
 
-```text
-User taps mic
-   ↓
-VoiceSessionManager records audio in short chunks
-   ↓
-VoiceApiService sends chunk → POST /voice/transcribe
-   ↓
-Transcript batch is debounced in VoiceController
-   ↓
-POST /voice/extract returns structured symptom keys
-   ↓
-DiagnosisProvider.applyVoiceDetectedSymptoms()
-   ↓
-Existing Step 4 UI updates without replacing manual choices
-```
-
-### Stability goals
-
-- Continuous listening until manual stop or silence timeout
-- Incremental symptom adds only
-- Duplicate symptom prevention
-- Minimal widget logic in Step 4
-- No local hardcoded keyword matching inside the widget layer
+| Contributor | Role | Responsibilities |
+|-------------|------|-----------------|
+| **[Shaurya Naik](https://github.com/ShauryaNCode)** | Flutter + UX + Voice Service | Mobile app, guided flow, voice UX, Provider state, voice service, history and settings |
+| **[Siddhant Kerkar](https://github.com/Siddhantdev404)** | Diagnosis + Backend | Diagnosis engine, feature builder, rule engine, backend FastAPI, Gemini integration |
+| **[Priyam Redkar](https://github.com/priyamredker)** | API + FirebaseDB | Diagnosis Rules, Firebase Data Base, backend orchestration |
 
 ---
 
-## 11. Screens and Navigation
-
-```text
-Splash
-  ↓
-Language
-  ↓
-Home
-  ↓
-Diagnosis Step 1: Crop
-  ↓
-Diagnosis Step 2: Location
-  ↓
-Diagnosis Step 3: Sowing Date
-  ↓
-Diagnosis Step 4: Symptoms + Voice
-  ↓
-Loading
-  ↓
-Results
-  ↓
-History / Settings
-```
-
-### Main screens
-
-| Screen | Route responsibility |
-|---|---|
-| `splash_screen.dart` | App bootstrap and first-run transition |
-| `language_screen.dart` | Regional language selection |
-| `home_screen.dart` | Entry point into diagnosis flow |
-| `step1_crop_screen.dart` | Crop selection |
-| `step2_location_screen.dart` | State, district, coordinates |
-| `step3_sowing_screen.dart` | Sowing date input |
-| `step4_symptoms_screen.dart` | Manual symptom selection + voice input |
-| `loading_screen.dart` | Wait state while diagnosis runs |
-| `results_screen.dart` | Diagnosis explanation and recommendations |
-| `history_screen.dart` | Past analysis records |
-| `settings_screen.dart` | Language, voice, and app settings |
-
----
-
-## 12. Design System
-
-The app uses a clean agricultural UI centered around clarity, large cards, and readable diagnosis summaries.
-
-### Core frontend assets
-
-- `lib/core/theme/app_theme.dart`
-- `lib/core/theme/app_colors.dart`
-- `lib/widgets/shared_widgets.dart`
-
-### Design principles
-
-- Guided step-by-step flow over dense dashboards
-- Large tap targets for field use
-- Clear state changes for selected symptoms
-- Visual emphasis on diagnosis confidence and recommendations
-- Voice state surfaced with status bars and badges instead of extra screens
-
----
-
-## 13. Connecting Frontend to Backend
-
-Update the backend URL in:
-
-```text
-krishiavlokan_app/lib/core/constants/app_constants.dart
-```
-
-Current constants:
-
-```dart
-static const backendBaseUrl = 'http://<your-lan-ip>:8000';
-static const analyzeEndpoint = '$backendBaseUrl/diagnose';
-```
-
-Use the right base URL for your device:
-
-| Device type | URL example |
-|---|---|
-| Android emulator | `http://10.0.2.2:8000` |
-| iOS simulator | `http://localhost:8000` |
-| Physical phone | `http://<your-lan-ip>:8000` |
-
-Voice endpoints are derived automatically from `backendBaseUrl`.
-
----
-
-## 14. Demo Scenarios
-
-### Drought scenario
-
-```text
-Crop: Wheat
-Location: Pune
-Symptoms: drought, heat
-Expected: Drought Stress or Heat Stress leaning output
-```
-
-### Waterlogging scenario
-
-```text
-Crop: Rice
-Symptoms: waterlogging
-Expected: Waterlogging Stress
-```
-
-### Voice demo scenario
-
-```text
-Say: "patte peele hain aur kale daag bhi hain"
-Expected voice symptoms: nutrient + fungal
-```
-
-### Mixed symptom scenario
-
-```text
-Say or select: insects eating leaves, holes in leaves
-Expected: Pest Pressure
-```
-
----
-
-## 15. Troubleshooting
-
-| Issue | Likely cause | Fix |
-|---|---|---|
-| App cannot connect to backend | Wrong base URL | Update `backendBaseUrl` for your device |
-| `422` from `/diagnose` | Invalid request payload | Check date format and required fields |
-| Voice transcript returns empty | Gemini key missing or bad audio | Verify `.env`, microphone permissions, and audio upload |
-| Voice extraction returns no symptoms | Transcript too short or unclear | Retry with longer symptom description |
-| iOS mic not working | Missing permission prompt | Confirm `NSMicrophoneUsageDescription` exists |
-| Backend import errors | Missing Python packages | Install backend dependencies listed above |
-| Diagnosis falls back unexpectedly | Live weather/model path failed | Inspect backend logs and `modelDetails.reason` |
-
----
-
-## 16. Team Ownership
-
-| Area | Owner |
-|---|---|
-| `krishiavlokan_app/` | Frontend and Flutter integration |
-| `backend/` | Backend and API integration |
-| `ai_pipeline/` | AI, diagnosis, and voice extraction logic |
-| `TEAM_INTEGRATION_GUIDE.md` | Shared contract reference |
-
-### Shared integration rules
-
-- Do not rename API contract fields casually
-- Keep diagnosis and voice symptom keys aligned across all layers
-- Avoid moving files across app, backend, and AI boundaries
-- Prefer additive changes over refactors during hackathon integration
-
----
-
-## 17. Demo Day Checklist
-
-- [ ] `flutter pub get` succeeds in `krishiavlokan_app`
-- [ ] Backend starts cleanly on port `8000`
-- [ ] `/health` returns `{"status":"ok"}`
-- [ ] Diagnosis works end-to-end with manual symptoms
-- [ ] Voice flow works end-to-end in Step 4
-- [ ] At least one drought, waterlogging, and pest demo scenario is tested
-- [ ] Root `.env` is present for Gemini-backed features
-- [ ] Phone and laptop are on the same network if using a physical device
-
----
-
-<div align="center">
-
----
-
-**KrishiAvlokan** - Built for hackathon demonstration, rapid iteration, and modular integration.
-
-*Flutter Frontend · FastAPI Backend · AI Diagnosis Pipeline · April 2026*
-
-</div>
+*KrishiAvlokan is a hackathon prototype built for rapid demonstration and modular iteration.*
